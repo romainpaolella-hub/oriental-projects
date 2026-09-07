@@ -3,7 +3,9 @@
   var $=function(s,c){return (c||document).querySelector(s)};
   var LANG=(document.documentElement.lang||'fr').slice(0,2).toLowerCase()==='en'?'en':'fr';
   var baht=function(n){return '฿'+Math.round(n).toLocaleString(LANG==='en'?'en-US':'fr-FR').replace(/[  ]/g,' ')};
-  var pct=function(n){return (LANG==='en'?n.toFixed(1):n.toFixed(1).replace('.',','))+' %'};
+  var num1=function(n){var s=n.toFixed(1);return LANG==='en'?s:s.replace('.',',')};
+  var pct=function(n){return num1(n)+' %'};
+  var yrs=function(n){return LANG==='en'?(n===1?' yr':' yrs'):(n===1?' an':' ans')};
   var I18N={
     fr:{discover:'Découvrir le programme →', seePhotos:'Voir les photos →', info:'Info →',
         soonName:'Villa à venir', soonNote:'Photos & détails bientôt', delivered:'Livrée',
@@ -12,7 +14,15 @@
         thanksDl:'Merci ! Votre brochure se télécharge. Notre équipe locale francophone vous recontacte sous 24 h. ',
         thanksNoDl:'Merci ! Votre demande a bien été envoyée. Notre équipe vous envoie la brochure adaptée sous 24 h.',
         errInput:'Vérifiez votre nom et votre adresse e-mail, puis réessayez.',
-        errSend:function(hasDl){return "L'envoi n'a peut-être pas abouti"+(hasDl?', mais votre brochure se télécharge ci-dessous':'')+". En cas de doute, écrivez-nous sur WhatsApp au +66 655 767 871."}},
+        errSend:function(hasDl){return "L'envoi n'a peut-être pas abouti"+(hasDl?', mais votre brochure se télécharge ci-dessous':'')+". En cas de doute, écrivez-nous sur WhatsApp au +66 655 767 871."},
+        c:{price:'Prix de la villa', rent:'Loyer mensuel estimé', rentHint:'Location longue durée ou saisonnière lissée',
+           costs:'Charges & gestion', costsHint:'du revenu locatif', gross:'Rendement brut',
+           annual:'Revenu locatif annuel', netY:'Rendement net estimé',
+           chooseVilla:'Choisissez votre villa', scenario:'Scénario locatif',
+           nightsYr:'Nuits louées par an', adr:'Prix moyen par nuit', holding:'Durée de détention',
+           grossEst:'Rendement brut estimé', netAnnual:'Revenu net annuel', monthly:'Revenu mensuel moyen',
+           cumul:'Revenus nets cumulés', share:'Part du prix couverte', payback:'Retour sur investissement',
+           nights:'nuits', night:'nuit', nightsPerYr:'nuits / an', cumulOver:'Revenus nets cumulés sur'}},
     en:{discover:'Explore the programme →', seePhotos:'View photos →', info:'Details →',
         soonName:'Villa coming soon', soonNote:'Photos & details soon', delivered:'Delivered',
         realisation:'Project', photo:'photo',
@@ -20,7 +30,15 @@
         thanksDl:'Thank you! Your brochure is downloading. Our local English-speaking team will get back to you within 24 h. ',
         thanksNoDl:'Thank you! Your request has been sent. Our team will email you the relevant brochure within 24 h.',
         errInput:'Please check your name and email address, then try again.',
-        errSend:function(hasDl){return "Your request may not have gone through"+(hasDl?', but your brochure is downloading below':'')+'. If in doubt, message us on WhatsApp at +66 655 767 871.'}}
+        errSend:function(hasDl){return "Your request may not have gone through"+(hasDl?', but your brochure is downloading below':'')+'. If in doubt, message us on WhatsApp at +66 655 767 871.'},
+        c:{price:'Villa price', rent:'Estimated monthly rent', rentHint:'Long-term or averaged seasonal rental',
+           costs:'Charges & management', costsHint:'of rental income', gross:'Gross yield',
+           annual:'Annual rental income', netY:'Estimated net yield',
+           chooseVilla:'Choose your villa', scenario:'Rental scenario',
+           nightsYr:'Nights let per year', adr:'Average price per night', holding:'Holding period',
+           grossEst:'Estimated gross yield', netAnnual:'Annual net income', monthly:'Average monthly income',
+           cumul:'Cumulative net income', share:'Share of price covered', payback:'Payback period',
+           nights:'nights', night:'night', nightsPerYr:'nights / yr', cumulOver:'Cumulative net income over'}}
   };
   var T=I18N[LANG];
 
@@ -157,16 +175,16 @@
     var cfg=window.OD_SIM, cost=cfg.costs||35;
     var seg=cfg.types.length>1 ? '<div class="seg">'+cfg.types.map(function(t,i){return '<button data-i="'+i+'"'+(i===0?' class="on"':'')+'>'+t.name+'</button>'}).join('')+'</div>' : '';
     box.innerHTML='<div class="calc-controls">'+seg
-      +'<div class="cf"><label>Prix de la villa <b id="c-price"></b></label><input type="range" id="r-price"></div>'
-      +'<div class="cf"><label>Loyer mensuel estimé <b id="c-rent"></b></label><input type="range" id="r-rent" min="15000" max="200000" step="5000"><div class="hint">Location longue durée ou saisonnière lissée</div></div>'
-      +'<div class="cf"><label>Charges & gestion <b id="c-cost"></b></label><input type="range" id="r-cost" min="25" max="45" step="1" value="'+cost+'"><div class="hint">du revenu locatif</div></div></div>'
-      +'<div class="calc-out"><div class="donut" id="donut"><div class="donut-in"><b><span id="c-gross">0</span>%</b><span>Rendement brut</span></div></div>'
-      +'<div class="calc-lines"><div><span>Revenu locatif annuel</span><b id="c-annual"></b></div><div><span>Rendement net estimé</span><b id="c-net"></b></div></div></div>';
+      +'<div class="cf"><label>'+T.c.price+' <b id="c-price"></b></label><input type="range" id="r-price"></div>'
+      +'<div class="cf"><label>'+T.c.rent+' <b id="c-rent"></b></label><input type="range" id="r-rent" min="15000" max="200000" step="5000"><div class="hint">'+T.c.rentHint+'</div></div>'
+      +'<div class="cf"><label>'+T.c.costs+' <b id="c-cost"></b></label><input type="range" id="r-cost" min="25" max="45" step="1" value="'+cost+'"><div class="hint">'+T.c.costsHint+'</div></div></div>'
+      +'<div class="calc-out"><div class="donut" id="donut"><div class="donut-in"><b><span id="c-gross">0</span>%</b><span>'+T.c.gross+'</span></div></div>'
+      +'<div class="calc-lines"><div><span>'+T.c.annual+'</span><b id="c-annual"></b></div><div><span>'+T.c.netY+'</span><b id="c-net"></b></div></div></div>';
     var rP=$('#r-price'),rR=$('#r-rent'),rC=$('#r-cost');
     function load(i){var t=cfg.types[i];rP.min=Math.round(t.price*0.85/1e5)*1e5;rP.max=Math.round(t.price*1.3/1e5)*1e5;rP.step=1e5;rP.value=t.price;rR.value=t.rent}
     function calc(){var price=+rP.value,rent=+rR.value,c=+rC.value;var annual=rent*12,gross=annual/price*100,net=annual*(1-c/100)/price*100;
       $('#c-price').textContent=baht(price);$('#c-rent').textContent=baht(rent);$('#c-cost').textContent=c+' %';
-      $('#c-gross').textContent=gross.toFixed(1).replace('.',',');$('#c-annual').textContent=baht(annual);$('#c-net').textContent=pct(net);
+      $('#c-gross').textContent=num1(gross);$('#c-annual').textContent=baht(annual);$('#c-net').textContent=pct(net);
       $('#donut').style.setProperty('--p',Math.max(0,Math.min(100,gross/15*100)));}
     [rP,rR,rC].forEach(function(r){r.addEventListener('input',calc)});
     box.querySelectorAll('.seg button').forEach(function(b){b.addEventListener('click',function(){box.querySelectorAll('.seg button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');load(+b.dataset.i);calc()})});
@@ -180,24 +198,24 @@
     var st={plot:0, scen:(C.defaultScenario!=null?C.defaultScenario:1), nights:0, adr:0, years:(C.horizons&&C.horizons[1])||5};
     st.nights=C.scenarios[st.scen].nights; st.adr=C.scenarios[st.scen].adr;
     var plotBtns=C.plots.map(function(p,i){return '<button data-i="'+i+'"><span class="t">'+p.name+'</span><span class="p">'+baht(p.price)+'</span></button>'}).join('');
-    var scenBtns=C.scenarios.map(function(s,i){return '<button data-i="'+i+'"><span class="t">'+s.name+'</span><span class="d">'+s.nights+' nuits · '+baht(s.adr)+' / nuit</span></button>'}).join('');
-    var hzBtns=(C.horizons||[1,5,10]).map(function(h){return '<button data-h="'+h+'">'+h+(h===1?' an':' ans')+'</button>'}).join('');
+    var scenBtns=C.scenarios.map(function(s,i){return '<button data-i="'+i+'"><span class="t">'+s.name+'</span><span class="d">'+s.nights+' '+T.c.nights+' · '+baht(s.adr)+' / '+T.c.night+'</span></button>'}).join('');
+    var hzBtns=(C.horizons||[1,5,10]).map(function(h){return '<button data-h="'+h+'">'+h+yrs(h)+'</button>'}).join('');
     box.innerHTML='<div class="fcalc"><div class="fgrid">'
       +'<div class="fcol fcol-controls">'
-        +'<div class="frow"><span class="flabel">'+(C.plotLabel||'Choisissez votre villa')+'</span><div class="fseg" id="f-plots">'+plotBtns+'</div></div>'
-        +'<div class="frow"><span class="flabel">Scénario locatif</span><div class="fseg" id="f-scen">'+scenBtns+'</div></div>'
-        +'<label><span>Nuits louées par an <b id="f-nights-v"></b></span><input type="range" id="f-nights" min="60" max="300" step="1"></label>'
-        +'<label><span>Prix moyen par nuit <b id="f-adr-v"></b></span><input type="range" id="f-adr" min="1000" max="15000" step="100"></label>'
-        +'<span class="flabel">Durée de détention</span><div class="fseg hz" id="f-hz">'+hzBtns+'</div>'
+        +'<div class="frow"><span class="flabel">'+(C.plotLabel||T.c.chooseVilla)+'</span><div class="fseg" id="f-plots">'+plotBtns+'</div></div>'
+        +'<div class="frow"><span class="flabel">'+T.c.scenario+'</span><div class="fseg" id="f-scen">'+scenBtns+'</div></div>'
+        +'<label><span>'+T.c.nightsYr+' <b id="f-nights-v"></b></span><input type="range" id="f-nights" min="60" max="300" step="1"></label>'
+        +'<label><span>'+T.c.adr+' <b id="f-adr-v"></b></span><input type="range" id="f-adr" min="1000" max="15000" step="100"></label>'
+        +'<span class="flabel">'+T.c.holding+'</span><div class="fseg hz" id="f-hz">'+hzBtns+'</div>'
       +'</div><div class="fcol fcol-result">'
-        +'<span class="fkick">Rendement brut estimé</span><div class="fbig" id="f-gross">—</div>'
+        +'<span class="fkick">'+T.c.grossEst+'</span><div class="fbig" id="f-gross">—</div>'
         +'<div class="fnet"><b id="f-net">—</b></div>'
-        +'<div class="fline"><span>Revenu locatif annuel</span><b id="f-annual"></b></div>'
-        +'<div class="fline"><span>Revenu net annuel</span><b id="f-netannual"></b></div>'
-        +'<div class="fline"><span>Revenu mensuel moyen</span><b id="f-monthly"></b></div>'
-        +'<div class="fline"><span id="f-cumul-l">Revenus nets cumulés</span><b id="f-cumul"></b></div>'
-        +'<div class="fline"><span>Part du prix couverte</span><b id="f-share"></b></div>'
-        +'<div class="fline"><span>Retour sur investissement</span><b id="f-payback"></b></div>'
+        +'<div class="fline"><span>'+T.c.annual+'</span><b id="f-annual"></b></div>'
+        +'<div class="fline"><span>'+T.c.netAnnual+'</span><b id="f-netannual"></b></div>'
+        +'<div class="fline"><span>'+T.c.monthly+'</span><b id="f-monthly"></b></div>'
+        +'<div class="fline"><span id="f-cumul-l">'+T.c.cumul+'</span><b id="f-cumul"></b></div>'
+        +'<div class="fline"><span>'+T.c.share+'</span><b id="f-share"></b></div>'
+        +'<div class="fline"><span>'+T.c.payback+'</span><b id="f-payback"></b></div>'
       +'</div></div></div>';
     var rN=$('#f-nights'),rA=$('#f-adr');
     function setActive(sel,i,attr){box.querySelectorAll(sel+' button').forEach(function(b){b.classList.toggle('on',(b.getAttribute(attr))==String(i))})}
@@ -205,17 +223,17 @@
       var price=C.plots[st.plot].price, annual=st.nights*st.adr, gross=annual/price*100;
       var netAnnual=annual*(1-cost), netY=netAnnual/price*100, cumul=netAnnual*st.years, share=cumul/price*100, payback=price/annual, monthly=annual/12;
       rN.value=st.nights; rA.value=st.adr;
-      $('#f-nights-v').textContent=st.nights+' nuits / an';
-      $('#f-adr-v').textContent=baht(st.adr)+' / nuit';
-      $('#f-gross').textContent=gross.toFixed(1).replace('.',',')+' %';
+      $('#f-nights-v').textContent=st.nights+' '+T.c.nightsPerYr;
+      $('#f-adr-v').textContent=baht(st.adr)+' / '+T.c.night;
+      $('#f-gross').textContent=num1(gross)+' %';
       $('#f-net').textContent=pct(netY);
       $('#f-annual').textContent=baht(annual);
       $('#f-netannual').textContent=baht(netAnnual);
       $('#f-monthly').textContent=baht(monthly);
-      $('#f-cumul-l').textContent='Revenus nets cumulés sur '+st.years+(st.years===1?' an':' ans');
+      $('#f-cumul-l').textContent=T.c.cumulOver+' '+st.years+yrs(st.years);
       $('#f-cumul').textContent=baht(cumul);
       $('#f-share').textContent=share.toFixed(0)+' %';
-      $('#f-payback').textContent=payback.toFixed(1).replace('.',',')+(payback<=1?' an':' ans');
+      $('#f-payback').textContent=num1(payback)+yrs(payback<=1?1:2);
       setActive('#f-plots',st.plot,'data-i'); setActive('#f-scen',st.scen,'data-i'); setActive('#f-hz',st.years,'data-h');
     }
     box.querySelector('#f-plots').addEventListener('click',function(e){var b=e.target.closest('button');if(b){st.plot=+b.dataset.i;draw()}});
