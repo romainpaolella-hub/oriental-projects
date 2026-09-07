@@ -3,7 +3,7 @@ import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {contentTypes, leadTypes} from './schemas'
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'REPLACE_PROJECT_ID'
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'x3jcttot'
 
 // Arborescence du dataset "Contenu" : "Réglages du site" en singleton.
 const contentStructure = (S: any) =>

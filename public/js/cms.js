@@ -2,7 +2,7 @@
    Si OD_CMS.projectId est vide, le site utilise le contenu de js/projects.js (repli). */
 
 window.OD_CMS = {
-  projectId: '',           // <-- ID du projet Sanity (à renseigner après création)
+  projectId: 'x3jcttot',    // projet Sanity « Oriental Projects »
   dataset: 'production',
   apiVersion: '2024-01-01',
 };
