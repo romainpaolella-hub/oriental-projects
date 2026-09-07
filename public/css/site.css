@@ -213,6 +213,7 @@ footer{background:var(--olive);color:rgba(244,240,231,.75);padding:64px 0 30px}
   .dispo-grid,.split,.calc,.foot-top{grid-template-columns:1fr;gap:34px}
   .steps{grid-template-columns:1fr}
   .facts{grid-template-columns:1fr 1fr;gap:22px 0}
+  .facts b{font-size:25px}
   .facts .f+.f{border-left:0}
   .gal{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
   .gal .big,.gal .wide{grid-column:auto;grid-row:auto}
