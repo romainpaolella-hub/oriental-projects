@@ -138,11 +138,71 @@ async function saveLeadToSanity(data, pageUrl) {
   }
 }
 
+// Diagnostic : GET /api/brochure?selftest=1
+// Révèle uniquement la PRÉSENCE des variables (pas les secrets) et, si Resend
+// est configuré, tente un vrai envoi vers MAIL_TO en renvoyant le code/erreur.
+async function runSelfTest() {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.MAIL_FROM;
+  const to = process.env.MAIL_TO;
+  const fromAddr = ((from || '').match(/<([^>]+)>/) || [null, from])[1] || null;
+  const report = {
+    env: {
+      RESEND_API_KEY: !!apiKey,
+      MAIL_FROM: from || null,
+      MAIL_TO: to || null,
+      MAIL_TO_CC: process.env.MAIL_TO_CC || null,
+      ACK_TO_CUSTOMER: process.env.ACK_TO_CUSTOMER || null,
+      SANITY_PROJECT_ID: !!process.env.SANITY_PROJECT_ID,
+      SANITY_WRITE_TOKEN: !!process.env.SANITY_WRITE_TOKEN,
+      SANITY_LEADS_DATASET: process.env.SANITY_LEADS_DATASET || 'leads',
+      URL: process.env.URL || null
+    },
+    sandboxFrom: fromAddr === SANDBOX_FROM,
+    resend: null
+  };
+  if (!apiKey || !from || !to) {
+    report.verdict = 'config_incomplete';
+    report.hint = 'Il manque ' + ['RESEND_API_KEY', 'MAIL_FROM', 'MAIL_TO'].filter(function (k) {
+      return k === 'RESEND_API_KEY' ? !apiKey : k === 'MAIL_FROM' ? !from : !to;
+    }).join(', ') + ' dans les variables Netlify.';
+    return report;
+  }
+  const fromHeader = from.indexOf('<') !== -1 ? from : ('Oriental Projects <' + from + '>');
+  try {
+    const res = await fetch(RESEND_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: fromHeader,
+        to: [to],
+        subject: 'Oriental Projects — test de configuration e-mail',
+        text: 'Si vous recevez ce message, l\'envoi des notifications de brochure fonctionne.\n\nEnvoyé le ' + new Date().toISOString()
+      })
+    });
+    const text = await res.text();
+    report.resend = { status: res.status, ok: res.ok, body: text.slice(0, 600) };
+    report.verdict = res.ok ? 'ok_email_sent' : 'resend_error';
+  } catch (e) {
+    report.resend = { error: String(e && e.message || e) };
+    report.verdict = 'resend_exception';
+  }
+  return report;
+}
+
 exports.handler = async function (event) {
   const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: JSON_HEADERS, body: '' };
+  }
+  if (event.httpMethod === 'GET') {
+    const qs = event.queryStringParameters || {};
+    if (qs.selftest === '1') {
+      const report = await runSelfTest();
+      return { statusCode: 200, headers: JSON_HEADERS, body: JSON.stringify(report, null, 2) };
+    }
+    return { statusCode: 405, headers: JSON_HEADERS, body: JSON.stringify({ ok: false, error: 'method_not_allowed' }) };
   }
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: JSON_HEADERS, body: JSON.stringify({ ok: false, error: 'method_not_allowed' }) };
