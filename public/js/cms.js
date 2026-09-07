@@ -36,7 +36,9 @@ window.OD_CMS = {
     '"dispos":*[_type=="villaDispo"]|order(order asc){name,isPlaceholder,note,statusLabel,specs,price,rentMonthly,linkHref,' +
       '"img":images[0].asset->url,"w":images[0].asset->metadata.dimensions.width,"h":images[0].asset->metadata.dimensions.height},' +
     '"realisations":*[_type=="realisation"]|order(order asc){name,"slug":slug.current,zone,tag,blurb,linkHref,' +
-      '"cover":cover.asset->url,"w":cover.asset->metadata.dimensions.width,"h":cover.asset->metadata.dimensions.height}' +
+      '"cover":cover.asset->url,"w":cover.asset->metadata.dimensions.width,"h":cover.asset->metadata.dimensions.height},' +
+    '"pages":*[_type=="programmePage"]{programmeSlug,' +
+      'res_eyebrow,res_heading,res_paragraphs,res_caption,res_specsIntro,res_specs,res_specsNote,res_cta}' +
     '}';
 
   window.OD_loadCMS = function () {
@@ -127,7 +129,76 @@ window.OD_CMS = {
         });
       }
 
+      // ---- PAGES PROGRAMME (textes des sous-pages) ----
+      window.OD_PAGES = d.pages || [];
+
       return true;
     });
+  };
+
+  // ---- Rendu des textes de sous-pages programme (data-cms="…") ----
+  // Détecte le programme depuis l'URL (/sea-view/residence.html, /en/eden-tropical/…).
+  var SLUGS = ['sea-view', 'eden-tropical', 'terra-mare'];
+  function currentSlug() {
+    var parts = location.pathname.split('/').filter(Boolean);
+    for (var i = 0; i < parts.length; i++) if (SLUGS.indexOf(parts[i]) !== -1) return parts[i];
+    return null;
+  }
+  function setText(node, val) { if (node && val != null && val !== '') node.textContent = val; }
+
+  window.OD_renderProgrammePage = function () {
+    var slug = currentSlug();
+    if (!slug || !window.OD_PAGES || !window.OD_PAGES.length) return;
+    var doc = null;
+    for (var i = 0; i < window.OD_PAGES.length; i++)
+      if (window.OD_PAGES[i].programmeSlug === slug) { doc = window.OD_PAGES[i]; break; }
+    if (!doc) return;
+
+    var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
+    var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
+
+    // ---- La Résidence ----
+    setText(q('res.eyebrow'), pick(doc.res_eyebrow));
+    setText(q('res.heading'), pick(doc.res_heading));
+    setText(q('res.caption'), pick(doc.res_caption));
+    setText(q('res.cta'), pick(doc.res_cta));
+    if (doc.res_specsIntro) {
+      setText(q('res.specsEyebrow'), pick(doc.res_specsIntro.eyebrow));
+      setText(q('res.specsHeading'), pick(doc.res_specsIntro.heading));
+    }
+    setText(q('res.specsNote'), pick(doc.res_specsNote));
+
+    // paragraphes (dans l'ordre)
+    if (doc.res_paragraphs && doc.res_paragraphs.length) {
+      var ps = all('res.p');
+      for (var j = 0; j < ps.length && j < doc.res_paragraphs.length; j++)
+        setText(ps[j], pick(doc.res_paragraphs[j]));
+    }
+
+    // tableau « ce qui est livré » (Eden / Terra)
+    var specBox = q('res.specs');
+    if (specBox && doc.res_specs && doc.res_specs.length) {
+      var html = '';
+      doc.res_specs.forEach(function (col) {
+        html += '<div><h4></h4>';
+        (col.rows || []).forEach(function (r) {
+          html += '<div class="row"><span></span><b></b></div>';
+        });
+        html += '</div>';
+      });
+      specBox.innerHTML = html;
+      var cols = specBox.children;
+      doc.res_specs.forEach(function (col, ci) {
+        var el = cols[ci];
+        if (!el) return;
+        setText(el.querySelector('h4'), pick(col.title));
+        var rws = el.querySelectorAll('.row');
+        (col.rows || []).forEach(function (r, ri) {
+          if (!rws[ri]) return;
+          setText(rws[ri].querySelector('span'), pick(r.label));
+          setText(rws[ri].querySelector('b'), pick(r.value));
+        });
+      });
+    }
   };
 })();

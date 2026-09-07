@@ -17,6 +17,7 @@ const contentStructure = (S: any) =>
       S.divider(),
       S.documentTypeListItem('heroSlide').title('Carrousel d’accueil'),
       S.documentTypeListItem('programme').title('Programmes'),
+      S.documentTypeListItem('programmePage').title('Pages programme (textes)'),
       S.documentTypeListItem('villaDispo').title('Villas à vendre'),
       S.documentTypeListItem('realisation').title('Réalisations'),
     ])

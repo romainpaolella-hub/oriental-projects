@@ -349,6 +349,7 @@
 
   function renderContent(){
     renderHero();renderEncarts();renderDispos();renderStats();renderRealisations();renderRealisationGallery();
+    if(typeof window.OD_renderProgrammePage==='function') try{window.OD_renderProgrammePage()}catch(e){}
   }
 
   document.addEventListener('DOMContentLoaded',function(){
