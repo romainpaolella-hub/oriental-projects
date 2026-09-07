@@ -2,30 +2,53 @@
  * Pré-remplit le CMS Sanity à partir du contenu actuel du site (public/).
  * Téléverse les images / vidéos / PDF et crée les documents.
  *
- * À lancer UNE FOIS, après avoir créé le projet Sanity :
+ * À lancer UNE FOIS, après `npx sanity login` :
  *
  *   cd studio
  *   npm install
  *   npx sanity login
- *   npx sanity exec scripts/import.mjs --with-user-token
+ *   npm run import
  *
  * Idempotent : relançable (createOrReplace). Ré-téléverse les assets à chaque fois.
  */
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import vm from 'node:vm'
 import {fileURLToPath} from 'node:url'
-import {getCliClient} from 'sanity/cli'
+import {createClient} from '@sanity/client'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const PUBLIC = path.resolve(HERE, '../../public')
+const PROJECT_ID = process.env.SANITY_STUDIO_PROJECT_ID || 'x3jcttot'
 
-// Auth : soit `sanity exec ... --with-user-token`, soit la variable
-// d'environnement SANITY_AUTH_TOKEN (jeton Editor).
-let client = getCliClient({apiVersion: '2024-01-01'})
-if (process.env.SANITY_AUTH_TOKEN) {
-  client = client.withConfig({token: process.env.SANITY_AUTH_TOKEN})
+// Jeton : variable d'env, sinon celui stocké par `sanity login`.
+function resolveToken() {
+  if (process.env.SANITY_AUTH_TOKEN) return process.env.SANITY_AUTH_TOKEN
+  for (const p of [
+    path.join(os.homedir(), '.config', 'sanity', 'config.json'),
+    path.join(process.env.APPDATA || '', 'sanity', 'config.json'),
+  ]) {
+    try {
+      const t = JSON.parse(fs.readFileSync(p, 'utf8')).authToken
+      if (t) return t
+    } catch {}
+  }
+  return null
 }
+const token = resolveToken()
+if (!token) {
+  console.error('\n✗ Aucun jeton. Lance d’abord `npx sanity login` (ou définis SANITY_AUTH_TOKEN).\n')
+  process.exit(1)
+}
+
+const client = createClient({
+  projectId: PROJECT_ID,
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  token,
+  useCdn: false,
+})
 
 // ---------- lecture du contenu actuel ----------
 const sandbox = {window: {}}

@@ -7,13 +7,13 @@
     "dev": "sanity dev",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "import": "sanity exec scripts/import.mjs --with-user-token"
+    "import": "node scripts/import.mjs"
   },
   "dependencies": {
     "@sanity/vision": "^3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sanity": "^3",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.15"
   }
 }
