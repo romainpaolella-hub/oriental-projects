@@ -51,22 +51,52 @@
   <url>
     <loc>https://orientalpromotion.netlify.app/guides/guide-achat-etranger.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/guide-achat-etranger.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/guide-achat-etranger.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/guides/guide-achat-etranger.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/guide-achat-etranger.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/guide-achat-etranger.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/guides/guide-leasehold.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/guide-leasehold.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/guide-leasehold.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/guides/guide-leasehold.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/guide-leasehold.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/guide-leasehold.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/guides/guide-maenam.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/guide-maenam.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/guide-maenam.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/guides/guide-maenam.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/guide-maenam.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/guide-maenam.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/guides/guide-rendement.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/guide-rendement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/guide-rendement.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/guides/guide-rendement.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/guide-rendement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/guide-rendement.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/guides/index.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/index.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/index.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/guides/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/guides/index.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/guides/index.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/</loc>
