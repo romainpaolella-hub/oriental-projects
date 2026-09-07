@@ -38,7 +38,11 @@ window.OD_CMS = {
     '"realisations":*[_type=="realisation"]|order(order asc){name,"slug":slug.current,zone,tag,blurb,linkHref,' +
       '"cover":cover.asset->url,"w":cover.asset->metadata.dimensions.width,"h":cover.asset->metadata.dimensions.height},' +
     '"pages":*[_type=="programmePage"]{programmeSlug,' +
-      'res_eyebrow,res_heading,res_paragraphs,res_caption,res_specsIntro,res_specs,res_specsNote,res_cta}' +
+      'res_eyebrow,res_heading,res_paragraphs,res_caption,res_specsIntro,res_specs,res_specsNote,res_cta,' +
+      'vil_eyebrow,vil_heading,vil_body,vil_cards,vil_cardsNote,' +
+      'vil_archEyebrow,vil_archHeading,vil_arch,vil_specsEyebrow,vil_specsHeading,vil_specs,' +
+      'vil_matEyebrow,vil_matHeading,vil_matBody,vil_mat,' +
+      'vil_galEyebrow,vil_galHeading,vil_galNote,vil_galNote2,vil_cta}' +
     '}';
 
   window.OD_loadCMS = function () {
@@ -146,6 +150,41 @@ window.OD_CMS = {
   }
   function setText(node, val) { if (node && val != null && val !== '') node.textContent = val; }
 
+  // Reconstruit un tableau .amen (colonnes h4 + lignes .row span/b) depuis un tableau de {title,rows:[{label,value}]}.
+  function fillSpecTable(box, groups) {
+    if (!box || !groups || !groups.length) return;
+    var html = '';
+    groups.forEach(function (col) {
+      html += '<div><h4></h4>';
+      (col.rows || []).forEach(function () { html += '<div class="row"><span></span><b></b></div>'; });
+      html += '</div>';
+    });
+    box.innerHTML = html;
+    var cols = box.children;
+    groups.forEach(function (col, ci) {
+      var el = cols[ci];
+      if (!el) return;
+      setText(el.querySelector('h4'), pick(col.title));
+      var rws = el.querySelectorAll('.row');
+      (col.rows || []).forEach(function (r, ri) {
+        if (!rws[ri]) return;
+        setText(rws[ri].querySelector('span'), pick(r.label));
+        setText(rws[ri].querySelector('b'), pick(r.value));
+      });
+    });
+  }
+
+  // Reconstruit une liste .n01/.serif + h3/h4 + p depuis un tableau de {num,title,body}.
+  function fillNumItems(nodeList, items) {
+    if (!items) return;
+    for (var i = 0; i < nodeList.length && i < items.length; i++) {
+      var el = nodeList[i], it = items[i];
+      setText(el.querySelector('[data-cms-f="num"]') || el.querySelector('.n, .serif'), it.num);
+      setText(el.querySelector('[data-cms-f="title"]') || el.querySelector('h3, h4'), pick(it.title));
+      setText(el.querySelector('[data-cms-f="body"]') || el.querySelector('p'), pick(it.body));
+    }
+  }
+
   window.OD_renderProgrammePage = function () {
     var slug = currentSlug();
     if (!slug || !window.OD_PAGES || !window.OD_PAGES.length) return;
@@ -176,28 +215,54 @@ window.OD_CMS = {
     }
 
     // tableau « ce qui est livré » (Eden / Terra)
-    var specBox = q('res.specs');
-    if (specBox && doc.res_specs && doc.res_specs.length) {
-      var html = '';
-      doc.res_specs.forEach(function (col) {
-        html += '<div><h4></h4>';
-        (col.rows || []).forEach(function (r) {
-          html += '<div class="row"><span></span><b></b></div>';
-        });
-        html += '</div>';
-      });
-      specBox.innerHTML = html;
-      var cols = specBox.children;
-      doc.res_specs.forEach(function (col, ci) {
-        var el = cols[ci];
+    fillSpecTable(q('res.specs'), doc.res_specs);
+
+    // ---- Les Villas ----
+    setText(q('vil.eyebrow'), pick(doc.vil_eyebrow));
+    setText(q('vil.heading'), pick(doc.vil_heading));
+    setText(q('vil.body'), pick(doc.vil_body));
+    setText(q('vil.cardsNote'), pick(doc.vil_cardsNote));
+    setText(q('vil.archEyebrow'), pick(doc.vil_archEyebrow));
+    setText(q('vil.archHeading'), pick(doc.vil_archHeading));
+    setText(q('vil.specsEyebrow'), pick(doc.vil_specsEyebrow));
+    setText(q('vil.specsHeading'), pick(doc.vil_specsHeading));
+    setText(q('vil.matEyebrow'), pick(doc.vil_matEyebrow));
+    setText(q('vil.matHeading'), pick(doc.vil_matHeading));
+    setText(q('vil.matBody'), pick(doc.vil_matBody));
+    setText(q('vil.galEyebrow'), pick(doc.vil_galEyebrow));
+    setText(q('vil.galHeading'), pick(doc.vil_galHeading));
+    setText(q('vil.galNote'), pick(doc.vil_galNote));
+    setText(q('vil.galNote2'), pick(doc.vil_galNote2));
+    setText(q('vil.cta'), pick(doc.vil_cta));
+    fillSpecTable(q('vil.specs'), doc.vil_specs);
+    fillNumItems(all('vil.archItem'), doc.vil_arch);
+    fillNumItems(all('vil.matItem'), doc.vil_mat);
+
+    // cartes (parcelles / typologies) — index par index
+    if (doc.vil_cards && doc.vil_cards.length) {
+      var cards = all('vil.card');
+      doc.vil_cards.forEach(function (cd, ci) {
+        var el = cards[ci];
         if (!el) return;
-        setText(el.querySelector('h4'), pick(col.title));
-        var rws = el.querySelectorAll('.row');
-        (col.rows || []).forEach(function (r, ri) {
-          if (!rws[ri]) return;
-          setText(rws[ri].querySelector('span'), pick(r.label));
-          setText(rws[ri].querySelector('b'), pick(r.value));
-        });
+        var f = function (name) { return el.querySelector('[data-cms-f="' + name + '"]'); };
+        setText(f('badge'), pick(cd.badge));
+        setText(f('subtitle'), pick(cd.subtitle));
+        setText(f('zone'), pick(cd.zone));
+        setText(f('title'), pick(cd.title));
+        setText(f('desc'), pick(cd.desc));
+        setText(f('price'), pick(cd.price));
+        setText(f('priceNote'), pick(cd.priceNote));
+        setText(f('link'), pick(cd.linkText));
+        var ul = f('specs');
+        if (ul && cd.specs && cd.specs.length) {
+          ul.innerHTML = cd.specs.map(function () { return '<li><span></span><b></b></li>'; }).join('');
+          var lis = ul.querySelectorAll('li');
+          cd.specs.forEach(function (s, si) {
+            if (!lis[si]) return;
+            setText(lis[si].querySelector('span'), pick(s.label));
+            setText(lis[si].querySelector('b'), pick(s.value));
+          });
+        }
       });
     }
   };
