@@ -1,8 +1,28 @@
 /* ORIENTAL PROJECTS v3 — interactions */
 (function(){
   var $=function(s,c){return (c||document).querySelector(s)};
-  var baht=function(n){return '฿'+Math.round(n).toLocaleString('fr-FR').replace(/[  ]/g,' ')};
-  var pct=function(n){return n.toFixed(1).replace('.',',')+' %'};
+  var LANG=(document.documentElement.lang||'fr').slice(0,2).toLowerCase()==='en'?'en':'fr';
+  var baht=function(n){return '฿'+Math.round(n).toLocaleString(LANG==='en'?'en-US':'fr-FR').replace(/[  ]/g,' ')};
+  var pct=function(n){return (LANG==='en'?n.toFixed(1):n.toFixed(1).replace('.',','))+' %'};
+  var I18N={
+    fr:{discover:'Découvrir le programme →', seePhotos:'Voir les photos →', info:'Info →',
+        soonName:'Villa à venir', soonNote:'Photos & détails bientôt', delivered:'Livrée',
+        realisation:'Réalisation', photo:'photo',
+        rentLine:function(r,g){return 'Loué '+r+'/mois · ≈ '+g+' brut'},
+        thanksDl:'Merci ! Votre brochure se télécharge. Notre équipe locale francophone vous recontacte sous 24 h. ',
+        thanksNoDl:'Merci ! Votre demande a bien été envoyée. Notre équipe vous envoie la brochure adaptée sous 24 h.',
+        errInput:'Vérifiez votre nom et votre adresse e-mail, puis réessayez.',
+        errSend:function(hasDl){return "L'envoi n'a peut-être pas abouti"+(hasDl?', mais votre brochure se télécharge ci-dessous':'')+". En cas de doute, écrivez-nous sur WhatsApp au +66 655 767 871."}},
+    en:{discover:'Explore the programme →', seePhotos:'View photos →', info:'Details →',
+        soonName:'Villa coming soon', soonNote:'Photos & details soon', delivered:'Delivered',
+        realisation:'Project', photo:'photo',
+        rentLine:function(r,g){return 'Let at '+r+'/month · ≈ '+g+' gross'},
+        thanksDl:'Thank you! Your brochure is downloading. Our local English-speaking team will get back to you within 24 h. ',
+        thanksNoDl:'Thank you! Your request has been sent. Our team will email you the relevant brochure within 24 h.',
+        errInput:'Please check your name and email address, then try again.',
+        errSend:function(hasDl){return "Your request may not have gone through"+(hasDl?', but your brochure is downloading below':'')+'. If in doubt, message us on WhatsApp at +66 655 767 871.'}}
+  };
+  var T=I18N[LANG];
 
   function initHeader(){var h=$('header');if(!h)return;var f=function(){h.classList.toggle('solid',window.scrollY>60||window.innerWidth<=960);document.documentElement.style.setProperty('--hdr',h.offsetHeight+'px')};window.addEventListener('scroll',f,{passive:true});window.addEventListener('resize',f);f();}
   function initMenu(){var b=$('.burger');if(!b)return;b.addEventListener('click',function(){document.documentElement.classList.toggle('mnav-open')});document.querySelectorAll('.mnav a').forEach(function(a){a.addEventListener('click',function(){document.documentElement.classList.remove('mnav-open')})});}
@@ -69,7 +89,7 @@
         +'<div class="body"><div class="zn">'+p.zone+'</div><h2>'+p.name+'</h2>'
         +'<p class="pitch">'+p.pitch+'</p>'
         +'<div class="kfacts">'+p.facts.map(function(f){return '<span>'+f+'</span>'}).join('')+'</div>'
-        +'<span class="link-under">Découvrir le programme →</span></div></a>';
+        +'<span class="link-under">'+T.discover+'</span></div></a>';
     }).join('');
   }
 
@@ -77,13 +97,13 @@
   function renderDispos(){
     var box=$('#dispos'); if(!box||!window.DISPOS)return;
     box.innerHTML=window.DISPOS.map(function(v){
-      if(v.placeholder) return '<div class="vcard soon"><div><div class="tag">'+(v.name||'Villa à venir')+'</div><div class="sub">'+(v.note||'Photos & détails bientôt')+'</div></div></div>';
+      if(v.placeholder) return '<div class="vcard soon"><div><div class="tag">'+(v.name||T.soonName)+'</div><div class="sub">'+(v.note||T.soonNote)+'</div></div></div>';
       var gross=(v.rentMonthly*12/v.price*100);
       return '<div class="vcard">'
         +'<div class="im"><img src="'+v.img+'"'+(v.w?' width="'+v.w+'" height="'+v.h+'"':'')+' alt="'+v.name+'" loading="lazy" decoding="async"><span class="badge dispo">'+v.statusLabel+'</span></div>'
         +'<div class="bd"><h3>'+v.name+'</h3>'
         + v.specs.map(function(s){return '<div class="li">'+s+'</div>'}).join('')
-        +'<div class="ft"><div class="pr">'+baht(v.price)+'<small>Loué '+baht(v.rentMonthly)+'/mois · ≈ '+pct(gross)+' brut</small></div><a class="link-under" href="'+(v.href||'contact.html')+'">Info →</a></div>'
+        +'<div class="ft"><div class="pr">'+baht(v.price)+'<small>'+T.rentLine(baht(v.rentMonthly),pct(gross))+'</small></div><a class="link-under" href="'+(v.href||'contact.html')+'">'+T.info+'</a></div>'
         +'</div></div>';
     }).join('');
   }
@@ -101,9 +121,9 @@
     var box=$('#realisations-grid'); if(!box||!window.REALISATIONS_VILLAS)return;
     box.innerHTML=window.REALISATIONS_VILLAS.map(function(v){
       return '<a class="parcel" href="'+v.href+'" style="display:block;color:inherit">'
-        +'<div class="im"><img src="'+v.cover+'"'+(v.w?' width="'+v.w+'" height="'+v.h+'"':'')+' alt="'+v.name+'" loading="lazy" decoding="async"><span class="badge dispo" style="top:14px;left:14px">'+(v.tag||'Livrée')+'</span></div>'
+        +'<div class="im"><img src="'+v.cover+'"'+(v.w?' width="'+v.w+'" height="'+v.h+'"':'')+' alt="'+v.name+'" loading="lazy" decoding="async"><span class="badge dispo" style="top:14px;left:14px">'+(v.tag||T.delivered)+'</span></div>'
         +'<div class="bd"><div class="st">'+v.zone+'</div><h4>'+v.name+'</h4><p>'+v.blurb+'</p>'
-        +'<span class="link-under" style="margin-top:14px;font-size:10px">Voir les photos →</span></div></a>';
+        +'<span class="link-under" style="margin-top:14px;font-size:10px">'+T.seePhotos+'</span></div></a>';
     }).join('');
   }
 
@@ -120,7 +140,7 @@
     box.innerHTML=urls.map(function(u,i){
       var cls = i===0 ? 'big lead' : ((i%7)===3 ? 'wide' : '');
       var d = dims[i], dim = (d && d[0]) ? ' width="'+d[0]+'" height="'+d[1]+'"' : '';
-      return '<button class="'+cls+'" onclick="openLb('+i+')"><img src="'+u+'"'+dim+' alt="'+(C.alt||'Réalisation')+' — photo '+(i+1)+'" loading="lazy"></button>';
+      return '<button class="'+cls+'" onclick="openLb('+i+')"><img src="'+u+'"'+dim+' alt="'+(C.alt||T.realisation)+' — '+T.photo+' '+(i+1)+'" loading="lazy"></button>';
     }).join('');
   }
 
@@ -273,11 +293,11 @@
         form.querySelectorAll('input,select,textarea').forEach(function(el){ if(el.type!=='hidden') el.disabled=true; });
         var url=brochureUrl(data.programme, data.brochure_langue);
         if(url){
-          if(tText) tText.textContent='Merci ! Votre brochure se télécharge. Notre équipe locale francophone vous recontacte sous 24 h. ';
+          if(tText) tText.textContent=T.thanksDl;
           if(dl){ dl.href=url; dl.hidden=false; }
           triggerDownload(url);
         } else {
-          if(tText) tText.textContent='Merci ! Votre demande a bien été envoyée. Notre équipe vous envoie la brochure adaptée sous 24 h.';
+          if(tText) tText.textContent=T.thanksNoDl;
           if(dl) dl.hidden=true;
         }
         if(ok) ok.hidden=false;
@@ -290,14 +310,14 @@
         })
         .catch(function(e){
           if(e && e.message==='invalid_input'){
-            if(err){ err.textContent='Vérifiez votre nom et votre adresse e-mail, puis réessayez.'; err.hidden=false; }
+            if(err){ err.textContent=T.errInput; err.hidden=false; }
             if(btn){ btn.disabled=false; btn.style.opacity=1; }
             return;
           }
           // Échec réseau : le formulaire a bien été rempli. On donne quand même
           // la brochure et on invite à confirmer par WhatsApp.
           var url=brochureUrl(data.programme, data.brochure_langue);
-          if(err){ err.textContent="L'envoi n'a peut-être pas abouti"+(url?', mais votre brochure se télécharge ci-dessous':'')+". En cas de doute, écrivez-nous sur WhatsApp au +66 655 767 871."; err.hidden=false; }
+          if(err){ err.textContent=T.errSend(!!url); err.hidden=false; }
           if(btn){ btn.disabled=false; btn.style.opacity=1; }
           if(url){ if(dl){ dl.href=url; dl.hidden=false; } triggerDownload(url); }
         });

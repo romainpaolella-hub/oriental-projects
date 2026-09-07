@@ -13,3 +13,8 @@
   to = "/.netlify/functions/brochure"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/en"
+  to = "/en/"
+  status = 301

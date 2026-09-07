@@ -17,7 +17,12 @@ window.OD_CMS = {
     var sep = url.indexOf('?') === -1 ? '?' : '&';
     return url + sep + 'auto=format&q=72' + (w ? '&w=' + w : '');
   };
-  var pick = function (v) { return v && typeof v === 'object' && 'fr' in v ? (v.fr || v.en || '') : (v || ''); };
+  var LANG = (document.documentElement.lang || 'fr').slice(0, 2).toLowerCase() === 'en' ? 'en' : 'fr';
+  var pick = function (v) {
+    if (!v || typeof v !== 'object') return v || '';
+    if (!('fr' in v || 'en' in v)) return v || '';
+    return LANG === 'en' ? (v.en || v.fr || '') : (v.fr || v.en || '');
+  };
   var locArr = function (a) { return (a || []).map(pick); };
 
   var GROQ =
