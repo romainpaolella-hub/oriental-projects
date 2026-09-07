@@ -3,6 +3,12 @@
   <url>
     <loc>https://orientalpromotion.netlify.app/confidentialite.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/confidentialite.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/confidentialite.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/confidentialite.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/confidentialite.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/confidentialite.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/contact.html</loc>
@@ -27,26 +33,62 @@
   <url>
     <loc>https://orientalpromotion.netlify.app/eden-tropical/investissement.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/investissement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/investissement.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/eden-tropical/investissement.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/investissement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/investissement.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/eden-tropical/localisation.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/localisation.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/localisation.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/eden-tropical/localisation.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/localisation.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/localisation.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/eden-tropical/residence.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/residence.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/residence.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/eden-tropical/residence.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/residence.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/residence.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/eden-tropical/villa-1-chambre.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/villa-1-chambre.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/villa-1-chambre.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/eden-tropical/villa-1-chambre.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/villa-1-chambre.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/villa-1-chambre.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/eden-tropical/villa-2-chambres.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/villa-2-chambres.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/villa-2-chambres.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/eden-tropical/villa-2-chambres.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/villa-2-chambres.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/villa-2-chambres.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/eden-tropical/villas.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/villas.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/villas.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/eden-tropical/villas.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/eden-tropical/villas.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/eden-tropical/villas.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/guides/guide-achat-etranger.html</loc>
@@ -161,34 +203,82 @@
   <url>
     <loc>https://orientalpromotion.netlify.app/sea-view/investissement.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/investissement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/investissement.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/sea-view/investissement.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/investissement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/investissement.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/sea-view/localisation.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/localisation.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/localisation.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/sea-view/localisation.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/localisation.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/localisation.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/sea-view/parcelle-1.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/parcelle-1.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/parcelle-1.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/sea-view/parcelle-1.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/parcelle-1.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/parcelle-1.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/sea-view/parcelle-2.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/parcelle-2.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/parcelle-2.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/sea-view/parcelle-2.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/parcelle-2.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/parcelle-2.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/sea-view/parcelle-3.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/parcelle-3.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/parcelle-3.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/sea-view/parcelle-3.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/parcelle-3.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/parcelle-3.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/sea-view/parcelle-4.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/parcelle-4.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/parcelle-4.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/sea-view/parcelle-4.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/parcelle-4.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/parcelle-4.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/sea-view/residence.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/residence.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/residence.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/sea-view/residence.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/residence.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/residence.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/sea-view/villas.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/villas.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/villas.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/sea-view/villas.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/sea-view/villas.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/sea-view/villas.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/terra-mare/index.html</loc>
@@ -203,26 +293,62 @@
   <url>
     <loc>https://orientalpromotion.netlify.app/terra-mare/investissement.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/investissement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/investissement.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/terra-mare/investissement.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/investissement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/investissement.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/terra-mare/localisation.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/localisation.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/localisation.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/terra-mare/localisation.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/localisation.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/localisation.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/terra-mare/residence.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/residence.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/residence.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/terra-mare/residence.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/residence.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/residence.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/terra-mare/villa-2-chambres.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/villa-2-chambres.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/villa-2-chambres.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/terra-mare/villa-2-chambres.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/villa-2-chambres.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/villa-2-chambres.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/terra-mare/villa-3-chambres.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/villa-3-chambres.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/villa-3-chambres.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/terra-mare/villa-3-chambres.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/villa-3-chambres.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/villa-3-chambres.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/terra-mare/villas.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/villas.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/villas.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/terra-mare/villas.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/terra-mare/villas.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/terra-mare/villas.html"/>
   </url>
   <url>
     <loc>https://orientalpromotion.netlify.app/villas-a-vendre/index.html</loc>
@@ -237,5 +363,11 @@
   <url>
     <loc>https://orientalpromotion.netlify.app/villas-a-vendre/tropical-golf-villa-2.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/villas-a-vendre/tropical-golf-villa-2.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/villas-a-vendre/tropical-golf-villa-2.html"/>
+  </url>
+  <url>
+    <loc>https://orientalpromotion.netlify.app/en/villas-a-vendre/tropical-golf-villa-2.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://orientalpromotion.netlify.app/villas-a-vendre/tropical-golf-villa-2.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orientalpromotion.netlify.app/en/villas-a-vendre/tropical-golf-villa-2.html"/>
   </url>
 </urlset>
