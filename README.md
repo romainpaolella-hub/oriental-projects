@@ -9,84 +9,80 @@ studio/              Le back office (Sanity Studio) — déployé séparément s
 
 Le site lit le contenu de Sanity **en direct** (côté navigateur). Modifier un prix
 ou une photo dans le Studio est visible **immédiatement, sans redéploiement**.
-Tant que `public/js/cms.js` n'a pas d'ID de projet, le site utilise le contenu
-de repli dans `public/js/projects.js`.
+Tant que le dataset Sanity est vide, le site utilise le contenu de repli dans
+`public/js/projects.js` — donc rien ne casse pendant la mise en place.
 
 ---
 
-## 1. Dépôt Git + Netlify (une fois)
+## État
 
-1. Créer un dépôt **GitHub** vide (privé de préférence), puis depuis ce dossier :
-   ```
-   git remote add origin https://github.com/<compte>/<repo>.git
-   git branch -M main
-   git push -u origin main
-   ```
-2. Sur **Netlify** → *Add new site* → *Import from Git* → choisir le dépôt.
-   - Build command : *(vide)*
-   - Publish directory : `public`
-   - Functions directory : `netlify/functions` *(auto-détecté via netlify.toml)*
-3. Reporter les variables d'environnement de l'ancien site (Site settings →
-   Environment variables) : `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO`.
-4. Désormais : `git push` = déploiement automatique.
+- [x] Dépôt GitHub : `romainpaolella-hub/oriental-projects` (branche `main`)
+- [x] ID projet Sanity `x3jcttot` branché dans `public/js/cms.js` et `studio/`
+- [ ] Netlify relié au dépôt Git
+- [ ] Dataset `leads` + import du contenu + déploiement du Studio
+- [ ] CORS Sanity + variables d'env Netlify
 
 ---
 
-## 2. Sanity (une fois)
+## 1. Relier Netlify au dépôt Git
 
-Prérequis : **Node.js 18+** (installé sur cette machine).
+Sur le site **existant** `orientalpromotion` (pour garder l'URL et les variables
+d'env) : Netlify → Site → *Site configuration* → *Build & deploy* → *Continuous
+deployment* → **Link repository** → `oriental-projects`.
 
-1. Créer un compte sur https://sanity.io puis :
-   ```
-   cd studio
-   npm install
-   npx sanity login
-   npx sanity init --project-plan free
-   ```
-   - *Create new project* → nom « Oriental Projects »
-   - Dataset : **production** (public)
-   - Ne pas écraser les fichiers de config existants
-2. Créer le **2ᵉ dataset** pour les demandes (privé) :
-   ```
-   npx sanity dataset create leads --visibility private
-   ```
-3. Récupérer l'**ID du projet** (`npx sanity projects list` ou l'URL du Studio) et :
-   - le mettre dans `studio/.env` : `SANITY_STUDIO_PROJECT_ID=xxxxxxxx`
-   - le mettre dans `public/js/cms.js` : `projectId: 'xxxxxxxx'`
-4. Autoriser le site à lire l'API : Sanity → *API* → *CORS origins* → ajouter
-   `https://<le-site>.netlify.app` (et `http://localhost:*` pour les tests).
-5. Pré-remplir le contenu depuis le site actuel :
-   ```
-   cd studio
-   npx sanity exec scripts/import.mjs --with-user-token
-   ```
-6. Publier le back office :
-   ```
-   npx sanity deploy
-   ```
-   → accessible sur `https://orientalprojects.sanity.studio` (workspaces
-   **Contenu** et **Demandes**). Inviter l'équipe : Sanity → *Members*.
+- Base directory : *(vide)*
+- Build command : *(vide)*
+- Publish directory : `public`
+- Functions directory : `netlify/functions` *(auto via netlify.toml)*
+
+Ensuite : chaque `git push` déploie automatiquement.
 
 ---
 
-## 3. Leads dans le back office
+## 2. Sanity — commandes à lancer (terminal)
 
-Ajouter sur **Netlify** (Environment variables) :
+```bash
+cd "D:\Promotion JD\oriental-projects\studio"
+npx sanity login                       # ouvre le navigateur pour s'authentifier
+npx sanity dataset list                # doit afficher "production"
+npx sanity dataset create leads --visibility private
+npx sanity exec scripts/import.mjs --with-user-token   # pré-remplit le contenu (upload images/vidéos/PDF)
+npx sanity deploy                      # publie le back office
+```
+
+Le Studio devient accessible sur **https://orientalprojects.sanity.studio**
+(deux espaces : *Contenu* et *Demandes*). Inviter l'équipe : sanity.io/manage →
+projet → *Members*.
+
+---
+
+## 3. Autorisations & variables
+
+### CORS (obligatoire — sinon le site ne peut pas lire Sanity)
+
+sanity.io/manage → projet `x3jcttot` → *API* → *CORS origins* → *Add* :
+
+| Origin | Credentials |
+|---|---|
+| `https://orientalpromotion.netlify.app` | non |
+| `http://localhost:8777` | non |
+
+### Variables d'environnement Netlify
+
+Existantes à conserver : `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO`.
+
+À ajouter (pour enregistrer les demandes dans le back office) :
 
 | Variable | Valeur |
 |---|---|
-| `SANITY_PROJECT_ID` | l'ID du projet Sanity |
+| `SANITY_PROJECT_ID` | `x3jcttot` |
 | `SANITY_LEADS_DATASET` | `leads` |
-| `SANITY_WRITE_TOKEN` | jeton **Editor** créé dans Sanity → *API* → *Tokens* |
-
-Chaque demande de brochure crée alors une fiche dans le workspace **Demandes**
-(statut : nouveau / contacté / relancé / converti / perdu + notes).
-L'e-mail Resend et Netlify Forms restent actifs en parallèle.
+| `SANITY_WRITE_TOKEN` | jeton **Editor** — sanity.io/manage → *API* → *Tokens* → *Add token* |
 
 ---
 
 ## Développement local
 
-- Site : ouvrir `public/index.html` via un petit serveur statique.
+- Site : servir `public/` (ex. `npx serve public`) — `js/cms.js` pointe déjà sur `x3jcttot`.
 - Studio : `cd studio && npm run dev` → http://localhost:3333
-- Régénérer le contenu de démo : `npm run import` (dans `studio/`)
+- Réimporter le contenu de démo : `npm run import` (dans `studio/`)

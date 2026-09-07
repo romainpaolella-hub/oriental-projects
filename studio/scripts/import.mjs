@@ -19,7 +19,13 @@ import {getCliClient} from 'sanity/cli'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const PUBLIC = path.resolve(HERE, '../../public')
-const client = getCliClient({apiVersion: '2024-01-01'})
+
+// Auth : soit `sanity exec ... --with-user-token`, soit la variable
+// d'environnement SANITY_AUTH_TOKEN (jeton Editor).
+let client = getCliClient({apiVersion: '2024-01-01'})
+if (process.env.SANITY_AUTH_TOKEN) {
+  client = client.withConfig({token: process.env.SANITY_AUTH_TOKEN})
+}
 
 // ---------- lecture du contenu actuel ----------
 const sandbox = {window: {}}
