@@ -1,0 +1,17 @@
+# Dépendances
+node_modules/
+
+# Builds Sanity
+studio/dist/
+studio/.sanity/
+
+# Env & secrets — ne jamais committer
+.env
+.env.*
+*.env
+
+# Divers
+.DS_Store
+Thumbs.db
+*.log
+.netlify/

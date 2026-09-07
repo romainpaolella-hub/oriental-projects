@@ -1,0 +1,15 @@
+# Fins de ligne normalisées en LF dans le dépôt
+* text=auto eol=lf
+
+# Binaires — jamais de conversion
+*.jpg   binary
+*.jpeg  binary
+*.png   binary
+*.webp  binary
+*.gif   binary
+*.ico   binary
+*.mp4   binary
+*.webm  binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary

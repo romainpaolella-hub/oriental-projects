@@ -1,0 +1,15 @@
+# === Oriental Projects — configuration Netlify (déploiement depuis Git) ===
+
+[build]
+  publish = "public"
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
+
+# Le formulaire poste vers /api/brochure -> fonction serverless
+[[redirects]]
+  from = "/api/brochure"
+  to = "/.netlify/functions/brochure"
+  status = 200
+  force = true
