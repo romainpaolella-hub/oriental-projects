@@ -59,6 +59,39 @@ const LINK_VILLA = ['Voir la villa · plan & implantation →', 'View the villa 
 const LINK_PLOT = ['Voir la parcelle · plan →', 'View the plot · floor plan →']
 const CTA_VISIT = T('Réservez une visite, sur place ou en visioconférence', 'Book a viewing, on site or by video call')
 
+// ligne de distance / caractéristique (label + value bilingues)
+const dr = (lf, le, vf, ve) => ({_type: 'object', _key: k(), label: S(lf, le), value: S(vf, ve)})
+// jalon d'échéancier
+const stp = (pf, pe, ef, ee, tf, te, bf, be) => ({_type: 'object', _key: k(), pct: S(pf, pe), label: S(ef, ee), title: S(tf, te), body: T(bf, be)})
+// palier de bail (sublabel optionnel)
+const lr = (lf, le, vf, ve, sf, se) => {
+  const o = {_type: 'object', _key: k(), label: S(lf, le), value: S(vf, ve)}
+  if (sf != null) o.sublabel = S(sf, se)
+  return o
+}
+// question/réponse FAQ
+const fq = (qf, qe, af, ae) => ({_type: 'object', _key: k(), q: S(qf, qe), a: T(af, ae)})
+
+// éléments communs FAQ (Q + A identiques d'un programme à l'autre)
+const FAQ_FOREIGNER = fq(
+  'Un étranger peut-il acheter une villa en Thaïlande ?', 'Can a foreigner buy a villa in Thailand?',
+  "Un non-résident ne peut pas détenir le terrain en pleine propriété à son nom, mais il peut sécuriser l'usage de la villa par un bail de longue durée (leasehold) renouvelable, ou via une structure de société thaïlandaise. Le montage est validé au cas par cas par un cabinet indépendant.",
+  'A non-resident cannot hold the land in full freehold ownership in their own name, but can secure the use of the villa through a renewable long-term lease (leasehold), or via a Thai company structure. The arrangement is validated case by case by an independent firm.',
+)
+const FAQ_RENTAL_SHORT = fq(
+  "Qui s'occupe de la location ?", 'Who handles the rental?',
+  "Notre équipe locale peut prendre en charge la commercialisation, l'accueil des voyageurs, le ménage et l'entretien, avec un reporting des revenus et des charges.",
+  'Our local team can take care of marketing, guest check-in, cleaning and maintenance, with reporting of income and costs.',
+)
+const FAQ_NOTE = T(
+  "Informations générales fournies à titre indicatif. Elles ne constituent pas un conseil juridique, fiscal ou financier et doivent être validées avec un avocat ou notaire thaïlandais avant tout engagement.",
+  'General information provided for guidance only. It does not constitute legal, tax or financial advice and must be validated with a Thai lawyer or notary before any commitment.',
+)
+const LOC_CTA = T('Nous vous envoyons la localisation exacte sur demande', "We'll send you the exact location on request")
+const INV_CTA = T('Nous vous envoyons le dossier chiffré complet', "We'll send you the full costed dossier")
+const INV_HERO = S('Rendement & acquisition', 'Yield & acquisition')
+const SIM_HEAD = T('Estimez votre rendement', 'Estimate your yield')
+
 const DOCS = [
   {
     _id: 'programmePage-sea-view',
@@ -191,6 +224,121 @@ const DOCS = [
     vil_galHeading: T('Découvrez la villa', 'Explore the villa'),
     vil_galNote: T("Vues d'artiste — programme sur plan.", "Artist's impressions — off-plan project."),
     vil_cta: CTA_VISIT,
+
+    // --- LOCALISATION ---
+    loc_heroEyebrow: S('Localisation', 'Location'),
+    loc_heroTitle: S('Au cœur de Koh Samui', 'At the heart of Koh Samui'),
+    loc_eyebrow: S('Distances', 'Distances'),
+    loc_heading: T('Plages, commerces et aéroport à quelques minutes', 'Beaches, shops and airport just minutes away'),
+    loc_body: T(
+      "Un secteur résidentiel calme de Ban Tai, dans un environnement préservé, avec un accès facile à l'essentiel.",
+      'A quiet residential area of Ban Tai, in an unspoilt setting, with easy access to the essentials.',
+    ),
+    loc_distances: [
+      dr('Plage la plus proche', 'Nearest beach', '5 min', '5 min'),
+      dr('Commerces & restaurants', 'Shops & restaurants', '5 min', '5 min'),
+      dr("Fisherman's Village, Bophut", "Fisherman's Village, Bophut", '15 min', '15 min'),
+      dr('Hôpital international', 'International hospital', '15 min', '15 min'),
+      dr('Aéroport de Koh Samui', 'Koh Samui airport', '20 min', '20 min'),
+      dr('Écoles internationales', 'International schools', '20 min', '20 min'),
+    ],
+    loc_distancesNote: T(
+      "Distances indicatives, à préciser selon l'emplacement définitif du terrain.",
+      'Indicative distances, to be confirmed based on the final plot location.',
+    ),
+    loc_islandEyebrow: S("L'île", 'The island'),
+    loc_islandHeading: T('Pourquoi Koh Samui', 'Why Koh Samui'),
+    loc_island: [
+      ni('01', 'Destination phare', 'A flagship destination',
+        'Deuxième plus grande île de Thaïlande, réputée pour ses plages, sa nature et son art de vivre.',
+        "Thailand's second-largest island, renowned for its beaches, nature and lifestyle."),
+      ni('02', 'Accès international', 'International access',
+        'Aéroport desservant Bangkok, Singapour, Hong Kong et de nombreuses liaisons régionales.',
+        'An airport serving Bangkok, Singapore, Hong Kong and many regional routes.'),
+      ni('03', 'Marché dynamique', 'A dynamic market',
+        "Forte demande locative touristique toute l'année, en haute comme en basse saison.",
+        'Strong year-round tourist rental demand, in both high and low season.'),
+    ],
+    loc_cta: LOC_CTA,
+
+    // --- INVESTIR ---
+    inv_heroTitle: INV_HERO,
+    inv_simEyebrow: S('Simulateur', 'Simulator'),
+    inv_simHeading: SIM_HEAD,
+    inv_simBody: T(
+      'Choisissez une parcelle et un scénario locatif — ou ajustez librement les nuits louées et le tarif moyen.',
+      'Choose a plot and a rental scenario — or freely adjust the nights let and the average nightly rate.',
+    ),
+    inv_simNote: T(
+      "Rendement brut = revenu locatif annuel ÷ prix d'acquisition. Rendement net après déduction d'environ 35 % de charges et frais de gestion. Repères marché Koh Samui pour une villa 3 chambres avec piscine : ฿4 500–7 000 par nuit, 120–260 nuits louées par an. Estimations indicatives, non garanties, dépendant de la saison et du taux d'occupation réel ; elles ne constituent pas un conseil en investissement.",
+      'Gross yield = annual rental income ÷ acquisition price. Net yield after deducting roughly 35% of charges and management fees. Koh Samui market benchmarks for a 3-bedroom villa with pool: ฿4,500–7,000 per night, 120–260 nights let per year. Indicative estimates, not guaranteed, depending on the season and the actual occupancy rate; they do not constitute investment advice.',
+    ),
+    inv_stepsEyebrow: S('Achat sur plan', 'Off-plan purchase'),
+    inv_stepsHeading: T('Échéancier en six jalons', 'A six-milestone payment schedule'),
+    inv_steps: [
+      stp('10 %', '10%', 'Étape 1', 'Step 1', 'Réservation', 'Reservation',
+        'Signature du contrat de réservation et blocage de la parcelle choisie.', 'Signing of the reservation contract and hold on the chosen plot.'),
+      stp('20 %', '20%', 'Étape 2', 'Step 2', 'Terrassement', 'Earthworks',
+        'Préparation du terrain, fondations et réseaux enterrés.', 'Site preparation, foundations and buried utilities.'),
+      stp('20 %', '20%', 'Étape 3', 'Step 3', 'Structure', 'Structure',
+        'Élévation des murs, dalles et charpente de toiture.', 'Walls, slabs and roof framing.'),
+      stp('20 %', '20%', 'Étape 4', 'Step 4', 'Second œuvre', 'Second fix',
+        'Menuiseries, piscine, enduits et réseaux intérieurs.', 'Joinery, pool, renders and interior services.'),
+      stp('20 %', '20%', 'Étape 5', 'Step 5', 'Finitions', 'Finishes',
+        'Sols, salles de bain, cuisine, éclairage et paysagement.', 'Flooring, bathrooms, kitchen, lighting and landscaping.'),
+      stp('10 %', '10%', 'Étape 6', 'Step 6', 'Livraison', 'Handover',
+        'Réception des travaux, remise des clés et transfert du bail.', 'Snagging, handover of keys and transfer of the lease.'),
+    ],
+    inv_stepsNote: T(
+      "Échéancier indicatif présenté à titre d'exemple. Les modalités exactes — montants, jalons, garanties — sont contractualisées au cas par cas.",
+      'Indicative schedule shown as an example. The exact terms — amounts, milestones, guarantees — are set contractually on a case-by-case basis.',
+    ),
+    inv_leaseEyebrow: S('Bail & charges', 'Lease & costs'),
+    inv_leaseHeading: T('Bail du terrain sur 30 ans', 'A 30-year land lease'),
+    inv_leaseIntro: T(
+      "Bail de 30 ans renouvelable, avec permis de construire établi au nom de l'acquéreur. Redevance indexée de 3 % tous les 3 ans. Frais de renouvellement du bail ou de transfert de propriété : 400 000 THB.",
+      "A 30-year renewable lease, with the building permit issued in the buyer's name. Fee indexed by 3% every 3 years. Lease renewal or ownership transfer fee: 400,000 THB.",
+    ),
+    inv_leaseRows: [
+      lr('Années 1–3', 'Years 1–3', '234 000,00 ฿', '234,000.00 ฿', "À l'enregistrement du bail au Land Office", 'On registration of the lease at the Land Office'),
+      lr('Années 4–6', 'Years 4–6', '241 020,00 ฿', '241,020.00 ฿', 'Au plus tard le 15 décembre 2028', 'By 15 December 2028'),
+      lr('Années 7–9', 'Years 7–9', '248 250,60 ฿', '248,250.60 ฿', 'Au plus tard le 15 décembre 2031', 'By 15 December 2031'),
+      lr('Années 10–12', 'Years 10–12', '255 698,12 ฿', '255,698.12 ฿', 'Au plus tard le 15 décembre 2034', 'By 15 December 2034'),
+      lr('Années 13–15', 'Years 13–15', '263 369,06 ฿', '263,369.06 ฿', 'Au plus tard le 15 décembre 2037', 'By 15 December 2037'),
+      lr('Années 16–18', 'Years 16–18', '271 270,13 ฿', '271,270.13 ฿', 'Au plus tard le 15 décembre 2040', 'By 15 December 2040'),
+      lr('Années 19–21', 'Years 19–21', '279 408,24 ฿', '279,408.24 ฿', 'Au plus tard le 15 décembre 2043', 'By 15 December 2043'),
+      lr('Années 22–24', 'Years 22–24', '287 790,48 ฿', '287,790.48 ฿', 'Au plus tard le 15 décembre 2046', 'By 15 December 2046'),
+      lr('Années 25–27', 'Years 25–27', '296 424,20 ฿', '296,424.20 ฿', 'Au plus tard le 15 décembre 2049', 'By 15 December 2049'),
+      lr('Années 28–30', 'Years 28–30', '305 316,93 ฿', '305,316.93 ฿', 'Au plus tard le 15 décembre 2052', 'By 15 December 2052'),
+    ],
+    inv_leaseTotalLabel: S('Total sur 30 ans', 'Total over 30 years'),
+    inv_leaseTotalValue: S('2 682 547,76 ฿', '2,682,547.76 ฿'),
+    inv_leaseNote: T(
+      "Paiements effectués par virement bancaire sur le compte du bailleur. Montants indiqués à titre d'exemple, conformes au contrat de bail standard ; ils ne constituent pas un engagement contractuel et sont confirmés au cas par cas.",
+      "Payments made by bank transfer to the lessor's account. Amounts shown as an example, in line with the standard lease contract; they are not a contractual commitment and are confirmed on a case-by-case basis.",
+    ),
+    inv_faqEyebrow: S('Questions fréquentes', 'Frequently asked questions'),
+    inv_faqHeading: T('FAQ investisseurs', 'Investor FAQ'),
+    inv_faq: [
+      FAQ_FOREIGNER,
+      fq('Que couvre le prix affiché ?', 'What does the listed price cover?',
+        'La construction de la villa livrée clé en main, la piscine, le paysagement, les murs de clôture et les raccordements. Le mobilier, les frais de transfert et les taxes sont chiffrés séparément.',
+        'Construction of the turnkey villa, the pool, landscaping, boundary walls and utility connections. Furniture, transfer fees and taxes are quoted separately.'),
+      fq("Qui s'occupe de la location ?", 'Who handles the rental?',
+        "Notre équipe locale peut prendre en charge la commercialisation, l'accueil des voyageurs, le ménage et l'entretien, avec un reporting mensuel des revenus et des charges.",
+        'Our local team can take care of marketing, guest check-in, cleaning and maintenance, with monthly reporting of income and costs.'),
+      fq('Le loyer du bail peut-il évoluer ?', 'Can the lease fee change?',
+        "Oui — la redevance de bail progresse de 3 % tous les 3 ans sur toute la durée du bail de 30 ans, selon l'échéancier détaillé ci-dessus.",
+        'Yes — the lease fee rises by 3% every 3 years over the full 30-year lease term, as set out in the schedule above.'),
+      fq('Quels sont les délais de construction ?', 'How long does construction take?',
+        "Environ douze mois à compter de l'obtention du permis, selon la saison et la parcelle. Le calendrier précis est annexé au contrat.",
+        'About twelve months from the granting of the permit, depending on the season and the plot. The precise schedule is annexed to the contract.'),
+      fq('Peut-on personnaliser la villa ?', 'Can the villa be customised?',
+        'Oui, dans les limites du gros œuvre : finitions, teintes, cuisine, salles de bain et aménagement extérieur peuvent être adaptés avant le démarrage du second œuvre.',
+        'Yes, within the limits of the structural shell: finishes, colours, kitchen, bathrooms and outdoor layout can be adapted before second-fix works begin.'),
+    ],
+    inv_faqNote: FAQ_NOTE,
+    inv_cta: INV_CTA,
   },
   {
     _id: 'programmePage-eden-tropical',
@@ -273,6 +421,118 @@ const DOCS = [
     vil_galEyebrow: S('Galerie', 'Gallery'),
     vil_galHeading: T('Découvrez les villas', 'Explore the villas'),
     vil_cta: CTA_VISIT,
+
+    // --- LOCALISATION ---
+    loc_heroEyebrow: S('Localisation', 'Location'),
+    loc_heroTitle: S('Lipa Noi, côte ouest', 'Lipa Noi, west coast'),
+    loc_eyebrow: S('Distances', 'Distances'),
+    loc_heading: T("À deux pas de la plage, loin de l'agitation", 'Steps from the beach, far from the bustle'),
+    loc_body: T(
+      "Lipa Noi est un secteur résidentiel ultra-calme de la côte ouest de Koh Samui, prisé pour ses couchers de soleil sur la mer d'Andaman.",
+      'Lipa Noi is a very quiet residential area on the west coast of Koh Samui, prized for its sunsets over the Andaman Sea.',
+    ),
+    loc_distances: [
+      dr('Plage publique', 'Public beach', '250 m · 3 min à pied', '250 m · 3 min walk'),
+      dr('Location de jet-ski', 'Jet-ski rental', '250 m', '250 m'),
+      dr('Nikki Beach (club de luxe)', 'Nikki Beach (luxury club)', '350 m', '350 m'),
+      dr('Seven Eleven / commerces', 'Seven Eleven / shops', '300 m', '300 m'),
+      dr('Aéroport de Koh Samui', 'Koh Samui airport', '~30 min', '~30 min'),
+    ],
+    loc_distancesNote: T(
+      "Distances à vol d'oiseau communiquées par le promoteur, à confirmer sur l'emplacement définitif du terrain.",
+      'Straight-line distances provided by the developer, to be confirmed based on the final plot location.',
+    ),
+    loc_islandEyebrow: S('Lipa Noi', 'Lipa Noi'),
+    loc_islandHeading: T("Le joyau caché de l'île", "The island's hidden gem"),
+    loc_island: [
+      ni('01', 'Environnement protégé', 'A protected setting',
+        "Une zone naturelle ultra-calme, à l'écart des zones touristiques les plus fréquentées de l'île.",
+        "A very quiet natural area, away from the island's busiest tourist spots."),
+      ni('02', 'Couchers de soleil', 'Sunsets',
+        "Orientée côte ouest, face à la mer d'Andaman — un rendez-vous quotidien pour les amateurs de sunset.",
+        'Facing the west coast and the Andaman Sea — a daily ritual for sunset lovers.'),
+      ni('03', "L'essentiel à proximité", 'Essentials nearby',
+        'Plage, jet-ski, restaurant de plage et supérette à moins de 5 minutes à pied.',
+        'Beach, jet-ski, beach restaurant and convenience store less than a 5-minute walk away.'),
+    ],
+    loc_cta: LOC_CTA,
+
+    // --- INVESTIR ---
+    inv_heroTitle: INV_HERO,
+    inv_simEyebrow: S('Simulateur', 'Simulator'),
+    inv_simHeading: SIM_HEAD,
+    inv_simBody: T(
+      'Choisissez une villa et un scénario locatif — ou ajustez librement les nuits louées et le tarif moyen.',
+      'Choose a villa and a rental scenario — or freely adjust the nights let and the average nightly rate.',
+    ),
+    inv_simNote: T(
+      "Rendement brut = revenu locatif annuel ÷ prix d'acquisition. Rendement net après déduction d'environ 30 % de charges (bail, entretien, gestion) — hors frais de transfert et taxes. Repères indicatifs pour un studio-villa avec piscine privée dans le secteur de Lipa Noi : ฿1 800–2 800 par nuit, 140–210 nuits louées par an. Ces hypothèses n'ont pas été vérifiées auprès de données de marché locales spécifiques à Lipa Noi et doivent être calibrées avant toute décision d'investissement ; elles ne constituent pas un conseil en investissement.",
+      'Gross yield = annual rental income ÷ acquisition price. Net yield after deducting roughly 30% of costs (lease, maintenance, management) — excluding transfer fees and taxes. Indicative benchmarks for a studio-villa with private pool in the Lipa Noi area: ฿1,800–2,800 per night, 140–210 nights let per year. These assumptions have not been checked against local market data specific to Lipa Noi and must be calibrated before any investment decision; they do not constitute investment advice.',
+    ),
+    inv_stepsEyebrow: S('Achat sur plan', 'Off-plan purchase'),
+    inv_stepsHeading: T('Échéancier en six étapes', 'A six-step payment schedule'),
+    inv_steps: [
+      stp('100 000 ฿', '฿100,000', 'Étape 1', 'Step 1', 'Réservation', 'Reservation',
+        "Dépôt fixe versé à l'avocat mandaté à la signature du contrat de réservation, conservé en séquestre.",
+        'Fixed deposit paid to the appointed lawyer on signing the reservation contract, held in escrow.'),
+      stp('33 %', '33%', 'Étape 2', 'Step 2', 'Permis de construire', 'Building permit',
+        "Versement à l'obtention du permis et à l'autorisation de démarrer les travaux.",
+        'Payment on obtaining the permit and authorisation to start works.'),
+      stp('33 %', '33%', 'Étape 3', 'Step 3', 'Structure RDC & piscine', 'Ground-floor structure & pool',
+        "À l'achèvement de la structure du rez-de-chaussée et du bassin.",
+        'On completion of the ground-floor structure and the pool.'),
+      stp('17 %', '17%', 'Étape 4', 'Step 4', 'Étage & toiture', 'Upper floor & roof',
+        "À l'achèvement de la structure d'étage et de la charpente de toiture.",
+        'On completion of the upper-floor structure and roof framing.'),
+      stp('14 %', '14%', 'Étape 5', 'Step 5', 'Maçonnerie & enduits', 'Masonry & renders',
+        "À l'achèvement des murs en briques et des enduits intérieurs/extérieurs.",
+        'On completion of the brick walls and interior/exterior renders.'),
+      stp('2 %', '2%', 'Étape 6', 'Step 6', 'Finitions & livraison', 'Finishes & handover',
+        'Carrelage, menuiseries, peinture et équipements — remise des clés à la livraison.',
+        'Tiling, joinery, paint and equipment — handover of keys on delivery.'),
+    ],
+    inv_stepsNote: T(
+      "Pourcentages calculés sur le solde après réservation (identiques pour les deux typologies) ; dépôt de réservation fixe de 100 000 THB. Prix total : ฿3 600 000 (1 chambre) / ฿4 100 000 (2 chambres). Échéancier contractualisé au cas par cas.",
+      'Percentages calculated on the balance after reservation (identical for both layouts); fixed reservation deposit of 100,000 THB. Total price: ฿3,600,000 (1 bedroom) / ฿4,100,000 (2 bedrooms). Schedule set contractually on a case-by-case basis.',
+    ),
+    inv_leaseEyebrow: S('Bail & charges', 'Lease & costs'),
+    inv_leaseHeading: T('Coûts annuels de détention', 'Annual holding costs'),
+    inv_leaseTable: [
+      grp('Bail du terrain', 'Land lease', [
+        row('Villa 1 chambre', '1-bedroom villa', '25 000 THB / an', '25,000 THB / year'),
+        row('Villa 2 chambres', '2-bedroom villa', '30 000 THB / an', '30,000 THB / year'),
+        row('Révision', 'Review', '+3 % tous les 3 ans', '+3% every 3 years'),
+        row('Renouvellement (bail 30 ans)', 'Renewal (30-year lease)', '300 000 THB (1ch) · 400 000 THB (2ch)', '300,000 THB (1BR) · 400,000 THB (2BR)'),
+      ]),
+      grp('Entretien & charges', 'Maintenance & charges', [
+        row('Copropriété (parties communes)', 'Common-area service charge', '2 000 THB / mois', '2,000 THB / month'),
+        row('Eau', 'Water', '500 THB / mois', '500 THB / month'),
+        row('Électricité', 'Electricity', 'Compteur officiel gouvernemental', 'Official government meter'),
+        row('Entretien piscine (2×/semaine, optionnel)', 'Pool maintenance (2×/week, optional)', '2 000 THB / mois', '2,000 THB / month'),
+        row('Entretien jardin (2×/semaine, optionnel)', 'Garden maintenance (2×/week, optional)', '3 000 THB / mois', '3,000 THB / month'),
+      ]),
+    ],
+    inv_leaseNote: T(
+      'Montants communiqués par le promoteur. Charges optionnelles souscrites librement selon les besoins du propriétaire.',
+      "Amounts provided by the developer. Optional services taken up freely according to the owner's needs.",
+    ),
+    inv_faqEyebrow: S('Questions fréquentes', 'Frequently asked questions'),
+    inv_faqHeading: T('FAQ investisseurs', 'Investor FAQ'),
+    inv_faq: [
+      FAQ_FOREIGNER,
+      fq('Que couvre le prix affiché ?', 'What does the listed price cover?',
+        'La construction de la villa livrée meublée et équipée, la piscine privée et le jardin. Le bail du terrain, les charges de copropriété, les frais de transfert et les taxes sont facturés séparément, comme détaillé ci-dessus.',
+        'Construction of the villa delivered furnished and equipped, the private pool and the garden. The land lease, common-area charges, transfer fees and taxes are billed separately, as detailed above.'),
+      FAQ_RENTAL_SHORT,
+      fq('Quels sont les délais de construction ?', 'How long does construction take?',
+        "Le calendrier précis, jalon par jalon, est annexé au contrat de vente et dépend de la date d'obtention du permis de construire.",
+        'The precise milestone-by-milestone schedule is annexed to the sale contract and depends on the date the building permit is granted.'),
+      fq('Le mobilier est-il vraiment inclus ?', 'Is the furniture really included?',
+        'Oui — lit, dressing, cuisine équipée, canapé, télévision, table à manger, climatisation et bains de soleil sont inclus dans le prix affiché. Un pack déco optionnel est proposé en supplément.',
+        'Yes — bed, wardrobe, fitted kitchen, sofa, television, dining table, air conditioning and sun loungers are included in the listed price. An optional decor pack is offered as an extra.'),
+    ],
+    inv_faqNote: FAQ_NOTE,
+    inv_cta: INV_CTA,
   },
   {
     _id: 'programmePage-terra-mare',
@@ -360,6 +620,107 @@ const DOCS = [
       'Photos: non-contractual 3D artist\'s impressions. Plans: architectural documents supplied by the developer, to be confirmed on the final drawings.',
     ),
     vil_cta: CTA_VISIT,
+
+    // --- LOCALISATION ---
+    loc_heroEyebrow: S('Localisation', 'Location'),
+    loc_heroTitle: S('Bophut, côte nord', 'Bophut, north coast'),
+    loc_eyebrow: S('Distances', 'Distances'),
+    loc_heading: T("Au cœur du quartier le plus vivant de l'île", "At the heart of the island's liveliest district"),
+    loc_body: T(
+      'Terra Mare est implanté à Bophut, à quelques pas de la plage, entre nature préservée et adresses réputées du secteur.',
+      "Terra Mare sits in Bophut, steps from the beach, between unspoilt nature and the area's best-known addresses.",
+    ),
+    loc_distances: [
+      dr('Plage la plus proche — W Beach', 'Nearest beach — W Beach', '200 m', '200 m'),
+      dr('Bo Phut Beach', 'Bo Phut Beach', '270 m', '270 m'),
+      dr('Distributeur (ATM)', 'Cash machine (ATM)', '660 m', '660 m'),
+      dr("Fisherman's Village", "Fisherman's Village", '2,23 km', '2.23 km'),
+      dr('Aéroport international de Samui (USM)', 'Samui International Airport (USM)', '5,77 km', '5.77 km'),
+      dr('Central Festival Samui', 'Central Festival Samui', '6,63 km', '6.63 km'),
+    ],
+    loc_poiEyebrow: S("Points d'intérêt à proximité", 'Points of interest nearby'),
+    loc_poiHeading: T('Distances réelles depuis Terra Mare', 'Real distances from Terra Mare'),
+    loc_poiNote: T(
+      "Distances routières mesurées depuis la villa Terra Mare (Google Maps). Susceptibles de varier selon l'itinéraire.",
+      'Driving distances measured from the Terra Mare villa (Google Maps). May vary depending on the route.',
+    ),
+    loc_islandEyebrow: S("L'île", 'The island'),
+    loc_islandHeading: T('Pourquoi Bophut', 'Why Bophut'),
+    loc_island: [
+      ni('01', "Fisherman's Village", "Fisherman's Village",
+        'Le village de pêcheurs historique de Koh Samui, restauré en une rue animée de restaurants, galeries et marché de nuit.',
+        "Koh Samui's historic fishing village, restored into a lively street of restaurants, galleries and a night market."),
+      ni('02', 'Aéroport à proximité', 'Airport nearby',
+        "Bophut est l'un des quartiers les plus proches de l'aéroport de Koh Samui, desservant Bangkok et de nombreuses liaisons régionales.",
+        'Bophut is one of the districts closest to Koh Samui airport, serving Bangkok and many regional routes.'),
+      ni('03', 'Nature & tranquillité', 'Nature & quiet',
+        "Un environnement boisé au bord de mer, à proximité immédiate d'adresses réputées comme Fair House Villas & Spa.",
+        'A wooded seafront setting, right next to well-known addresses such as Fair House Villas & Spa.'),
+    ],
+    loc_cta: LOC_CTA,
+
+    // --- INVESTIR ---
+    inv_heroTitle: INV_HERO,
+    inv_simEyebrow: S('Simulateur', 'Simulator'),
+    inv_simHeading: SIM_HEAD,
+    inv_simBody: T(
+      'Choisissez une villa et un scénario locatif — ou ajustez librement les nuits louées et le tarif moyen.',
+      'Choose a villa and a rental scenario — or freely adjust the nights let and the average nightly rate.',
+    ),
+    inv_simNote: T(
+      "Rendement brut = revenu locatif annuel ÷ prix d'acquisition. Rendement net après déduction d'environ 33 % de charges (bail, entretien, gestion) — hors frais de transfert et taxes. Repères indicatifs pour une villa avec piscine privée à Koh Samui, non spécifiques au secteur de Bophut : ฿4 800–6 500 par nuit, 150–205 nuits louées par an. Ces hypothèses n'ont pas été vérifiées auprès de données de marché locales et doivent être calibrées avant toute décision d'investissement ; elles ne constituent pas un conseil en investissement.",
+      'Gross yield = annual rental income ÷ acquisition price. Net yield after deducting roughly 33% of costs (lease, maintenance, management) — excluding transfer fees and taxes. Indicative benchmarks for a villa with private pool in Koh Samui, not specific to the Bophut area: ฿4,800–6,500 per night, 150–205 nights let per year. These assumptions have not been checked against local market data and must be calibrated before any investment decision; they do not constitute investment advice.',
+    ),
+    inv_stepsEyebrow: S('Achat sur plan', 'Off-plan purchase'),
+    inv_stepsHeading: T('Modalités de paiement', 'Payment terms'),
+    inv_stepsProse: T(
+      "Le prix d'acquisition est réglé par étapes, au fil de l'avancement du chantier, selon un échéancier lié aux jalons de construction (permis, structure, second œuvre, finitions et livraison). Le détail des jalons et des pourcentages associés est communiqué dans le dossier contractuel remis à la réservation.",
+      'The acquisition price is paid in stages, as the works progress, on a schedule tied to the construction milestones (permit, structure, second fix, finishes and handover). The detail of the milestones and their associated percentages is set out in the contract pack handed over at reservation.',
+    ),
+    inv_stepsNote: T(
+      "Contrairement à Villa Sea View et Eden Tropical, l'échéancier détaillé de Terra Mare (pourcentages par jalon) n'a pas été fourni à ce stade — il sera précisé avant toute réservation.",
+      'Unlike Villa Sea View and Eden Tropical, the detailed Terra Mare schedule (percentages per milestone) has not been provided at this stage — it will be specified before any reservation.',
+    ),
+    inv_leaseEyebrow: S('Bail & charges', 'Lease & costs'),
+    inv_leaseHeading: T('Bail du terrain sur 30 ans', 'A 30-year land lease'),
+    inv_leaseIntro: T(
+      'Loyer de départ : 8 300 THB / mois pour les 3 premières années, puis +5 % tous les 3 ans sur toute la durée du bail (30 ans).',
+      'Starting rent: 8,300 THB / month for the first 3 years, then +5% every 3 years over the full lease term (30 years).',
+    ),
+    inv_leaseRows: [
+      lr('Palier 1 (années 1–3)', 'Tier 1 (years 1–3)', '306 000 ฿', '306,000 ฿'),
+      lr('Palier 2 (années 4–6)', 'Tier 2 (years 4–6)', '321 300 ฿', '321,300 ฿'),
+      lr('Palier 3 (années 7–9)', 'Tier 3 (years 7–9)', '337 365 ฿', '337,365 ฿'),
+      lr('Palier 4 (années 10–12)', 'Tier 4 (years 10–12)', '354 233 ฿', '354,233 ฿'),
+      lr('Palier 5 (années 13–15)', 'Tier 5 (years 13–15)', '371 945 ฿', '371,945 ฿'),
+      lr('Palier 6 (années 16–18)', 'Tier 6 (years 16–18)', '390 542 ฿', '390,542 ฿'),
+      lr('Palier 7 (années 19–21)', 'Tier 7 (years 19–21)', '410 069 ฿', '410,069 ฿'),
+      lr('Palier 8 (années 22–24)', 'Tier 8 (years 22–24)', '430 573 ฿', '430,573 ฿'),
+      lr('Palier 9 (années 25–30)', 'Tier 9 (years 25–30)', '452 101 ฿', '452,101 ฿'),
+    ],
+    inv_leaseTotalLabel: S('Total sur 30 ans', 'Total over 30 years'),
+    inv_leaseTotalValue: S('3 374 129 ฿', '3,374,129 ฿'),
+    inv_leaseNote: T(
+      "Grille communiquée par le promoteur. Numérotation exacte des paliers annuels à confirmer avec le contrat de bail — de légers écarts d'arrondi entre le tarif mensuel de départ et les totaux ci-dessus proviennent du document source.",
+      'Schedule provided by the developer. Exact numbering of the annual tiers to be confirmed with the lease contract — minor rounding differences between the starting monthly rent and the totals above come from the source document.',
+    ),
+    inv_faqEyebrow: S('Questions fréquentes', 'Frequently asked questions'),
+    inv_faqHeading: T('FAQ investisseurs', 'Investor FAQ'),
+    inv_faq: [
+      FAQ_FOREIGNER,
+      fq('Que couvre le prix affiché ?', 'What does the listed price cover?',
+        "La construction de la villa, sa piscine privée, son jardin et sa place de parking. Le bail du terrain, les charges d'entretien, les frais de transfert et les taxes sont facturés séparément.",
+        'Construction of the villa, its private pool, its garden and its parking space. The land lease, maintenance charges, transfer fees and taxes are billed separately.'),
+      FAQ_RENTAL_SHORT,
+      fq('Le loyer du bail peut-il évoluer ?', 'Can the lease rent change?',
+        'Oui — il progresse de 5 % tous les 3 ans sur toute la durée du bail de 30 ans, selon la grille détaillée ci-dessus.',
+        'Yes — it rises by 5% every 3 years over the full 30-year lease term, according to the schedule detailed above.'),
+      fq('Peut-on personnaliser la villa ?', 'Can the villa be customised?',
+        'Les possibilités de personnalisation (finitions, cuisine, salle de bain) sont précisées dans le dossier contractuel remis à la réservation.',
+        'The customisation options (finishes, kitchen, bathroom) are set out in the contract pack handed over at reservation.'),
+    ],
+    inv_faqNote: FAQ_NOTE,
+    inv_cta: INV_CTA,
   },
 ]
 

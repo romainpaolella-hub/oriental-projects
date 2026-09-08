@@ -202,6 +202,112 @@ export const programmePage = defineType({
     defineField({name: 'vil_galNote2', title: 'Galerie — 2e note', type: 'localeText', description: 'Terra Mare (photos / plans).', group: 'villas'}),
 
     defineField({name: 'vil_cta', title: 'Titre de l’appel à l’action (bas de page)', type: 'localeText', group: 'villas'}),
+
+    // ---------------- LOCALISATION ----------------
+    defineField({name: 'loc_heroEyebrow', title: 'Bandeau — surtitre', type: 'localeString', group: 'localisation'}),
+    defineField({name: 'loc_heroTitle', title: 'Bandeau — titre', type: 'localeString', group: 'localisation'}),
+    defineField({name: 'loc_eyebrow', title: 'Distances — surtitre', type: 'localeString', group: 'localisation'}),
+    defineField({name: 'loc_heading', title: 'Distances — titre', type: 'localeText', group: 'localisation'}),
+    defineField({name: 'loc_body', title: 'Distances — texte', type: 'localeText', group: 'localisation'}),
+    defineField({
+      name: 'loc_distances',
+      title: 'Distances — lignes',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({name: 'label', title: 'Lieu', type: 'localeString'}),
+            defineField({name: 'value', title: 'Distance / temps', type: 'localeString'}),
+          ],
+          preview: {select: {title: 'label.fr', subtitle: 'value.fr'}},
+        },
+      ],
+      group: 'localisation',
+    }),
+    defineField({name: 'loc_distancesNote', title: 'Distances — note', type: 'localeText', description: 'Sea View / Eden (Terra garde son lien Google Maps).', group: 'localisation'}),
+    defineField({name: 'loc_poiEyebrow', title: 'Points d’intérêt — surtitre', type: 'localeString', description: 'Terra Mare.', group: 'localisation'}),
+    defineField({name: 'loc_poiHeading', title: 'Points d’intérêt — titre', type: 'localeText', description: 'Terra Mare.', group: 'localisation'}),
+    defineField({name: 'loc_poiNote', title: 'Points d’intérêt — note', type: 'localeText', description: 'Terra Mare.', group: 'localisation'}),
+    defineField({name: 'loc_islandEyebrow', title: 'Bloc « Pourquoi… » — surtitre', type: 'localeString', group: 'localisation'}),
+    defineField({name: 'loc_islandHeading', title: 'Bloc « Pourquoi… » — titre', type: 'localeText', group: 'localisation'}),
+    defineField({name: 'loc_island', title: 'Bloc « Pourquoi… » — éléments', type: 'array', of: [numItem], group: 'localisation'}),
+    defineField({name: 'loc_cta', title: 'Titre de l’appel à l’action (bas de page)', type: 'localeText', group: 'localisation'}),
+
+    // ---------------- INVESTIR ----------------
+    defineField({name: 'inv_heroTitle', title: 'Bandeau — titre', type: 'localeString', group: 'invest'}),
+    defineField({name: 'inv_simEyebrow', title: 'Simulateur — surtitre', type: 'localeString', group: 'invest'}),
+    defineField({name: 'inv_simHeading', title: 'Simulateur — titre', type: 'localeText', group: 'invest'}),
+    defineField({name: 'inv_simBody', title: 'Simulateur — texte', type: 'localeText', group: 'invest'}),
+    defineField({name: 'inv_simNote', title: 'Simulateur — note', type: 'localeText', group: 'invest'}),
+    defineField({name: 'inv_stepsEyebrow', title: 'Achat sur plan — surtitre', type: 'localeString', group: 'invest'}),
+    defineField({name: 'inv_stepsHeading', title: 'Achat sur plan — titre', type: 'localeText', group: 'invest'}),
+    defineField({
+      name: 'inv_steps',
+      title: 'Achat sur plan — jalons',
+      type: 'array',
+      description: 'Sea View / Eden (6 jalons).',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({name: 'pct', title: 'Montant / %', type: 'localeString'}),
+            defineField({name: 'label', title: 'Étape', type: 'localeString', description: 'Ex. « Étape 1 »'}),
+            defineField({name: 'title', title: 'Titre', type: 'localeString'}),
+            defineField({name: 'body', title: 'Texte', type: 'localeText'}),
+          ],
+          preview: {select: {title: 'title.fr', subtitle: 'pct'}},
+        },
+      ],
+      group: 'invest',
+    }),
+    defineField({name: 'inv_stepsProse', title: 'Achat sur plan — texte', type: 'localeText', description: 'Terra Mare (paragraphe au lieu des jalons).', group: 'invest'}),
+    defineField({name: 'inv_stepsNote', title: 'Achat sur plan — note', type: 'localeText', group: 'invest'}),
+    defineField({name: 'inv_leaseEyebrow', title: 'Bail & charges — surtitre', type: 'localeString', group: 'invest'}),
+    defineField({name: 'inv_leaseHeading', title: 'Bail & charges — titre', type: 'localeText', group: 'invest'}),
+    defineField({name: 'inv_leaseIntro', title: 'Bail & charges — introduction', type: 'localeText', description: 'La mise en gras des chiffres n’est pas conservée.', group: 'invest'}),
+    defineField({
+      name: 'inv_leaseRows',
+      title: 'Bail & charges — grille',
+      type: 'array',
+      description: 'Sea View / Terra (paliers).',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({name: 'label', title: 'Période', type: 'localeString'}),
+            defineField({name: 'sublabel', title: 'Précision', type: 'localeString', description: 'Sea View uniquement (petit texte sous la période).'}),
+            defineField({name: 'value', title: 'Montant', type: 'localeString'}),
+          ],
+          preview: {select: {title: 'label.fr', subtitle: 'value'}},
+        },
+      ],
+      group: 'invest',
+    }),
+    defineField({name: 'inv_leaseTotalLabel', title: 'Bail & charges — libellé du total', type: 'localeString', group: 'invest'}),
+    defineField({name: 'inv_leaseTotalValue', title: 'Bail & charges — montant du total', type: 'localeString', group: 'invest'}),
+    defineField({name: 'inv_leaseTable', title: 'Bail & charges — tableau', type: 'array', of: [specGroup], description: 'Eden Tropical (Bail du terrain / Entretien & charges).', group: 'invest'}),
+    defineField({name: 'inv_leaseNote', title: 'Bail & charges — note', type: 'localeText', group: 'invest'}),
+    defineField({name: 'inv_faqEyebrow', title: 'FAQ — surtitre', type: 'localeString', group: 'invest'}),
+    defineField({name: 'inv_faqHeading', title: 'FAQ — titre', type: 'localeText', group: 'invest'}),
+    defineField({
+      name: 'inv_faq',
+      title: 'FAQ — questions',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({name: 'q', title: 'Question', type: 'localeString'}),
+            defineField({name: 'a', title: 'Réponse', type: 'localeText'}),
+          ],
+          preview: {select: {title: 'q.fr'}},
+        },
+      ],
+      group: 'invest',
+    }),
+    defineField({name: 'inv_faqNote', title: 'FAQ — note', type: 'localeText', group: 'invest'}),
+    defineField({name: 'inv_cta', title: 'Titre de l’appel à l’action (bas de page)', type: 'localeText', group: 'invest'}),
   ],
   preview: {select: {title: 'title', subtitle: 'programmeSlug'}},
 })
