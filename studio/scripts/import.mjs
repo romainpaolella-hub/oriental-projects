@@ -226,6 +226,7 @@ async function run() {
       statusLabel: L(v.statusLabel),
       price: v.price,
       rentMonthly: v.rentMonthly,
+      simCosts: v.costs != null ? v.costs : 30,
       linkHref: v.href,
     })
   }

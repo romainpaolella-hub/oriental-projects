@@ -40,6 +40,7 @@ export const villaDispo = defineType({
     defineField({name: 'statusLabel', title: 'Étiquette de statut', type: 'localeString', description: 'Ex. « Disponible »', hidden: ({parent}) => parent?.isPlaceholder}),
     defineField({name: 'price', title: 'Prix (฿)', type: 'number', hidden: ({parent}) => parent?.isPlaceholder}),
     defineField({name: 'rentMonthly', title: 'Loyer mensuel actuel (฿)', type: 'number', hidden: ({parent}) => parent?.isPlaceholder}),
+    defineField({name: 'simCosts', title: 'Simulateur — charges & gestion (%)', type: 'number', initialValue: 30, description: 'Alimente le calculateur de rendement de la fiche (le prix et le loyer ci-dessus servent aussi de base).', hidden: ({parent}) => parent?.isPlaceholder}),
     defineField({
       name: 'linkHref',
       title: 'Lien de la fiche',

@@ -33,7 +33,7 @@ window.OD_CMS = {
       '"iw":image.asset->metadata.dimensions.width,"ih":image.asset->metadata.dimensions.height},' +
     '"programmes":*[_type=="programme"]|order(order asc){name,zone,"slug":slug.current,status,statusLabel,pitch,facts,' +
       '"img":cardImage.asset->url,"w":cardImage.asset->metadata.dimensions.width,"h":cardImage.asset->metadata.dimensions.height},' +
-    '"dispos":*[_type=="villaDispo"]|order(order asc){name,isPlaceholder,note,statusLabel,specs,price,rentMonthly,linkHref,' +
+    '"dispos":*[_type=="villaDispo"]|order(order asc){name,isPlaceholder,note,statusLabel,specs,price,rentMonthly,simCosts,linkHref,' +
       '"img":images[0].asset->url,"w":images[0].asset->metadata.dimensions.width,"h":images[0].asset->metadata.dimensions.height},' +
     '"realisations":*[_type=="realisation"]|order(order asc){name,"slug":slug.current,zone,tag,blurb,linkHref,' +
       '"cover":cover.asset->url,"w":cover.asset->metadata.dimensions.width,"h":cover.asset->metadata.dimensions.height},' +
@@ -121,6 +121,22 @@ window.OD_CMS = {
             href: v.linkHref || 'contact.html',
           };
         });
+
+        // Calculateur de rendement de la fiche de vente (window.OD_SIM)
+        if (document.getElementById('calc')) {
+          var pn = location.pathname.replace(/^\/(en\/)?/, '');
+          for (var di = 0; di < d.dispos.length; di++) {
+            var vv = d.dispos[di];
+            if (!vv.isPlaceholder && vv.linkHref === pn && vv.price) {
+              var baseS = window.OD_SIM || {};
+              window.OD_SIM = {
+                types: [{name: vv.name, price: vv.price, rent: vv.rentMonthly || 0}],
+                costs: vv.simCosts != null ? vv.simCosts : (baseS.costs != null ? baseS.costs : 30)
+              };
+              break;
+            }
+          }
+        }
       }
 
       // ---- RÉALISATIONS (grille accueil) ----
