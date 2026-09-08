@@ -71,6 +71,9 @@ const lr = (lf, le, vf, ve, sf, se) => {
 }
 // question/réponse FAQ
 const fq = (qf, qe, af, ae) => ({_type: 'object', _key: k(), q: S(qf, qe), a: T(af, ae)})
+// simulateur : parcelle/villa et scénario locatif
+const plt = (nf, ne, price) => ({_type: 'object', _key: k(), name: S(nf, ne), price})
+const scn = (nf, ne, nights, adr) => ({_type: 'object', _key: k(), name: S(nf, ne), nights, adr})
 
 // éléments communs FAQ (Q + A identiques d'un programme à l'autre)
 const FAQ_FOREIGNER = fq(
@@ -339,6 +342,24 @@ const DOCS = [
     ],
     inv_faqNote: FAQ_NOTE,
     inv_cta: INV_CTA,
+    inv_sim: {
+      _type: 'object',
+      plotLabel: S('Choisissez votre parcelle', 'Choose your plot'),
+      plots: [
+        plt('Parcelle 1', 'Plot 1', 8900000),
+        plt('Parcelle 2', 'Plot 2', 9200000),
+        plt('Parcelle 3', 'Plot 3', 9500000),
+        plt('Parcelle 4', 'Plot 4', 9900000),
+      ],
+      scenarios: [
+        scn('Prudent', 'Cautious', 150, 5500),
+        scn('Réaliste', 'Realistic', 180, 6000),
+        scn('Optimiste', 'Optimistic', 205, 6800),
+      ],
+      defaultScenario: 1,
+      costs: 35,
+      horizons: [1, 5, 10],
+    },
   },
   {
     _id: 'programmePage-eden-tropical',
@@ -533,6 +554,22 @@ const DOCS = [
     ],
     inv_faqNote: FAQ_NOTE,
     inv_cta: INV_CTA,
+    inv_sim: {
+      _type: 'object',
+      plotLabel: S('Choisissez votre villa', 'Choose your villa'),
+      plots: [
+        plt('Villa 1 Chambre', '1-Bedroom Villa', 3600000),
+        plt('Villa 2 Chambres', '2-Bedroom Villa', 4100000),
+      ],
+      scenarios: [
+        scn('Base basse', 'Low case', 140, 1800),
+        scn('Base médiane', 'Mid case', 175, 2200),
+        scn('Base haute', 'High case', 210, 2800),
+      ],
+      defaultScenario: 1,
+      costs: 30,
+      horizons: [1, 5, 10],
+    },
   },
   {
     _id: 'programmePage-terra-mare',
@@ -721,6 +758,22 @@ const DOCS = [
     ],
     inv_faqNote: FAQ_NOTE,
     inv_cta: INV_CTA,
+    inv_sim: {
+      _type: 'object',
+      plotLabel: S('Choisissez votre villa', 'Choose your villa'),
+      plots: [
+        plt('Villa 2 Chambres', '2-Bedroom Villa', 7290000),
+        plt('Villa 3 Chambres', '3-Bedroom Villa', 8900000),
+      ],
+      scenarios: [
+        scn('Base basse', 'Low case', 150, 4800),
+        scn('Base médiane', 'Mid case', 180, 5500),
+        scn('Base haute', 'High case', 205, 6500),
+      ],
+      defaultScenario: 1,
+      costs: 33,
+      horizons: [1, 5, 10],
+    },
   },
 ]
 

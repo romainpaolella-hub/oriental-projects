@@ -350,6 +350,9 @@
   function renderContent(){
     renderHero();renderEncarts();renderDispos();renderStats();renderRealisations();renderRealisationGallery();
     if(typeof window.OD_renderProgrammePage==='function') try{window.OD_renderProgrammePage()}catch(e){}
+    // (re)construit les simulateurs après application du paramétrage CMS ;
+    // no-op si la page n'a pas de #calc. Les fonctions relisent window.OD_SIM(_FULL).
+    initCalc();initFullCalc();
   }
 
   document.addEventListener('DOMContentLoaded',function(){

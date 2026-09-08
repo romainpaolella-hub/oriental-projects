@@ -308,6 +308,52 @@ export const programmePage = defineType({
     }),
     defineField({name: 'inv_faqNote', title: 'FAQ — note', type: 'localeText', group: 'invest'}),
     defineField({name: 'inv_cta', title: 'Titre de l’appel à l’action (bas de page)', type: 'localeText', group: 'invest'}),
+
+    defineField({
+      name: 'inv_sim',
+      title: 'Simulateur de rendement — paramétrage',
+      type: 'object',
+      description: 'Alimente le calculateur interactif de la page. Vide = valeurs par défaut de la page.',
+      group: 'invest',
+      options: {collapsible: true, collapsed: true},
+      fields: [
+        defineField({name: 'plotLabel', title: 'Libellé du sélecteur', type: 'localeString', description: 'Ex. « Choisissez votre parcelle ».'}),
+        defineField({
+          name: 'plots',
+          title: 'Parcelles / villas',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({name: 'name', title: 'Nom', type: 'localeString'}),
+                defineField({name: 'price', title: 'Prix (฿)', type: 'number'}),
+              ],
+              preview: {select: {title: 'name.fr', subtitle: 'price'}},
+            },
+          ],
+        }),
+        defineField({
+          name: 'scenarios',
+          title: 'Scénarios locatifs',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({name: 'name', title: 'Nom', type: 'localeString'}),
+                defineField({name: 'nights', title: 'Nuits louées par an', type: 'number'}),
+                defineField({name: 'adr', title: 'Prix moyen par nuit (฿)', type: 'number'}),
+              ],
+              preview: {select: {title: 'name.fr', subtitle: 'nights'}},
+            },
+          ],
+        }),
+        defineField({name: 'defaultScenario', title: 'Scénario affiché par défaut', type: 'number', description: '0 = le premier, 1 = le deuxième…', initialValue: 1}),
+        defineField({name: 'costs', title: 'Charges & gestion (% du revenu)', type: 'number', initialValue: 35}),
+        defineField({name: 'horizons', title: 'Durées de détention (années)', type: 'array', of: [{type: 'number'}], description: 'Ex. 1, 5, 10.'}),
+      ],
+    }),
   ],
   preview: {select: {title: 'title', subtitle: 'programmeSlug'}},
 })

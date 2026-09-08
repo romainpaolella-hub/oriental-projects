@@ -48,7 +48,7 @@ window.OD_CMS = {
       'inv_heroTitle,inv_simEyebrow,inv_simHeading,inv_simBody,inv_simNote,' +
       'inv_stepsEyebrow,inv_stepsHeading,inv_steps,inv_stepsProse,inv_stepsNote,' +
       'inv_leaseEyebrow,inv_leaseHeading,inv_leaseIntro,inv_leaseRows,inv_leaseTotalLabel,inv_leaseTotalValue,inv_leaseTable,inv_leaseNote,' +
-      'inv_faqEyebrow,inv_faqHeading,inv_faq,inv_faqNote,inv_cta}' +
+      'inv_faqEyebrow,inv_faqHeading,inv_faq,inv_faqNote,inv_cta,inv_sim}' +
     '}';
 
   window.OD_loadCMS = function () {
@@ -356,6 +356,23 @@ window.OD_CMS = {
         setText(el.querySelector('summary'), pick(it.q));
         setText(el.querySelector('p'), pick(it.a));
       });
+    }
+
+    // paramétrage du simulateur de rendement (surcharge window.OD_SIM_FULL)
+    var sm = doc.inv_sim;
+    if (sm && sm.plots && sm.plots.length && document.getElementById('calc')) {
+      var base = window.OD_SIM_FULL || {};
+      var scn = (sm.scenarios && sm.scenarios.length)
+        ? sm.scenarios.map(function (s) { return {name: pick(s.name), nights: s.nights, adr: s.adr}; })
+        : (base.scenarios || []);
+      window.OD_SIM_FULL = {
+        plotLabel: pick(sm.plotLabel) || base.plotLabel,
+        plots: sm.plots.map(function (p) { return {name: pick(p.name), price: p.price}; }),
+        scenarios: scn,
+        defaultScenario: sm.defaultScenario != null ? sm.defaultScenario : (base.defaultScenario != null ? base.defaultScenario : 1),
+        costs: sm.costs != null ? sm.costs : (base.costs != null ? base.costs : 35),
+        horizons: (sm.horizons && sm.horizons.length) ? sm.horizons : (base.horizons || [1, 5, 10])
+      };
     }
   };
 })();
