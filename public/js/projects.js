@@ -10,16 +10,16 @@ window.HERO = [
   {
     brand: true,
     type: 'video',
-    src: 'videos/oriental-hero-background.mp4',
-    poster: 'videos/poster-oriental.jpg',
+    src: '/videos/oriental-hero-background.mp4',
+    poster: '/videos/poster-oriental.jpg',
     w: 1280, h: 720,
     href: 'index.html#programmes',
     cta: 'Découvrir nos programmes'
   },
   {
     type: 'video',
-    src: 'videos/sea-view-villa-hero.mp4',
-    poster: 'videos/poster-sea-view.jpg',
+    src: '/videos/sea-view-villa-hero.mp4',
+    poster: '/videos/poster-sea-view.jpg',
     w: 1344, h: 768,
     kicker: 'Programme neuf · Ban Tai',
     title: 'Villa Sea View',
@@ -29,8 +29,8 @@ window.HERO = [
   },
   {
     type: 'video',
-    src: 'videos/eden-tropical-hero.mp4',
-    poster: 'videos/poster-eden.jpg',
+    src: '/videos/eden-tropical-hero.mp4',
+    poster: '/videos/poster-eden.jpg',
     w: 1344, h: 768,
     kicker: 'Programme neuf · Lipa Noi',
     title: 'Eden Tropical',
@@ -40,8 +40,8 @@ window.HERO = [
   },
   {
     type: 'video',
-    src: 'videos/terra-mare-hero.mp4',
-    poster: 'videos/poster-terra.jpg',
+    src: '/videos/terra-mare-hero.mp4',
+    poster: '/videos/poster-terra.jpg',
     w: 1344, h: 768,
     kicker: 'Programme neuf · Bophut',
     title: 'Terra Mare',
@@ -56,7 +56,7 @@ window.PROJECTS = [
   {
     name: 'Villa Sea View',
     zone: 'Ban Tai, Koh Samui',
-    img: '005-rw-mtfhziri-74yt.jpg',
+    img: '/005-rw-mtfhziri-74yt.jpg',
     w: 1672, h: 941,
     status: 'plan',
     statusLabel: 'Sur plan',
@@ -67,7 +67,7 @@ window.PROJECTS = [
   {
     name: 'Eden Tropical',
     zone: 'Lipa Noi, Koh Samui',
-    img: 'hailuo_image_transform-this-architectura-mtfi13qu-ray0.jpg',
+    img: '/hailuo_image_transform-this-architectura-mtfi13qu-ray0.jpg',
     w: 1280, h: 720,
     statusLabel: 'Sur plan',
     pitch: "Des studios-villas avec piscine privée, entièrement aménagés et prêts à vivre, à seulement 250 mètres de la plage de Lipa Noi. Une adresse pensée pour conjuguer art de vivre tropical et potentiel locatif.",
@@ -77,7 +77,7 @@ window.PROJECTS = [
   {
     name: 'Terra Mare',
     zone: 'Bophut, Koh Samui',
-    img: 'images/terra-mare/ext-dusk.jpg',
+    img: '/images/terra-mare/ext-dusk.jpg',
     w: 1672, h: 941,
     status: 'plan',
     statusLabel: 'Sur plan',
@@ -95,7 +95,7 @@ window.PROJECTS = [
 window.DISPOS = [
   {
     name: 'Tropical Golf — Villa 2',
-    img: 'images/tropical-golf-v2/hero-dusk.jpg',
+    img: '/images/tropical-golf-v2/hero-dusk.jpg',
     w: 1920, h: 1440,
     statusLabel: 'Disponible',
     specs: ['≈ 250 m² bâtis', 'Piscine 7,5 × 3,5 m', '3 ch. · 3 sdb', 'Bail exclusif de 30 Ans Leasehold'],
@@ -131,7 +131,7 @@ window.REALISATIONS_VILLAS = [
     name: 'Villa Aurora',
     zone: 'Koh Samui · Livrée',
     tag: 'Livrée',
-    cover: 'images/realisations/villa-aurora/06.jpg',
+    cover: '/images/realisations/villa-aurora/06.jpg',
     w: 2000, h: 1332,
     count: 14,
     blurb: 'Villa signature sur plusieurs niveaux : piscine à débordement, vue panoramique et home cinéma.',
@@ -142,7 +142,7 @@ window.REALISATIONS_VILLAS = [
     name: 'Stella Del Mare',
     zone: 'Koh Samui · Livrée',
     tag: 'Livrée',
-    cover: 'images/realisations/stella-del-mare/01.jpg',
+    cover: '/images/realisations/stella-del-mare/01.jpg',
     w: 1600, h: 1199,
     count: 37,
     blurb: 'Villa contemporaine ouverte sur la mer, vaste terrasse et piscine à débordement adossée à la colline.',
@@ -153,7 +153,7 @@ window.REALISATIONS_VILLAS = [
     name: 'Tropical Golf',
     zone: 'Koh Samui · Livrée',
     tag: 'Livrée',
-    cover: 'images/realisations/tropical-golf/19.jpg',
+    cover: '/images/realisations/tropical-golf/19.jpg',
     w: 1600, h: 1200,
     count: 24,
     blurb: 'Villa de plain-pied, longue piscine et jardin paysagé planté de cocotiers.',
@@ -164,14 +164,14 @@ window.REALISATIONS_VILLAS = [
     name: 'Tropical Golf — Villa 2',
     zone: 'Koh Samui · Livrée · À la vente',
     tag: 'À la vente',
-    cover: 'images/tropical-golf-v2/hero-dusk.jpg',
+    cover: '/images/tropical-golf-v2/hero-dusk.jpg',
     w: 1920, h: 1440,
     files: [
       'hero-dusk.jpg','ext-dusk-2.jpg','pool-courtyard.jpg','ext-day-1.jpg','ext-day-2.jpg',
       'living-pool-view.jpg','living.jpg','kitchen.jpg','dining-outdoor.jpg',
       'bedroom-1.jpg','bedroom-2.jpg','bathroom-1.jpg','bathroom-2.jpg','entrance.jpg'
     ],
-    folder: 'images/tropical-golf-v2/',
+    folder: '/images/tropical-golf-v2/',
     blurb: 'Villa 2 chambres livrée et louée, aujourd\'hui proposée à la vente clé en main.',
     href: 'realisations/tropical-golf-villa-2.html'
   }
