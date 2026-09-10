@@ -8,7 +8,8 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "import": "node scripts/import.mjs",
-    "import:pages": "node scripts/import-pages.mjs"
+    "import:pages": "node scripts/import-pages.mjs",
+    "sync:brochures": "node scripts/sync-brochures.mjs"
   },
   "dependencies": {
     "@sanity/vision": "^3",

@@ -227,6 +227,8 @@ async function run() {
       price: v.price,
       rentMonthly: v.rentMonthly,
       simCosts: v.costs != null ? v.costs : 30,
+      brochureFr: await file('brochures/tropical-golf-villa-2-fr.pdf'),
+      brochureEn: await file('brochures/tropical-golf-villa-2-en.pdf'),
       linkHref: v.href,
     })
   }
