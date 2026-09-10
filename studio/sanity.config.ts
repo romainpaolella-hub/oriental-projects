@@ -25,7 +25,7 @@ const contentStructure = (S: any) =>
 export default defineConfig([
   {
     name: 'contenu',
-    title: 'Oriental Projects — Contenu',
+    title: 'Koh Samui Estate — Contenu',
     basePath: '/contenu',
     projectId,
     dataset: 'production',
@@ -38,7 +38,7 @@ export default defineConfig([
   },
   {
     name: 'demandes',
-    title: 'Oriental Projects — Demandes',
+    title: 'Koh Samui Estate — Demandes',
     basePath: '/demandes',
     projectId,
     dataset: 'leads',

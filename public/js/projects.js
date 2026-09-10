@@ -1,8 +1,8 @@
-/* ORIENTAL PROJECTS — données du site (contenu réel + placeholders "xx" à compléter) */
+/* KOH SAMUI ESTATE — données du site (contenu réel + placeholders "xx" à compléter) */
 
 /* ===== Hero carrousel (accueil) =====
-   4 slides vidéo : hero de marque Oriental Projects (fond vidéo nu, le wordmark
-   "ORIENTAL PROJECTS" est superposé en HTML/CSS -> plein écran responsive mobile)
+   4 slides vidéo : hero de marque Koh Samui Estate (fond vidéo nu, le wordmark
+   "KOH SAMUI ESTATE" est superposé en HTML/CSS -> plein écran responsive mobile)
    puis 1 vidéo par programme.
    Poids vidéo (720p H.264, compressé le 02/09) :
    oriental 4,1 Mo · sea-view 7,4 Mo · eden 9,3 Mo · terra 6,8 Mo — total ~27 Mo. */
@@ -88,7 +88,7 @@ window.PROJECTS = [
 ];
 
 /* ===== Villas clé en main disponibles (accueil, section #a-vendre) =====
-   Chiffres confirmés dans "À fournir — Oriental Projects v3" (Tropical Golf, Villa 2).
+   Chiffres confirmés dans "À fournir — Koh Samui Estate v3" (Tropical Golf, Villa 2).
    Photos réelles reçues le 27/08 (dossier "Villa en vente"). Fiche complète : voir
    villas-a-vendre/index.html. Villa 4 (même résidence) et Villa Aurora annoncées
    par le client comme arrivant bientôt à la vente — pas encore de photos/prix. */
@@ -109,7 +109,7 @@ window.DISPOS = [
 
 /* ===== Réassurance (bandeau stats, section .stats) =====
    Seule la donnée "18 ans" est confirmée pour l'instant — le reste attend
-   les chiffres du client (voir "À fournir — Oriental Projects v3", §1). */
+   les chiffres du client (voir "À fournir — Koh Samui Estate v3", §1). */
 window.STATS = [
   { n: '18', l: "Ans d'expérience" },
   { n: 'xx', l: 'Villas livrées' },

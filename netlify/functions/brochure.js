@@ -1,5 +1,5 @@
 /**
- * Oriental Projects — traitement du formulaire "brochure".
+ * Koh Samui Estate — traitement du formulaire "brochure".
  * Envoie un e-mail de notification via l'API Resend (aucune dépendance npm).
  *
  * Variables d'environnement Netlify :
@@ -168,7 +168,7 @@ async function runSelfTest() {
     }).join(', ') + ' dans les variables Netlify.';
     return report;
   }
-  const fromHeader = from.indexOf('<') !== -1 ? from : ('Oriental Projects <' + from + '>');
+  const fromHeader = from.indexOf('<') !== -1 ? from : ('Koh Samui Estate <' + from + '>');
   try {
     const res = await fetch(RESEND_ENDPOINT, {
       method: 'POST',
@@ -176,7 +176,7 @@ async function runSelfTest() {
       body: JSON.stringify({
         from: fromHeader,
         to: [to],
-        subject: 'Oriental Projects — test de configuration e-mail',
+        subject: 'Koh Samui Estate — test de configuration e-mail',
         text: 'Si vous recevez ce message, l\'envoi des notifications de brochure fonctionne.\n\nEnvoyé le ' + new Date().toISOString()
       })
     });
@@ -230,7 +230,7 @@ exports.handler = async function (event) {
   const from = process.env.MAIL_FROM;
   const to = process.env.MAIL_TO;
 
-  const fromHeader = from && from.indexOf('<') !== -1 ? from : ('Oriental Projects <' + (from || '') + '>');
+  const fromHeader = from && from.indexOf('<') !== -1 ? from : ('Koh Samui Estate <' + (from || '') + '>');
   const cc = (process.env.MAIL_TO_CC || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
   const programmeLabel = PROGRAMME_LABELS[data.programme] || data.programme || '—';
 
@@ -284,16 +284,16 @@ exports.handler = async function (event) {
         '<p style="font:400 15px/1.6 Arial,sans-serif">Nous avons bien reçu votre demande concernant <strong>' + esc(programmeLabel) + '</strong>. ' +
         'Notre équipe locale francophone vous répond sous 24 h avec la brochure, les disponibilités et les conditions.</p>' +
         '<p style="font:400 15px/1.6 Arial,sans-serif">Pour toute question immédiate : WhatsApp +66 655 767 871.</p>' +
-        '<p style="font:400 15px/1.6 Arial,sans-serif;margin-top:20px">— Oriental Projects Promotion, Koh Samui</p>' +
+        '<p style="font:400 15px/1.6 Arial,sans-serif;margin-top:20px">— Koh Samui Estate, Koh Samui</p>' +
       '</div>';
     try {
       await sendEmail(apiKey, {
         from: fromHeader,
         to: [data.email],
-        subject: 'Votre demande de brochure — Oriental Projects',
+        subject: 'Votre demande de brochure — Koh Samui Estate',
         html: ackHtml,
         text: 'Bonjour ' + data.nom + ',\n\nNous avons bien reçu votre demande concernant ' + programmeLabel +
-              '. Notre équipe vous répond sous 24 h.\n\nWhatsApp : +66 655 767 871\n\n— Oriental Projects Promotion'
+              '. Notre équipe vous répond sous 24 h.\n\nWhatsApp : +66 655 767 871\n\n— Koh Samui Estate'
       });
     } catch (err) {
       console.error('Accusé client non envoyé (non bloquant):', err.message);

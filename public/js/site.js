@@ -1,4 +1,4 @@
-/* ORIENTAL PROJECTS v3 — interactions */
+/* KOH SAMUI ESTATE v3 — interactions */
 (function(){
   var $=function(s,c){return (c||document).querySelector(s)};
   var LANG=(document.documentElement.lang||'fr').slice(0,2).toLowerCase()==='en'?'en':'fr';
@@ -54,12 +54,12 @@
       var media = s.type==='video'
         ? '<video src="'+s.src+'" poster="'+(s.poster||'')+'"'+dim+' muted playsinline preload="'+(i===0?'auto':'metadata')+'"></video>'
         : '<img src="'+s.img+'"'+dim+' alt="'+(s.title||'')+'">';
-      /* slide de marque : fond vidéo nu + wordmark "ORIENTAL PROJECTS" superposé
+      /* slide de marque : fond vidéo nu + wordmark "KOH SAMUI ESTATE" superposé
          en HTML/CSS (masque PNG responsive), on n'ajoute qu'un CTA discret en bas. */
       var overlay = s.brand
         ? '<div class="hbrand" aria-hidden="true"><span class="hbrand-glow"></span>'
           + '<span class="hbrand-dust"><i style="left:8%;--d:10s;--delay:0s"></i><i style="left:24%;--d:12s;--delay:2.4s"></i><i style="left:40%;--d:9s;--delay:1.1s"></i><i style="left:56%;--d:13s;--delay:3.3s"></i><i style="left:72%;--d:10.5s;--delay:.7s"></i><i style="left:88%;--d:11.5s;--delay:2s"></i></span>'
-          + '<span class="hbrand-mark" role="img" aria-label="Oriental Projects"></span></div>'
+          + '<span class="hbrand-mark" role="img" aria-label="Koh Samui Estate">KOH SAMUI ESTATE</span></div>'
         : '';
       var inner = s.brand
         ? '<a class="btn" style="margin-top:auto;background:var(--brass-bright);border-color:var(--brass-bright);color:#2a2015" href="'+s.href+'">'+s.cta+'</a>'

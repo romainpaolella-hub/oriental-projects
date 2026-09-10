@@ -436,8 +436,9 @@ section[id]{scroll-margin-top:110px}
 
 /* ===== Slide de marque du carrousel =====
    Fond vidéo nu (object-fit:cover, plein écran mobile compris) + wordmark
-   "ORIENTAL PROJECTS" superposé en HTML/CSS via un masque PNG 1100x57 ->
-   entièrement responsive, jamais rogné. */
+   "KOH SAMUI ESTATE" en texte CSS (Cormorant Garamond), responsive.
+   Pour un logo typographique sur mesure : fournir images/brand/kse-wordmark.png
+   et repasser .hbrand-mark en -webkit-mask (voir historique git). */
 .hslide-brand{justify-content:flex-end;padding-bottom:clamp(60px,12vh,120px)}
 .hslide-v-brand>video{background:#0c0a07}
 
@@ -446,14 +447,15 @@ section[id]{scroll-margin-top:110px}
   width:min(150%,1300px);height:34vh;max-height:360px;
   background:radial-gradient(ellipse at center,rgba(6,5,3,.55),rgba(6,5,3,.26) 46%,rgba(6,5,3,0) 72%);
   filter:blur(34px);opacity:0;animation:hbGlow 2.2s .5s ease forwards}
-.hbrand-mark{position:relative;width:clamp(190px,64vw,760px);max-width:calc(100% - 116px);aspect-ratio:1100/57;background:#fff;
-  -webkit-mask:url(../images/brand/od-wordmark.png) center/contain no-repeat;
-          mask:url(../images/brand/od-wordmark.png) center/contain no-repeat;
+.hbrand-mark{position:relative;max-width:calc(100% - 96px);
+  font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;color:#fff;line-height:1;
+  font-size:clamp(30px,8.4vw,88px);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
   filter:drop-shadow(0 0 1px rgba(0,0,0,.92)) drop-shadow(0 0 6px rgba(0,0,0,.72)) drop-shadow(0 2px 12px rgba(0,0,0,.5));
   opacity:0;transform:translateY(12px);animation:hbFade 1.8s .5s cubic-bezier(.2,.7,.2,1) forwards}
-.hbrand-mark::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(105deg,transparent 40%,rgba(255,242,214,.95) 49%,rgba(214,178,110,.8) 53%,transparent 62%);
-  transform:translateX(-135%);animation:hbSweep 6s 2.6s ease-in-out infinite}
+.hbrand-mark::after{content:"";position:absolute;inset:-.15em -.4em;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,242,214,.55) 49%,rgba(214,178,110,.45) 53%,transparent 62%);
+  transform:translateX(-135%);animation:hbSweep 6s 2.6s ease-in-out infinite;mix-blend-mode:screen}
+@media(max-width:520px){.hbrand-mark{letter-spacing:.1em;white-space:normal;text-align:center}}
 .hbrand-dust{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   width:min(80vw,900px);height:30vh;max-height:300px;opacity:0;animation:hbGlow 2s 1.6s ease forwards}
 .hbrand-dust i{position:absolute;bottom:24%;width:.42vh;height:.42vh;min-width:3px;min-height:3px;border-radius:50%;

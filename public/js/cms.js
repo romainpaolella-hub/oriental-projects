@@ -1,8 +1,8 @@
-/* ORIENTAL PROJECTS — pont vers le CMS Sanity (lecture en direct, sans redéploiement).
+/* KOH SAMUI ESTATE — pont vers le CMS Sanity (lecture en direct, sans redéploiement).
    Si OD_CMS.projectId est vide, le site utilise le contenu de js/projects.js (repli). */
 
 window.OD_CMS = {
-  projectId: 'x3jcttot',    // projet Sanity « Oriental Projects »
+  projectId: 'x3jcttot',    // projet Sanity « Koh Samui Estate »
   dataset: 'production',
   apiVersion: '2024-01-01',
 };

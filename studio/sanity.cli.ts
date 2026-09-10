@@ -6,5 +6,5 @@ const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'x3jcttot'
 
 export default defineCliConfig({
   api: {projectId, dataset: 'production'},
-  studioHost: 'orientalprojects',
+  studioHost: 'kohsamuiestate',
 })

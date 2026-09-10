@@ -120,7 +120,7 @@ async function run() {
       {_key: 'p1', label: 'Jean-David', number: '+66 655 767 871', whatsapp: '66655767871'},
       {_key: 'p2', label: 'Équipe EU', number: '+66 981 905 157', whatsapp: '66981905157'},
     ],
-    email: 'contact@orientalprojects.co',
+    email: 'contactkohsamuiestate@gmail.com',
   })
 
   // ===== Carrousel d'accueil =====

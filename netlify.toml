@@ -1,4 +1,4 @@
-# === Oriental Projects — configuration Netlify (déploiement depuis Git) ===
+# === Koh Samui Estate — configuration Netlify (déploiement depuis Git) ===
 
 [build]
   publish = "public"
