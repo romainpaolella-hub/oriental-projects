@@ -103,6 +103,15 @@ window.DISPOS = [
     rentMonthly: 80000,
     href: 'villas-a-vendre/tropical-golf-villa-2.html'
   },
+  {
+    name: 'Villa Lilouana',
+    img: '/images/villa-lilouana/hero-exterior.jpg',
+    w: 1920, h: 1080,
+    statusLabel: 'Disponible',
+    specs: ['150 m² habitables', 'Piscine à débordement 8 × 3 m', '3 ch. · 3 sdb', 'Vendue avec société thaïlandaise'],
+    price: 11900000,
+    href: 'villas-a-vendre/villa-lilouana.html'
+  },
   { placeholder: true, name: 'Tropical Golf — Villa 4', note: 'Même résidence · bientôt disponible' },
   { placeholder: true, name: 'Villa Aurora', note: 'Nouvelle adresse · bientôt disponible' }
 ];
@@ -158,21 +167,5 @@ window.REALISATIONS_VILLAS = [
     count: 24,
     blurb: 'Villa de plain-pied, longue piscine et jardin paysagé planté de cocotiers.',
     href: 'realisations/tropical-golf.html'
-  },
-  {
-    slug: 'tropical-golf-villa-2',
-    name: 'Tropical Golf — Villa 2',
-    zone: 'Koh Samui · Livrée · À la vente',
-    tag: 'À la vente',
-    cover: '/images/tropical-golf-v2/hero-dusk.jpg',
-    w: 1920, h: 1440,
-    files: [
-      'hero-dusk.jpg','ext-dusk-2.jpg','pool-courtyard.jpg','ext-day-1.jpg','ext-day-2.jpg',
-      'living-pool-view.jpg','living.jpg','kitchen.jpg','dining-outdoor.jpg',
-      'bedroom-1.jpg','bedroom-2.jpg','bathroom-1.jpg','bathroom-2.jpg','entrance.jpg'
-    ],
-    folder: '/images/tropical-golf-v2/',
-    blurb: 'Villa 2 chambres livrée et louée, aujourd\'hui proposée à la vente clé en main.',
-    href: 'realisations/tropical-golf-villa-2.html'
   }
 ];

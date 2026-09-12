@@ -370,4 +370,14 @@
     <xhtml:link rel="alternate" hreflang="fr-FR" href="https://kohsamuiestate.com/villas-a-vendre/tropical-golf-villa-2.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kohsamuiestate.com/en/villas-a-vendre/tropical-golf-villa-2.html"/>
   </url>
+  <url>
+    <loc>https://kohsamuiestate.com/villas-a-vendre/villa-lilouana.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://kohsamuiestate.com/villas-a-vendre/villa-lilouana.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kohsamuiestate.com/en/villas-a-vendre/villa-lilouana.html"/>
+  </url>
+  <url>
+    <loc>https://kohsamuiestate.com/en/villas-a-vendre/villa-lilouana.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://kohsamuiestate.com/villas-a-vendre/villa-lilouana.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kohsamuiestate.com/en/villas-a-vendre/villa-lilouana.html"/>
+  </url>
 </urlset>
