@@ -271,7 +271,7 @@ footer{background:var(--olive);color:rgba(244,240,231,.75);padding:64px 0 30px}
 .encart .kfacts span+span::before{content:"";position:absolute;left:-11px;top:50%;width:1px;height:12px;background:var(--brass);transform:translateY(-50%)}
 
 /* ===== Villas en vente (cartes) ===== */
-.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.4vw,32px)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,380px));justify-content:center;gap:clamp(20px,2.4vw,32px)}
 .vcard{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:border-color .5s ease}
 .vcard:hover{border-color:var(--brass-bright)}
 .vcard .im{position:relative;aspect-ratio:4/3;overflow:hidden}

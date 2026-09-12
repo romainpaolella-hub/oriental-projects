@@ -111,9 +111,7 @@ window.DISPOS = [
     specs: ['150 m² habitables', 'Piscine à débordement 8 × 3 m', '3 ch. · 3 sdb', 'Vendue avec société thaïlandaise'],
     price: 11900000,
     href: 'villas-a-vendre/villa-lilouana.html'
-  },
-  { placeholder: true, name: 'Tropical Golf — Villa 4', note: 'Même résidence · bientôt disponible' },
-  { placeholder: true, name: 'Villa Aurora', note: 'Nouvelle adresse · bientôt disponible' }
+  }
 ];
 
 /* ===== Réassurance (bandeau stats, section .stats) =====
