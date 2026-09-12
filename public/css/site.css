@@ -390,7 +390,7 @@ section[id]{scroll-margin-top:110px}
 .mat h4{font-family:'Cormorant Garamond';font-size:24px;font-weight:600;margin:10px 0 8px}
 .mat p{font-size:14px;color:var(--ink-soft)}
 /* Parcelles (cartes) */
-.parcels{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2vw,26px)}
+.parcels{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,320px));justify-content:center;gap:clamp(16px,2vw,26px)}
 .parcel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
 .parcel .im{position:relative;aspect-ratio:4/5;overflow:hidden}
 .parcel .im img{width:100%;height:100%;object-fit:cover}
