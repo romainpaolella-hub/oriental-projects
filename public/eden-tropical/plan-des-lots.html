@@ -1,18 +1,18 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html data-theme="light"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Plan des lots Éden Tropical</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600&display=swap">
 <style>
   :root{
-    --paper:#F0EADC; --surface:#FBF8F1; --surface-2:#F4EFE3;
-    --ink:#382F26; --ink-soft:#6E6151; --line:#D9CCB3; --line-soft:#E7DDC9;
-    --teal:#2E7A70; --teal-deep:#1E574F;
-    --avail:#4E9A6B; --avail-tint:rgba(78,154,107,.26); --avail-strong:rgba(78,154,107,.9);
-    --reserved:#C68A28; --reserved-tint:rgba(206,143,51,.30); --reserved-strong:rgba(198,138,40,.95);
-    --sold:#AE543D; --sold-tint:rgba(174,84,61,.34); --sold-strong:rgba(174,84,61,.95);
-    --shadow:0 1px 2px rgba(56,47,38,.06),0 6px 20px rgba(56,47,38,.08);
-    --radius:14px;
+    --paper:#F4F0E7; --surface:#FBF8F2; --surface-2:#E5DDCE;
+    --ink:#252824; --ink-soft:#4A5142; --line:rgba(37,40,36,.14); --line-soft:rgba(37,40,36,.08);
+    --teal:#33544C; --teal-deep:#22392F;
+    --avail:#6E9488; --avail-tint:rgba(110,148,136,.26); --avail-strong:rgba(110,148,136,.9);
+    --reserved:#A87E48; --reserved-tint:rgba(168,126,72,.30); --reserved-strong:rgba(168,126,72,.95);
+    --sold:#9C5A3C; --sold-tint:rgba(156,90,60,.34); --sold-strong:rgba(156,90,60,.95);
+    --shadow:0 1px 2px rgba(37,40,36,.06),0 6px 20px rgba(37,40,36,.08);
+    --radius:8px;
     --maxw:1180px;
   }
   :root:not([data-theme="light"]){
@@ -309,7 +309,7 @@ const I18N={
     bed1:"1 bedroom",bed2:"2 bedrooms",bath:"bathroom",onreq:"Price on request",from:"From",
     d_area:"Plot area",d_type:"Type",d_status:"Status",d_price:"Price",d_ref:"Reference",lease:"30-year lease · furnished"}
 };
-let lang="fr";
+let lang = (new URLSearchParams(location.search).get("lang")==="en") ? "en" : "fr";
 const STL={available:"s_available",reserved:"s_reserved",sold:"s_sold"};
 function t(k){return I18N[lang][k]||k}
 
@@ -340,11 +340,19 @@ function select(id){
   if(row){row.classList.add("sel"); row.scrollIntoView({block:"nearest"});}
 }
 function cssid(id){return id.replace('+','\\2B ')}
+function priceFor(l){
+  if(l.price) return l.price;
+  const n = lang==="fr" ? "3 600 000" : "3,600,000";
+  const n2 = lang==="fr" ? "5 100 000" : "5,100,000";
+  if(l.bed===1) return `${t("from")} ${n} THB`;
+  if(l.bed===2) return `${t("from")} ${n2} THB`;
+  return t("onreq");
+}
 function renderDetail(){
   const d=document.getElementById("detail");
   const l=lots.find(x=>x.id===selected);
   if(!l){d.innerHTML=`<div class="ph">${t("pick")}</div>`;return;}
-  const price = l.price ? l.price : (l.bed===1 ? `${t("from")} 3 600 000 THB` : t("onreq"));
+  const price = priceFor(l);
   d.innerHTML=`
     <h3><span class="disp">${lang==="fr"?"Lot":"Plot"} ${l.id}</span>
       <span class="badge ${l.status}">${t(STL[l.status])}</span></h3>
@@ -382,7 +390,7 @@ function renderCounts(){
 function renderTable(){
   const tb=document.getElementById("tbody"); tb.innerHTML="";
   lots.forEach(l=>{
-    const price = l.price ? l.price : (l.bed===1 ? `${t("from")} 3 600 000 THB` : t("onreq"));
+    const price = priceFor(l);
     const tr=document.createElement("tr"); tr.dataset.id=l.id;
     tr.innerHTML=`
       <td><span class="num">${l.id}</span></td>
@@ -401,6 +409,7 @@ function renderTable(){
 function applyLang(){
   document.querySelectorAll("[data-i]").forEach(el=>{ const k=el.dataset.i; if(I18N[lang][k]!==undefined) el.textContent=I18N[lang][k]; });
   document.documentElement.lang=lang;
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.l===lang ? "true" : "false"));
   buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters();
 }
 
