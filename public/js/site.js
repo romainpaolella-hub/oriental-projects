@@ -267,7 +267,8 @@
     'sea-view':'brochures/villa-sea-view-%L%.pdf',
     'eden-tropical':'brochures/eden-tropical-%L%.pdf',
     'terra-mare':'brochures/terra-mare-%L%.pdf',
-    'tropical-golf':'brochures/tropical-golf-villa-2-%L%.pdf'
+    'tropical-golf':'brochures/tropical-golf-villa-2-%L%.pdf',
+    'villa-lilouana':'brochures/villa-lilouana-en.pdf'
   };
   function brochureUrl(programme,langue){
     var tpl=BROCHURES[programme]; if(!tpl) return '';
