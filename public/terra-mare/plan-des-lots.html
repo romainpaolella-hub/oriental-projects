@@ -89,6 +89,8 @@
   .lot.sold{border-color:var(--sold-strong);
     background:var(--sold-tint) repeating-linear-gradient(135deg,transparent 0 6px,rgba(174,84,61,.16) 6px 12px)}
   .lot.sold .chip{background:var(--sold)}
+  .lot{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+  .lot .chip{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
   body.managing .lot{cursor:grab;touch-action:none}
   body.managing .lot:active{cursor:grabbing}
   .handle{position:absolute;width:13px;height:13px;background:var(--teal-deep);border:2px solid #fff;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.35);z-index:20;touch-action:none}
@@ -345,8 +347,10 @@ function buildPlan(){
 
 /* ---------- Drag-to-move / resize (Mode gestion) ---------- */
 function attachDrag(b,l){
+  b.addEventListener("dragstart",function(e){ e.preventDefault(); });
   b.addEventListener("pointerdown",function(e){
     if(e.target.closest(".handle")) return;
+    e.preventDefault();
     const sx=e.clientX, sy=e.clientY, startBox=l.box.slice();
     let dragging=false;
     function onMove(e2){
