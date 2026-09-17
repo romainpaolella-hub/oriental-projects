@@ -38,13 +38,18 @@ window.OD_CMS = {
     '"realisations":*[_type=="realisation"]|order(order asc){name,"slug":slug.current,zone,tag,blurb,linkHref,' +
       '"cover":cover.asset->url,"w":cover.asset->metadata.dimensions.width,"h":cover.asset->metadata.dimensions.height},' +
     '"pages":*[_type=="programmePage"]{programmeSlug,' +
+      '"res_hero":res_hero.asset->url,' +
       'res_eyebrow,res_heading,res_paragraphs,res_caption,res_specsIntro,res_specs,res_specsNote,res_cta,' +
+      '"vil_hero":vil_hero.asset->url,' +
       'vil_eyebrow,vil_heading,vil_body,vil_cards,vil_cardsNote,' +
       'vil_archEyebrow,vil_archHeading,vil_arch,vil_specsEyebrow,vil_specsHeading,vil_specs,' +
       'vil_matEyebrow,vil_matHeading,vil_matBody,vil_mat,' +
+      '"vil_gallery":vil_gallery[]{"url":asset->url,alt},' +
       'vil_galEyebrow,vil_galHeading,vil_galNote,vil_galNote2,vil_cta,' +
+      '"loc_hero":loc_hero.asset->url,' +
       'loc_heroEyebrow,loc_heroTitle,loc_eyebrow,loc_heading,loc_body,loc_distances,loc_distancesNote,' +
       'loc_poiEyebrow,loc_poiHeading,loc_poiNote,loc_islandEyebrow,loc_islandHeading,loc_island,loc_cta,' +
+      '"inv_hero":inv_hero.asset->url,' +
       'inv_heroTitle,inv_simEyebrow,inv_simHeading,inv_simBody,inv_simNote,' +
       'inv_stepsEyebrow,inv_stepsHeading,inv_steps,inv_stepsProse,inv_stepsNote,' +
       'inv_leaseEyebrow,inv_leaseHeading,inv_leaseIntro,inv_leaseRows,inv_leaseTotalLabel,inv_leaseTotalValue,inv_leaseTable,inv_leaseNote,' +
@@ -171,6 +176,7 @@ window.OD_CMS = {
     return null;
   }
   function setText(node, val) { if (node && val != null && val !== '') node.textContent = val; }
+  function setImg(node, url) { if (node && url) node.src = window.OD_img(url, 1920); }
 
   // Reconstruit un tableau .amen (colonnes h4 + lignes .row span/b) depuis un tableau de {title,rows:[{label,value}]}.
   function fillSpecTable(box, groups) {
@@ -219,6 +225,7 @@ window.OD_CMS = {
     var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
 
     // ---- La Résidence ----
+    setImg(q('res.hero'), doc.res_hero);
     setText(q('res.eyebrow'), pick(doc.res_eyebrow));
     setText(q('res.heading'), pick(doc.res_heading));
     setText(q('res.caption'), pick(doc.res_caption));
@@ -240,6 +247,7 @@ window.OD_CMS = {
     fillSpecTable(q('res.specs'), doc.res_specs);
 
     // ---- Les Villas ----
+    setImg(q('vil.hero'), doc.vil_hero);
     setText(q('vil.eyebrow'), pick(doc.vil_eyebrow));
     setText(q('vil.heading'), pick(doc.vil_heading));
     setText(q('vil.body'), pick(doc.vil_body));
@@ -288,7 +296,22 @@ window.OD_CMS = {
       });
     }
 
+    // galerie « Découvrez les villas » — index par index
+    if (doc.vil_gallery && doc.vil_gallery.length) {
+      var galItems = all('vil.galItem');
+      doc.vil_gallery.forEach(function (g, gi) {
+        var el = galItems[gi];
+        if (!el || !g || !g.url) return;
+        var img = el.tagName === 'IMG' ? el : el.querySelector('img');
+        if (!img) return;
+        img.src = window.OD_img(g.url, 1920);
+        var alt = pick(g.alt);
+        if (alt) img.alt = alt;
+      });
+    }
+
     // ---- Localisation ----
+    setImg(q('loc.hero'), doc.loc_hero);
     setText(q('loc.heroEyebrow'), pick(doc.loc_heroEyebrow));
     setText(q('loc.heroTitle'), pick(doc.loc_heroTitle));
     setText(q('loc.eyebrow'), pick(doc.loc_eyebrow));
@@ -312,6 +335,7 @@ window.OD_CMS = {
     }
 
     // ---- Investir ----
+    setImg(q('inv.hero'), doc.inv_hero);
     setText(q('inv.heroTitle'), pick(doc.inv_heroTitle));
     setText(q('inv.simEyebrow'), pick(doc.inv_simEyebrow));
     setText(q('inv.simHeading'), pick(doc.inv_simHeading));

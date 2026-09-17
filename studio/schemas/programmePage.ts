@@ -109,6 +109,14 @@ export const programmePage = defineType({
 
     // ---------------- LA RÉSIDENCE ----------------
     defineField({
+      name: 'res_hero',
+      title: 'Photo de bandeau (hero)',
+      type: 'image',
+      options: {hotspot: true},
+      description: 'Vide = la photo déjà en place sur le site reste affichée.',
+      group: 'residence',
+    }),
+    defineField({
       name: 'res_eyebrow',
       title: 'Surtitre',
       type: 'localeString',
@@ -170,6 +178,14 @@ export const programmePage = defineType({
     }),
 
     // ---------------- LES VILLAS ----------------
+    defineField({
+      name: 'vil_hero',
+      title: 'Photo de bandeau (hero)',
+      type: 'image',
+      options: {hotspot: true},
+      description: 'Vide = la photo déjà en place sur le site reste affichée.',
+      group: 'villas',
+    }),
     defineField({name: 'vil_eyebrow', title: 'Section 1 — surtitre', type: 'localeString', group: 'villas'}),
     defineField({name: 'vil_heading', title: 'Section 1 — titre', type: 'localeText', group: 'villas'}),
     defineField({name: 'vil_body', title: 'Section 1 — texte', type: 'localeText', group: 'villas'}),
@@ -198,12 +214,34 @@ export const programmePage = defineType({
 
     defineField({name: 'vil_galEyebrow', title: 'Galerie — surtitre', type: 'localeString', group: 'villas'}),
     defineField({name: 'vil_galHeading', title: 'Galerie — titre', type: 'localeText', group: 'villas'}),
+    defineField({
+      name: 'vil_gallery',
+      title: 'Galerie — photos',
+      type: 'array',
+      description: 'Dans l’ordre d’affichage. Remplace les photos une par une : les cases vides gardent la photo déjà en place sur le site.',
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [{name: 'alt', title: 'Description', type: 'localeString'}],
+        },
+      ],
+      group: 'villas',
+    }),
     defineField({name: 'vil_galNote', title: 'Galerie — note', type: 'localeText', description: 'Sea View / Terra.', group: 'villas'}),
     defineField({name: 'vil_galNote2', title: 'Galerie — 2e note', type: 'localeText', description: 'Terra Mare (photos / plans).', group: 'villas'}),
 
     defineField({name: 'vil_cta', title: 'Titre de l’appel à l’action (bas de page)', type: 'localeText', group: 'villas'}),
 
     // ---------------- LOCALISATION ----------------
+    defineField({
+      name: 'loc_hero',
+      title: 'Photo de bandeau (hero)',
+      type: 'image',
+      options: {hotspot: true},
+      description: 'Vide = la photo déjà en place sur le site reste affichée.',
+      group: 'localisation',
+    }),
     defineField({name: 'loc_heroEyebrow', title: 'Bandeau — surtitre', type: 'localeString', group: 'localisation'}),
     defineField({name: 'loc_heroTitle', title: 'Bandeau — titre', type: 'localeString', group: 'localisation'}),
     defineField({name: 'loc_eyebrow', title: 'Distances — surtitre', type: 'localeString', group: 'localisation'}),
@@ -235,6 +273,14 @@ export const programmePage = defineType({
     defineField({name: 'loc_cta', title: 'Titre de l’appel à l’action (bas de page)', type: 'localeText', group: 'localisation'}),
 
     // ---------------- INVESTIR ----------------
+    defineField({
+      name: 'inv_hero',
+      title: 'Photo de bandeau (hero)',
+      type: 'image',
+      options: {hotspot: true},
+      description: 'Vide = la photo déjà en place sur le site reste affichée.',
+      group: 'invest',
+    }),
     defineField({name: 'inv_heroTitle', title: 'Bandeau — titre', type: 'localeString', group: 'invest'}),
     defineField({name: 'inv_simEyebrow', title: 'Simulateur — surtitre', type: 'localeString', group: 'invest'}),
     defineField({name: 'inv_simHeading', title: 'Simulateur — titre', type: 'localeText', group: 'invest'}),
