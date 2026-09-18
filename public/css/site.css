@@ -88,6 +88,7 @@ section{padding:clamp(72px,10vw,140px) 0}
 .badge{position:absolute;top:16px;left:16px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;padding:7px 13px;border-radius:2px;background:rgba(251,248,242,.92);color:var(--ink)}
 .badge.plan{background:rgba(51,84,76,.92);color:#fff}
 .badge.dispo{background:var(--brass-bright);color:#2a2015}
+.badge.sold{background:rgba(156,90,60,.92);color:#fff}
 .pcard-body{padding:24px;display:flex;flex-direction:column;flex:1}
 .pcard-zone{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--celadon);margin-bottom:8px}
 .pcard h3{font-size:28px;margin-bottom:12px}
