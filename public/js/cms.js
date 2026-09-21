@@ -45,10 +45,15 @@ window.OD_CMS = {
     '"realisations":*[_type=="realisation"]|order(order asc){name,"slug":slug.current,zone,tag,blurb,linkHref,' +
       '"cover":cover.asset->url,"w":cover.asset->metadata.dimensions.width,"h":cover.asset->metadata.dimensions.height},' +
     '"pages":*[_type=="programmePage"]{programmeSlug,' +
+      'idx_heroEyebrow,idx_heroSub,idx_progEyebrow,idx_progHeading,idx_progBody,idx_facts,' +
+      '"idx_bandeauImg":idx_bandeauImg.asset->url,idx_bandeauCaption,' +
+      'idx_storyEyebrow,idx_storyHeading,idx_storyParagraphs,' +
+      '"idx_storyImg":idx_storyImg.asset->url,idx_cta,' +
       '"res_hero":res_hero.asset->url,' +
       'res_eyebrow,res_heading,res_paragraphs,res_caption,res_specsIntro,res_specs,res_specsNote,res_cta,' +
       '"vil_hero":vil_hero.asset->url,' +
-      'vil_eyebrow,vil_heading,vil_body,vil_cards,vil_cardsNote,' +
+      'vil_eyebrow,vil_heading,vil_body,vil_cardsNote,' +
+      '"vil_cards":vil_cards[]{badge,subtitle,zone,title,desc,specs,price,priceNote,linkText,linkHref,"image":image.asset->url},' +
       'vil_archEyebrow,vil_archHeading,vil_arch,vil_specsEyebrow,vil_specsHeading,vil_specs,' +
       'vil_matEyebrow,vil_matHeading,vil_matBody,vil_mat,' +
       '"vil_gallery":vil_gallery[]{"url":asset->url,alt},' +
@@ -213,15 +218,33 @@ window.OD_CMS = {
     });
   }
 
+  // Reconstruit un groupe d'éléments répétés (nombre variable) à partir d'un tableau de données :
+  // clone le premier élément existant comme modèle (préserve ses styles/classes), vide son parent,
+  // puis ajoute un clone rempli par élément. Neutralise l'opacité/transform posés par l'animation
+  // data-reveal sur le modèle, sinon les clones resteraient invisibles (jamais observés par elle).
+  // No-op si le tableau Sanity est vide : le contenu statique existant reste affiché tel quel.
+  function rebuildRepeat(sel, items, fillFn) {
+    var first = document.querySelector('[data-cms="' + sel + '"]');
+    if (!first || !items || !items.length) return;
+    var parent = first.parentElement;
+    if (!parent) return;
+    var template = first.cloneNode(true);
+    parent.innerHTML = '';
+    items.forEach(function (item, i) {
+      var el = template.cloneNode(true);
+      el.style.opacity = ''; el.style.transform = ''; el.style.transition = '';
+      fillFn(el, item, i);
+      parent.appendChild(el);
+    });
+  }
+
   // Reconstruit une liste .n01/.serif + h3/h4 + p depuis un tableau de {num,title,body}.
-  function fillNumItems(nodeList, items) {
-    if (!items) return;
-    for (var i = 0; i < nodeList.length && i < items.length; i++) {
-      var el = nodeList[i], it = items[i];
+  function fillNumItems(sel, items) {
+    rebuildRepeat(sel, items, function (el, it) {
       setText(el.querySelector('[data-cms-f="num"]') || el.querySelector('.n, .serif'), it.num);
       setText(el.querySelector('[data-cms-f="title"]') || el.querySelector('h3, h4'), pick(it.title));
       setText(el.querySelector('[data-cms-f="body"]') || el.querySelector('p'), pick(it.body));
-    }
+    });
   }
 
   window.OD_renderProgrammePage = function () {
@@ -234,6 +257,25 @@ window.OD_CMS = {
 
     var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
     var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
+
+    // ---- Accueil du programme ----
+    setText(q('idx.heroEyebrow'), pick(doc.idx_heroEyebrow));
+    setText(q('idx.heroSub'), pick(doc.idx_heroSub));
+    setText(q('idx.progEyebrow'), pick(doc.idx_progEyebrow));
+    setText(q('idx.progHeading'), pick(doc.idx_progHeading));
+    setText(q('idx.progBody'), pick(doc.idx_progBody));
+    fillFacts(all('idx.factItem'), doc.idx_facts);
+    setImg(q('idx.bandeauImg'), doc.idx_bandeauImg);
+    setText(q('idx.bandeauCaption'), pick(doc.idx_bandeauCaption));
+    setText(q('idx.storyEyebrow'), pick(doc.idx_storyEyebrow));
+    setText(q('idx.storyHeading'), pick(doc.idx_storyHeading));
+    if (doc.idx_storyParagraphs && doc.idx_storyParagraphs.length) {
+      var sps = all('idx.storyP');
+      for (var sj = 0; sj < sps.length && sj < doc.idx_storyParagraphs.length; sj++)
+        setText(sps[sj], pick(doc.idx_storyParagraphs[sj]));
+    }
+    setImg(q('idx.storyImg'), doc.idx_storyImg);
+    setText(q('idx.cta'), pick(doc.idx_cta));
 
     // ---- La Résidence ----
     setImg(q('res.hero'), doc.res_hero);
@@ -276,26 +318,26 @@ window.OD_CMS = {
     setText(q('vil.galNote2'), pick(doc.vil_galNote2));
     setText(q('vil.cta'), pick(doc.vil_cta));
     fillSpecTable(q('vil.specs'), doc.vil_specs);
-    fillNumItems(all('vil.archItem'), doc.vil_arch);
-    fillNumItems(all('vil.matItem'), doc.vil_mat);
+    fillNumItems('vil.archItem', doc.vil_arch);
+    fillNumItems('vil.matItem', doc.vil_mat);
 
-    // cartes (parcelles / typologies) — index par index
-    if (doc.vil_cards && doc.vil_cards.length) {
-      var cards = all('vil.card');
-      doc.vil_cards.forEach(function (cd, ci) {
-        var el = cards[ci];
-        if (!el) return;
-        var f = function (name) { return el.querySelector('[data-cms-f="' + name + '"]'); };
-        setText(f('badge'), pick(cd.badge));
-        setText(f('subtitle'), pick(cd.subtitle));
-        setText(f('zone'), pick(cd.zone));
-        setText(f('title'), pick(cd.title));
-        setText(f('desc'), pick(cd.desc));
-        setText(f('price'), pick(cd.price));
-        setText(f('priceNote'), pick(cd.priceNote));
-        setText(f('link'), pick(cd.linkText));
-        var ul = f('specs');
-        if (ul && cd.specs && cd.specs.length) {
+    // cartes (parcelles / typologies) — nombre variable, clone du premier modèle existant
+    rebuildRepeat('vil.card', doc.vil_cards, function (el, cd) {
+      if (cd.linkHref) el.setAttribute('href', cd.linkHref);
+      var img = el.querySelector('img');
+      if (img && cd.image) { img.src = window.OD_img(cd.image, 1400); img.alt = pick(cd.title) || ''; }
+      var f = function (name) { return el.querySelector('[data-cms-f="' + name + '"]'); };
+      setText(f('badge'), pick(cd.badge));
+      setText(f('subtitle'), pick(cd.subtitle));
+      setText(f('zone'), pick(cd.zone));
+      setText(f('title'), pick(cd.title));
+      setText(f('desc'), pick(cd.desc));
+      setText(f('price'), pick(cd.price));
+      setText(f('priceNote'), pick(cd.priceNote));
+      setText(f('link'), pick(cd.linkText));
+      var ul = f('specs');
+      if (ul) {
+        if (cd.specs && cd.specs.length) {
           ul.innerHTML = cd.specs.map(function () { return '<li><span></span><b></b></li>'; }).join('');
           var lis = ul.querySelectorAll('li');
           cd.specs.forEach(function (s, si) {
@@ -303,9 +345,11 @@ window.OD_CMS = {
             setText(lis[si].querySelector('span'), pick(s.label));
             setText(lis[si].querySelector('b'), pick(s.value));
           });
+        } else {
+          ul.innerHTML = '';
         }
-      });
-    }
+      }
+    });
 
     // galerie « Découvrez les villas » — index par index
     if (doc.vil_gallery && doc.vil_gallery.length) {
@@ -335,15 +379,11 @@ window.OD_CMS = {
     setText(q('loc.islandEyebrow'), pick(doc.loc_islandEyebrow));
     setText(q('loc.islandHeading'), pick(doc.loc_islandHeading));
     setText(q('loc.cta'), pick(doc.loc_cta));
-    fillNumItems(all('loc.islandItem'), doc.loc_island);
-    if (doc.loc_distances && doc.loc_distances.length) {
-      var drows = all('loc.distRow');
-      doc.loc_distances.forEach(function (r, i) {
-        if (!drows[i]) return;
-        setText(drows[i].querySelector('span'), pick(r.label));
-        setText(drows[i].querySelector('b'), pick(r.value));
-      });
-    }
+    fillNumItems('loc.islandItem', doc.loc_island);
+    rebuildRepeat('loc.distRow', doc.loc_distances, function (el, r) {
+      setText(el.querySelector('span'), pick(r.label));
+      setText(el.querySelector('b'), pick(r.value));
+    });
 
     // ---- Investir ----
     setImg(q('inv.hero'), doc.inv_hero);
@@ -366,32 +406,24 @@ window.OD_CMS = {
     setText(q('inv.cta'), pick(doc.inv_cta));
     fillSpecTable(q('inv.leaseTable'), doc.inv_leaseTable);
 
-    if (doc.inv_steps && doc.inv_steps.length) {
-      var steps = all('inv.step');
-      doc.inv_steps.forEach(function (s, i) {
-        var el = steps[i];
-        if (!el) return;
-        setText(el.querySelector('.pct'), pick(s.pct));
-        setText(el.querySelector('.n'), pick(s.label));
-        setText(el.querySelector('h4'), pick(s.title));
-        setText(el.querySelector('p'), pick(s.body));
-      });
-    }
+    rebuildRepeat('inv.step', doc.inv_steps, function (el, s) {
+      setText(el.querySelector('.pct'), pick(s.pct));
+      setText(el.querySelector('.n'), pick(s.label));
+      setText(el.querySelector('h4'), pick(s.title));
+      setText(el.querySelector('p'), pick(s.body));
+    });
 
+    rebuildRepeat('inv.leaseRow', doc.inv_leaseRows, function (el, r) {
+      var span = el.querySelector('span');
+      var lbl = pick(r.label);
+      if (span && lbl) {
+        var tn = span.firstChild;
+        if (tn && tn.nodeType === 3) tn.nodeValue = lbl; else setText(span, lbl);
+      }
+      setText(el.querySelector('small'), pick(r.sublabel));
+      setText(el.querySelector('b'), pick(r.value));
+    });
     if (doc.inv_leaseRows && doc.inv_leaseRows.length) {
-      var lrows = all('inv.leaseRow');
-      doc.inv_leaseRows.forEach(function (r, i) {
-        var el = lrows[i];
-        if (!el) return;
-        var span = el.querySelector('span');
-        var lbl = pick(r.label);
-        if (span && lbl) {
-          var tn = span.firstChild;
-          if (tn && tn.nodeType === 3) tn.nodeValue = lbl; else setText(span, lbl);
-        }
-        setText(el.querySelector('small'), pick(r.sublabel));
-        setText(el.querySelector('b'), pick(r.value));
-      });
       var totEl = q('inv.leaseTotal');
       if (totEl) {
         setText(totEl.querySelector('span'), pick(doc.inv_leaseTotalLabel));
@@ -399,15 +431,10 @@ window.OD_CMS = {
       }
     }
 
-    if (doc.inv_faq && doc.inv_faq.length) {
-      var faqs = all('inv.faqItem');
-      doc.inv_faq.forEach(function (it, i) {
-        var el = faqs[i];
-        if (!el) return;
-        setText(el.querySelector('summary'), pick(it.q));
-        setText(el.querySelector('p'), pick(it.a));
-      });
-    }
+    rebuildRepeat('inv.faqItem', doc.inv_faq, function (el, it) {
+      setText(el.querySelector('summary'), pick(it.q));
+      setText(el.querySelector('p'), pick(it.a));
+    });
 
     // paramétrage du simulateur de rendement (surcharge window.OD_SIM_FULL)
     var sm = doc.inv_sim;

@@ -53,6 +53,8 @@ const villaCard = {
   name: 'villaCard',
   title: 'Carte',
   fields: [
+    defineField({name: 'image', title: 'Photo', type: 'image', options: {hotspot: true}, description: 'Vide = la photo déjà en place sur le site reste affichée (uniquement pour une carte déjà existante).'}),
+    defineField({name: 'linkHref', title: 'Lien de la page', type: 'string', description: 'Ex. « villa-2-chambres.html » ou « parcelle-1.html » (chemin relatif au dossier du programme). Vide = le lien déjà en place reste inchangé.'}),
     defineField({name: 'badge', title: 'Badge', type: 'localeString', description: 'Ex. « Disponible », « Dernière opportunité » (Sea View).'}),
     defineField({name: 'subtitle', title: 'Sous-titre', type: 'localeString', description: 'Ex. « Parcelle 1 · 3 ch · 4 sdb » (Sea View).'}),
     defineField({name: 'zone', title: 'Étiquette', type: 'localeString', description: 'Ex. « Studio-sanctuaire », « 4 unités disponibles » (Eden / Terra).'}),
@@ -78,7 +80,7 @@ const villaCard = {
     defineField({name: 'priceNote', title: 'Mention sous le prix', type: 'localeString', description: 'Ex. « Hors frais de transfert et taxes ».'}),
     defineField({name: 'linkText', title: 'Texte du lien', type: 'localeString', description: 'Ex. « Voir la parcelle · plan → ».'}),
   ],
-  preview: {select: {title: 'title.fr', subtitle: 'price'}},
+  preview: {select: {title: 'title.fr', subtitle: 'price', media: 'image'}},
 }
 
 export const programmePage = defineType({
@@ -86,7 +88,8 @@ export const programmePage = defineType({
   title: 'Pages programme (textes)',
   type: 'document',
   groups: [
-    {name: 'residence', title: 'La Résidence', default: true},
+    {name: 'index', title: 'Accueil du programme', default: true},
+    {name: 'residence', title: 'La Résidence'},
     {name: 'villas', title: 'Les Villas'},
     {name: 'localisation', title: 'Localisation'},
     {name: 'invest', title: 'Investir'},
@@ -106,6 +109,44 @@ export const programmePage = defineType({
       description: 'Doit correspondre au dossier du site : « sea-view », « eden-tropical » ou « terra-mare ».',
       validation: (r) => r.required(),
     }),
+
+    // ---------------- ACCUEIL DU PROGRAMME ----------------
+    defineField({name: 'idx_heroEyebrow', title: 'Bandeau — surtitre', type: 'localeString', description: 'Ex. « Programme sur plan · Ban Tai ».', group: 'index'}),
+    defineField({name: 'idx_heroSub', title: 'Bandeau — sous-titre', type: 'localeText', group: 'index'}),
+    defineField({name: 'idx_progEyebrow', title: 'Le programme — surtitre', type: 'localeString', group: 'index'}),
+    defineField({name: 'idx_progHeading', title: 'Le programme — titre', type: 'localeText', group: 'index'}),
+    defineField({name: 'idx_progBody', title: 'Le programme — texte', type: 'localeText', group: 'index'}),
+    defineField({
+      name: 'idx_facts',
+      title: 'Le programme — chiffres clés',
+      type: 'array',
+      description: '4 chiffres affichés sous le texte de présentation. Ex. « 04 / Villas privées ».',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({name: 'value', title: 'Chiffre', type: 'localeString'}),
+            defineField({name: 'label', title: 'Légende', type: 'localeString'}),
+          ],
+          preview: {select: {title: 'value.fr', subtitle: 'label.fr'}},
+        },
+      ],
+      group: 'index',
+    }),
+    defineField({name: 'idx_bandeauImg', title: 'Photo pleine largeur', type: 'image', options: {hotspot: true}, description: 'Vide = la photo déjà en place sur le site reste affichée.', group: 'index'}),
+    defineField({name: 'idx_bandeauCaption', title: 'Photo pleine largeur — légende', type: 'localeText', group: 'index'}),
+    defineField({name: 'idx_storyEyebrow', title: 'L’histoire — surtitre', type: 'localeString', group: 'index'}),
+    defineField({name: 'idx_storyHeading', title: 'L’histoire — titre', type: 'localeText', group: 'index'}),
+    defineField({
+      name: 'idx_storyParagraphs',
+      title: 'L’histoire — paragraphes',
+      type: 'array',
+      of: [{type: 'localeText'}],
+      description: 'Les paragraphes de présentation (dans l’ordre).',
+      group: 'index',
+    }),
+    defineField({name: 'idx_storyImg', title: 'L’histoire — photo', type: 'image', options: {hotspot: true}, description: 'Vide = la photo déjà en place sur le site reste affichée.', group: 'index'}),
+    defineField({name: 'idx_cta', title: 'Titre de l’appel à l’action (bas de page)', type: 'localeText', description: 'Ex. « Recevez la brochure et les disponibilités ».', group: 'index'}),
 
     // ---------------- LA RÉSIDENCE ----------------
     defineField({
