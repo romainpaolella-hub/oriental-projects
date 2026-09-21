@@ -102,7 +102,7 @@ export const villaDispo = defineType({
       name: 'linkHref',
       title: 'Lien de la fiche',
       type: 'string',
-      description: 'Ex. « villas-a-vendre/tropical-golf-villa-2.html ». Vide = bouton vers la page contact. Doit correspondre exactement à l’URL de la fiche pour que les champs « Fiche complète » ci-dessous s’y appliquent.',
+      description: 'Ex. « villas-a-vendre/villa-anda.html » (sans espaces ni accents). Vide = bouton vers la page contact. Pour une fiche déjà en ligne, doit correspondre exactement à l’URL existante. Pour une nouvelle fiche, ce chemin devient directement l’adresse de la page (FR et EN) — inutile de faire créer la page par le développeur.',
       hidden: ({parent}) => parent?.isPlaceholder,
       group: 'card',
     }),
