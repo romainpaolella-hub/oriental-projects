@@ -7,6 +7,12 @@ export const siteSettings = defineType({
   // singleton : un seul document, pas de bouton "créer"
   fields: [
     defineField({
+      name: 'tagline',
+      title: 'Accroche (pied de page)',
+      description: 'Phrase sous le logo, dans le pied de page de toutes les pages.',
+      type: 'localeString',
+    }),
+    defineField({
       name: 'stats',
       title: 'Bandeau de chiffres (accueil)',
       description: 'Section sombre « 18 ans d’expérience ». Remplace les « xx » par les vrais chiffres.',
@@ -34,12 +40,31 @@ export const siteSettings = defineType({
             defineField({name: 'label', title: 'Intitulé', type: 'string', description: 'Ex. « Jean-David », « Équipe EU »'}),
             defineField({name: 'number', title: 'Numéro affiché', type: 'string', description: 'Ex. +66 655 767 871'}),
             defineField({name: 'whatsapp', title: 'Numéro WhatsApp (chiffres seuls)', type: 'string', description: 'Ex. 66655767871'}),
+            defineField({name: 'whatsappNote', title: 'Langues parlées (page Contact)', type: 'localeString', description: 'Ex. « WhatsApp direct · FR / EN »'}),
           ],
           preview: {select: {title: 'label', subtitle: 'number'}},
         },
       ],
     }),
     defineField({name: 'email', title: 'E-mail de contact affiché', type: 'string'}),
+    defineField({
+      name: 'contactIntro',
+      title: 'Texte d\'intro (page Contact)',
+      description: 'Phrase sous les coordonnées, ex. « Écrivez-nous sur WhatsApp… ».',
+      type: 'localeString',
+    }),
+    defineField({
+      name: 'mapQuery',
+      title: 'Localisation (carte Google Maps)',
+      description: 'Adresse ou lieu utilisé pour la carte de la page Contact. Ex. « Koh Samui, Thailand ».',
+      type: 'string',
+    }),
+    defineField({
+      name: 'footCopyright',
+      title: 'Mention de copyright (pied de page)',
+      description: 'Ex. « © 2026 Koh Samui Estate — Prototype v3 ». Identique en FR et EN.',
+      type: 'string',
+    }),
   ],
   preview: {prepare: () => ({title: 'Réglages du site'})},
 })

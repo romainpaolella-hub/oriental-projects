@@ -27,7 +27,8 @@ window.OD_CMS = {
 
   var GROQ =
     '{' +
-    '"settings":*[_type=="siteSettings"][0]{stats[]{value,label}},' +
+    '"settings":*[_type=="siteSettings"][0]{stats[]{value,label},tagline,' +
+      'phones[]{label,number,whatsapp,whatsappNote},email,contactIntro,mapQuery,footCopyright},' +
     '"hero":*[_type=="heroSlide"]|order(order asc){brand,kind,linkHref,kicker,title,sub,cta,' +
       '"video":video.asset->url,"poster":poster.asset->url,"image":image.asset->url,' +
       '"iw":image.asset->metadata.dimensions.width,"ih":image.asset->metadata.dimensions.height},' +
@@ -72,6 +73,9 @@ window.OD_CMS = {
       return r.json();
     }).then(function (res) {
       var d = res.result || {};
+
+      // ---- RÉGLAGES DU SITE (footer, page Contact) ----
+      window.OD_SETTINGS = d.settings || {};
 
       // ---- STATS ----
       if (d.settings && d.settings.stats && d.settings.stats.length) {
@@ -483,5 +487,53 @@ window.OD_CMS = {
 
     setText(q('page.ctaHeading'), pick(doc.pageCtaHeading));
     setText(q('page.ctaBody'), pick(doc.pageCtaBody));
+  };
+
+  // Remplit une série de blocs "personne" (b + a + span) depuis [{label,number,whatsapp,whatsappNote}].
+  function fillPhones(nodeList, phones) {
+    if (!phones || !phones.length) return;
+    for (var i = 0; i < nodeList.length && i < phones.length; i++) {
+      var el = nodeList[i], p = phones[i];
+      if (!p) continue;
+      setText(el.querySelector('b'), p.label);
+      var a = el.querySelector('a');
+      if (a && p.number) {
+        a.textContent = p.number;
+        if (p.whatsapp) a.href = 'https://wa.me/' + p.whatsapp;
+      }
+      setText(el.querySelector('span'), pick(p.whatsappNote));
+    }
+  }
+
+  // ---- Rendu du pied de page (data-cms="foot.…") — sur toutes les pages ----
+  window.OD_renderFooter = function () {
+    var s = window.OD_SETTINGS;
+    if (!s) return;
+    setText(document.querySelector('[data-cms="foot.tagline"]'), pick(s.tagline));
+    setText(document.querySelector('[data-cms="foot.copyright"]'), s.footCopyright);
+    var links = document.querySelectorAll('[data-cms="foot.phone"]');
+    if (s.phones && s.phones.length) {
+      for (var i = 0; i < links.length && i < s.phones.length; i++) {
+        var p = s.phones[i];
+        if (p && p.number) {
+          links[i].textContent = p.number;
+          links[i].href = 'tel:+' + p.number.replace(/[^0-9]/g, '');
+        }
+      }
+    }
+  };
+
+  // ---- Rendu de la page Contact (data-cms="contact.…") ----
+  window.OD_renderContactPage = function () {
+    var s = window.OD_SETTINGS;
+    if (!s) return;
+    fillPhones(document.querySelectorAll('[data-cms="contact.phoneItem"]'), s.phones);
+    var mailEl = document.querySelector('[data-cms="contact.email"]');
+    if (mailEl && s.email) { mailEl.textContent = s.email; mailEl.href = 'mailto:' + s.email; }
+    setText(document.querySelector('[data-cms="contact.intro"]'), pick(s.contactIntro));
+    var mapEl = document.querySelector('[data-cms="contact.map"]');
+    if (mapEl && s.mapQuery) {
+      mapEl.src = 'https://www.google.com/maps?q=' + encodeURIComponent(s.mapQuery) + '&output=embed';
+    }
   };
 })();
