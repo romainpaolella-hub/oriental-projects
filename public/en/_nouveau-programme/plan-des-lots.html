@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lot plan — Koh Samui Estate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--alabaster:#F4F0E7;--paper:#FBF8F2;--ink:#252824;--ink-soft:#4A5142;--celadon:#33544C;--brass:#A87E48;--line:rgba(37,40,36,.14)}
+*{box-sizing:border-box}
+body{margin:0;padding:14px;font-family:'Jost',system-ui,sans-serif;color:var(--ink);background:var(--paper)}
+h1,h3{font-family:'Cormorant Garamond',serif;font-weight:500;margin:0 0 6px}
+.wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}}
+#stage{position:relative;width:100%;aspect-ratio:8/5;border-radius:8px;overflow:hidden;background:#F3EEE2 center/contain no-repeat;border:1px solid var(--line)}
+.lot{position:absolute;border:2px solid #fff;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:2px;text-align:center;background:rgba(51,84,76,.55)}
+.lot.available{background:rgba(51,84,76,.55)}
+.lot.reserved{background:rgba(168,126,72,.6)}
+.lot.sold{background:rgba(37,40,36,.55)}
+.lot.sel{outline:2px solid #fff;outline-offset:1px}
+body.managing .lot{cursor:grab}
+.handle{position:absolute;width:10px;height:10px;background:#fff;border:1px solid var(--ink);border-radius:2px}
+.handle.nw{left:-5px;top:-5px;cursor:nwse-resize}.handle.ne{right:-5px;top:-5px;cursor:nesw-resize}
+.handle.sw{left:-5px;bottom:-5px;cursor:nesw-resize}.handle.se{right:-5px;bottom:-5px;cursor:nwse-resize}
+#legend{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--ink-soft)}
+.lg{display:flex;align-items:center;gap:6px}
+.lg i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.lg i.available{background:var(--celadon)}.lg i.reserved{background:var(--brass)}.lg i.sold{background:var(--ink)}
+#detail{background:var(--alabaster);border-radius:8px;padding:18px;min-height:160px}
+#detail .ph{color:var(--ink-soft);font-size:14px}
+#detail .badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:20px;margin-left:8px;color:#fff}
+#detail .badge.available{background:var(--celadon)}#detail .badge.reserved{background:var(--brass)}#detail .badge.sold{background:var(--ink)}
+#detail .rows{margin-top:10px;border-top:1px solid var(--line)}
+#detail .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+#detail .row span{color:var(--ink-soft)}#detail .row b{font-weight:500}
+#manageToggle{font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:8px 14px;border-radius:20px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink-soft)}
+#manageToggle.on{background:var(--celadon);color:#fff;border-color:var(--celadon)}
+#managePanel{display:none;margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:13px}
+body.managing #managePanel{display:block}
+#managePanel p{color:var(--ink-soft);font-size:12px;line-height:1.6}
+#managePanel .row2{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+#managePanel input,#managePanel select,#managePanel textarea{font-family:inherit;font-size:13px;padding:8px;border:1px solid var(--line);border-radius:4px;background:var(--paper)}
+#managePanel textarea{width:100%;min-height:64px}
+#managePanel label{display:block;font-size:11px;color:var(--ink-soft);margin-bottom:3px}
+#managePanel button{font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;border-radius:4px;border:1px solid var(--celadon);background:var(--celadon);color:#fff;cursor:pointer}
+#managePanel button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+#mPos{font-size:11px;color:var(--ink-soft);margin-left:auto;align-self:center}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:.25s}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div>
+    <div id="stage"></div>
+    <div id="legend"></div>
+  </div>
+  <div>
+    <div id="detail"><div class="ph">Select a plot on the plan to see its details.</div></div>
+    <button id="manageToggle" type="button">⚙︎ Manage mode</button>
+    <div id="managePanel">
+      <p id="mHint"></p>
+      <div class="row2">
+        <button id="mAdd" type="button">+ Add plot</button>
+        <button id="mDel" type="button" class="ghost" disabled>Delete this plot</button>
+        <span id="mPos"></span>
+      </div>
+      <div class="row2">
+        <div><label id="lblName">Name</label><input id="mName" type="text" disabled></div>
+        <div><label id="lblStatus">Status</label>
+          <select id="mStatus" disabled>
+            <option value="available" id="mStatusA">Available</option>
+            <option value="reserved" id="mStatusR">Reserved</option>
+            <option value="sold" id="mStatusS">Sold</option>
+          </select>
+        </div>
+        <div><label id="lblPrice">Price</label><input id="mPrice" type="text" disabled></div>
+      </div>
+      <label id="lblSpecs">Specs</label>
+      <textarea id="mSpecs" disabled></textarea>
+      <div class="row2" style="margin-top:10px">
+        <input id="mSecret" type="password" placeholder="Password" style="width:160px">
+        <button id="mApply" type="button" disabled>Apply</button>
+        <button id="mReload" type="button" class="ghost">Reload from server</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/lotplan.js?v=20260956"></script>
+</body>
+</html>

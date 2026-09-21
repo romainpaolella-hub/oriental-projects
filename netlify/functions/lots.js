@@ -13,7 +13,6 @@
  *                                      "Mode gestion" avant toute sauvegarde
  */
 
-const PROGRAMMES = ['eden-tropical', 'terra-mare', 'sea-view'];
 const STATUSES = ['available', 'reserved', 'sold'];
 
 function json(statusCode, body) {
@@ -62,7 +61,7 @@ exports.handler = async function (event) {
   if (data.secret !== secret) return json(401, {ok: false, error: 'wrong_secret'});
 
   const slug = data.programmeSlug;
-  if (PROGRAMMES.indexOf(slug) === -1) return json(422, {ok: false, error: 'invalid_programme'});
+  if (typeof slug !== 'string' || !slug) return json(422, {ok: false, error: 'invalid_programme'});
 
   const lots = Array.isArray(data.lots) ? data.lots : null;
   if (!lots) return json(422, {ok: false, error: 'invalid_lots'});
@@ -80,6 +79,18 @@ exports.handler = async function (event) {
     };
     if (Array.isArray(l.box) && l.box.length === 4 && l.box.every((n) => typeof n === 'number' && isFinite(n))) {
       entry.box = l.box;
+    }
+    if (l.name) entry.name = String(l.name).slice(0, 80);
+    if (Array.isArray(l.specs)) {
+      entry.specs = l.specs
+        .filter((s) => s && (s.label || s.value))
+        .slice(0, 20)
+        .map((s, si) => ({
+          _type: 'object',
+          _key: 'spec' + si,
+          label: s.label ? String(s.label).slice(0, 60) : '',
+          value: s.value ? String(s.value).slice(0, 60) : '',
+        }));
     }
     cleanLots.push(entry);
   }

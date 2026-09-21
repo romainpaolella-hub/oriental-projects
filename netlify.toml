@@ -97,6 +97,10 @@
   from = "/:programme/localisation.html"
   to = "/_nouveau-programme/localisation.html"
   status = 200
+[[redirects]]
+  from = "/:programme/plan-des-lots.html"
+  to = "/_nouveau-programme/plan-des-lots.html"
+  status = 200
 
 [[redirects]]
   from = "/en/:programme/index.html"
@@ -117,4 +121,8 @@
 [[redirects]]
   from = "/en/:programme/localisation.html"
   to = "/en/_nouveau-programme/localisation.html"
+  status = 200
+[[redirects]]
+  from = "/en/:programme/plan-des-lots.html"
+  to = "/en/_nouveau-programme/plan-des-lots.html"
   status = 200
