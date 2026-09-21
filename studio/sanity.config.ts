@@ -19,6 +19,7 @@ const contentStructure = (S: any) =>
       S.documentTypeListItem('programme').title('Programmes'),
       S.documentTypeListItem('programmePage').title('Pages programme (textes)'),
       S.documentTypeListItem('villaDispo').title('Villas à vendre'),
+      S.documentTypeListItem('villaType').title('Typologies / parcelles (programmes)'),
       S.documentTypeListItem('realisation').title('Réalisations'),
       S.documentTypeListItem('lotPlan').title('Plans des lots (disponibilité)'),
     ])

@@ -3,6 +3,7 @@ import {siteSettings} from './siteSettings'
 import {heroSlide} from './heroSlide'
 import {programme} from './programme'
 import {villaDispo} from './villaDispo'
+import {villaType} from './villaType'
 import {realisation} from './realisation'
 import {programmePage} from './programmePage'
 import {lotPlan} from './lotPlan'
@@ -16,6 +17,7 @@ export const contentTypes = [
   heroSlide,
   programme,
   villaDispo,
+  villaType,
   realisation,
   programmePage,
   lotPlan,

@@ -38,3 +38,37 @@
   from = "/en/villas-a-vendre/*"
   to = "/en/villas-a-vendre/_template.html"
   status = 200
+
+# Typologies / parcelles ajoutées depuis Studio (type villaType) sans page dédiée :
+# même principe, modèle générique par programme. Un fichier réel existant (résidence,
+# villas, investissement, localisation, plan des lots, pages déjà en place) est
+# toujours servi en priorité — ne concerne que les 3 programmes existants.
+[[redirects]]
+  from = "/sea-view/*"
+  to = "/sea-view/_template.html"
+  status = 200
+
+[[redirects]]
+  from = "/en/sea-view/*"
+  to = "/en/sea-view/_template.html"
+  status = 200
+
+[[redirects]]
+  from = "/eden-tropical/*"
+  to = "/eden-tropical/_template.html"
+  status = 200
+
+[[redirects]]
+  from = "/en/eden-tropical/*"
+  to = "/en/eden-tropical/_template.html"
+  status = 200
+
+[[redirects]]
+  from = "/terra-mare/*"
+  to = "/terra-mare/_template.html"
+  status = 200
+
+[[redirects]]
+  from = "/en/terra-mare/*"
+  to = "/en/terra-mare/_template.html"
+  status = 200

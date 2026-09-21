@@ -65,7 +65,14 @@ window.OD_CMS = {
       'inv_heroTitle,inv_simEyebrow,inv_simHeading,inv_simBody,inv_simNote,' +
       'inv_stepsEyebrow,inv_stepsHeading,inv_steps,inv_stepsProse,inv_stepsNote,' +
       'inv_leaseEyebrow,inv_leaseHeading,inv_leaseIntro,inv_leaseRows,inv_leaseTotalLabel,inv_leaseTotalValue,inv_leaseTable,inv_leaseNote,' +
-      'inv_faqEyebrow,inv_faqHeading,inv_faq,inv_faqNote,inv_cta,inv_sim}' +
+      'inv_faqEyebrow,inv_faqHeading,inv_faq,inv_faqNote,inv_cta,inv_sim},' +
+    '"villaTypes":*[_type=="villaType"]|order(order asc){programmeSlug,name,linkHref,' +
+      'badge,subtitle,zone,desc,specs,price,priceNote,linkText,' +
+      '"images":images[]{"url":asset->url,"w":asset->metadata.dimensions.width,"h":asset->metadata.dimensions.height},' +
+      'pageHeroEyebrow,pageHeroSub,pagePresEyebrow,pagePresHeading,pagePresBody,' +
+      'pageRevenueBig,pageRevenueNote,pageLegalNote,pageFacts,pageGalleryNote,' +
+      'pageSpecsHeading,pageSpecs,pageSpecsNote,' +
+      'pageLocHeading,pageLocBody,pageMapQuery,pageMapNote,pageCtaHeading,pageCtaBody}' +
     '}';
 
   window.OD_loadCMS = function () {
@@ -179,6 +186,9 @@ window.OD_CMS = {
       // ---- PAGES PROGRAMME (textes des sous-pages) ----
       window.OD_PAGES = d.pages || [];
 
+      // ---- TYPOLOGIES / PARCELLES ajoutées via Studio (type villaType) ----
+      window.OD_VILLATYPES = d.villaTypes || [];
+
       return true;
     });
   };
@@ -223,13 +233,15 @@ window.OD_CMS = {
   // puis ajoute un clone rempli par élément. Neutralise l'opacité/transform posés par l'animation
   // data-reveal sur le modèle, sinon les clones resteraient invisibles (jamais observés par elle).
   // No-op si le tableau Sanity est vide : le contenu statique existant reste affiché tel quel.
-  function rebuildRepeat(sel, items, fillFn) {
+  // Avec append=true, s'ajoute aux éléments déjà présents au lieu de les remplacer (ex. typologies
+  // ajoutées via Studio, en plus des cartes existantes).
+  function rebuildRepeat(sel, items, fillFn, append) {
     var first = document.querySelector('[data-cms="' + sel + '"]');
     if (!first || !items || !items.length) return;
     var parent = first.parentElement;
     if (!parent) return;
     var template = first.cloneNode(true);
-    parent.innerHTML = '';
+    if (!append) parent.innerHTML = '';
     items.forEach(function (item, i) {
       var el = template.cloneNode(true);
       el.style.opacity = ''; el.style.transform = ''; el.style.transition = '';
@@ -322,15 +334,13 @@ window.OD_CMS = {
     fillNumItems('vil.matItem', doc.vil_mat);
 
     // cartes (parcelles / typologies) — nombre variable, clone du premier modèle existant
-    rebuildRepeat('vil.card', doc.vil_cards, function (el, cd) {
-      if (cd.linkHref) el.setAttribute('href', cd.linkHref);
+    var fillVilCard = function (el, cd, imgUrl, imgAlt) {
       var img = el.querySelector('img');
-      if (img && cd.image) { img.src = window.OD_img(cd.image, 1400); img.alt = pick(cd.title) || ''; }
+      if (img && imgUrl) { img.src = window.OD_img(imgUrl, 1400); img.alt = imgAlt || ''; }
       var f = function (name) { return el.querySelector('[data-cms-f="' + name + '"]'); };
       setText(f('badge'), pick(cd.badge));
       setText(f('subtitle'), pick(cd.subtitle));
       setText(f('zone'), pick(cd.zone));
-      setText(f('title'), pick(cd.title));
       setText(f('desc'), pick(cd.desc));
       setText(f('price'), pick(cd.price));
       setText(f('priceNote'), pick(cd.priceNote));
@@ -349,7 +359,23 @@ window.OD_CMS = {
           ul.innerHTML = '';
         }
       }
+      return f;
+    };
+
+    rebuildRepeat('vil.card', doc.vil_cards, function (el, cd) {
+      if (cd.linkHref) el.setAttribute('href', cd.linkHref);
+      var f = fillVilCard(el, cd, cd.image, pick(cd.title));
+      setText(f('title'), pick(cd.title));
     });
+
+    // typologies / parcelles ajoutées via Studio (type villaType) — s'ajoutent aux cartes ci-dessus
+    var typeCards = (window.OD_VILLATYPES || []).filter(function (t) { return t.programmeSlug === slug; });
+    rebuildRepeat('vil.card', typeCards, function (el, cd) {
+      if (cd.linkHref) el.setAttribute('href', cd.linkHref);
+      var img0 = cd.images && cd.images[0];
+      var f = fillVilCard(el, cd, img0 && img0.url, cd.name);
+      setText(f('title'), cd.name);
+    }, true);
 
     // galerie « Découvrez les villas » — index par index
     if (doc.vil_gallery && doc.vil_gallery.length) {
@@ -558,6 +584,96 @@ window.OD_CMS = {
 
     setText(q('page.ctaHeading'), pick(doc.pageCtaHeading));
     setText(q('page.ctaBody'), pick(doc.pageCtaBody));
+  };
+
+  // ---- Rendu d'une fiche « typologie / parcelle » de programme (data-cms="type.…") ----
+  // Détecte le programme depuis l'URL, puis la fiche par linkHref (relatif au dossier du
+  // programme, ex. "villa-4-chambres.html") stocké dans le document villaType.
+  window.OD_renderVillaTypePage = function () {
+    var slug = currentSlug();
+    if (!slug || !window.OD_VILLATYPES || !window.OD_VILLATYPES.length) return;
+    var pn = location.pathname.replace(/^\/(en\/)?/, '');
+    var doc = null;
+    for (var i = 0; i < window.OD_VILLATYPES.length; i++) {
+      var v = window.OD_VILLATYPES[i];
+      if (v.programmeSlug === slug && v.linkHref && (slug + '/' + v.linkHref) === pn) { doc = v; break; }
+    }
+    if (!doc) return;
+
+    var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
+    var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
+
+    setText(q('type.name'), doc.name);
+
+    if (doc.name) {
+      document.title = doc.name + ' — Koh Samui Estate';
+      var metaDesc = pick(doc.pageHeroSub) || pick(doc.pagePresBody);
+      var descEl = document.querySelector('meta[name="description"]');
+      if (descEl && metaDesc) descEl.setAttribute('content', metaDesc);
+      var ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', doc.name + ' — Koh Samui Estate');
+      var ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc && metaDesc) ogDesc.setAttribute('content', metaDesc);
+      var ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute('content', location.origin + location.pathname);
+      var canon = document.querySelector('link[rel="canonical"]');
+      if (canon) canon.setAttribute('href', location.origin + location.pathname);
+    }
+
+    setText(q('type.heroEyebrow'), pick(doc.pageHeroEyebrow));
+    setText(q('type.heroSub'), pick(doc.pageHeroSub));
+
+    if (doc.images && doc.images.length) {
+      var heroImg = q('type.heroImg');
+      if (heroImg) {
+        heroImg.src = window.OD_img(doc.images[0].url, 1920);
+        if (doc.images[0].w) { heroImg.width = doc.images[0].w; heroImg.height = doc.images[0].h; }
+      }
+      var presImg = q('type.presImg');
+      if (presImg) {
+        var pImg = doc.images[1] || doc.images[0];
+        presImg.src = window.OD_img(pImg.url, 1600);
+        if (pImg.w) { presImg.width = pImg.w; presImg.height = pImg.h; }
+      }
+      var galBox = q('type.gallery');
+      if (galBox) {
+        galBox.innerHTML = doc.images.map(function (im, gi) {
+          var cls = gi === 0 ? 'big lead' : ((gi % 7) === 3 ? 'wide' : '');
+          var dim = im.w ? ' width="' + im.w + '" height="' + im.h + '"' : '';
+          return '<button class="' + cls + '" onclick="openLb(' + gi + ')"><img src="' + window.OD_img(im.url, 1600) + '"' + dim + ' alt="' + doc.name + '"></button>';
+        }).join('');
+      }
+      window.OD_GALLERY = doc.images.map(function (im) { return window.OD_img(im.url, 1920); });
+    }
+
+    setText(q('type.presEyebrow'), pick(doc.pagePresEyebrow));
+    setText(q('type.presHeading'), pick(doc.pagePresHeading));
+    setText(q('type.presBody'), pick(doc.pagePresBody));
+
+    var tbig = pick(doc.pageRevenueBig) || pick(doc.price);
+    setText(q('type.revenueBig'), tbig);
+    setText(q('type.revenueNote'), pick(doc.pageRevenueNote));
+    setText(q('type.legalNote'), pick(doc.pageLegalNote));
+
+    fillFacts(all('type.factItem'), doc.pageFacts);
+
+    setText(q('type.galleryNote'), pick(doc.pageGalleryNote));
+
+    setText(q('type.specsHeading'), pick(doc.pageSpecsHeading));
+    fillSpecTable(q('type.specs'), doc.pageSpecs);
+    setText(q('type.specsNote'), pick(doc.pageSpecsNote));
+
+    setText(q('type.locHeading'), pick(doc.pageLocHeading));
+    setText(q('type.locBody'), pick(doc.pageLocBody));
+    var typeMapEl = q('type.map');
+    if (typeMapEl && doc.pageMapQuery) {
+      var lang3 = (document.documentElement.lang || 'fr').slice(0, 2).toLowerCase() === 'en' ? 'en' : 'fr';
+      typeMapEl.src = 'https://www.google.com/maps?q=' + encodeURIComponent(doc.pageMapQuery) + '&hl=' + lang3 + '&z=15&output=embed';
+    }
+    setText(q('type.mapNote'), pick(doc.pageMapNote));
+
+    setText(q('type.ctaHeading'), pick(doc.pageCtaHeading));
+    setText(q('type.ctaBody'), pick(doc.pageCtaBody));
   };
 
   // Remplit une série de blocs "personne" (b + a + span) depuis [{label,number,whatsapp,whatsappNote}].
