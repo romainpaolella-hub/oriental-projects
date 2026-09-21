@@ -26,6 +26,22 @@ function json(statusCode, body) {
 
 exports.handler = async function (event) {
   if (event.httpMethod === 'OPTIONS') return json(204, {});
+
+  if (event.httpMethod === 'GET') {
+    const qs = event.queryStringParameters || {};
+    if (qs.selftest === '1') {
+      return json(200, {
+        env: {
+          SANITY_PROJECT_ID: !!process.env.SANITY_PROJECT_ID,
+          SANITY_WRITE_TOKEN: !!process.env.SANITY_WRITE_TOKEN,
+          SANITY_DATASET: process.env.SANITY_DATASET || 'production (default)',
+          LOTS_ADMIN_SECRET: !!process.env.LOTS_ADMIN_SECRET,
+        },
+      });
+    }
+    return json(405, {ok: false, error: 'method_not_allowed'});
+  }
+
   if (event.httpMethod !== 'POST') return json(405, {ok: false, error: 'method_not_allowed'});
 
   const projectId = process.env.SANITY_PROJECT_ID;
