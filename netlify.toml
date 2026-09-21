@@ -14,6 +14,13 @@
   status = 200
   force = true
 
+# Le "Mode gestion" des plans interactifs poste vers /api/lots -> fonction serverless
+[[redirects]]
+  from = "/api/lots"
+  to = "/.netlify/functions/lots"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/en"
   to = "/en/"

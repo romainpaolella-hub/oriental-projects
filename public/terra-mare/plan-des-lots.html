@@ -260,6 +260,7 @@
       <option value="sold">Vendu</option>
     </select>
     <input id="mPrice" type="text" placeholder="Prix (ex. 4 200 000 THB)" disabled style="width:190px">
+    <input id="mSecret" type="password" placeholder="Mot de passe / Password" style="width:170px">
     <button class="btn" id="mApply" disabled data-i="m_apply">Appliquer</button>
     <span class="pos" id="mPos"></span>
     <button class="btn alt" id="mResetPos" disabled data-i="m_resetpos">↺ Position</button>
@@ -285,19 +286,28 @@ const DEFAULTS = [
   {id:"11", sqm:130, bed:3, status:"available", box:[58,46,32,19]},
   {id:"12", sqm:130, bed:3, status:"available", box:[58,65,32,19]},
 ];
-const STORE="terramare_lots_v1";
-let lots = load();
-function load(){
-  try{ const s=JSON.parse(localStorage.getItem(STORE));
-    if(Array.isArray(s)) return DEFAULTS.map(d=>{const o=s.find(x=>x.id===d.id)||{};
-      const box=Array.isArray(o.box)&&o.box.length===4&&o.box.every(n=>typeof n==="number"&&isFinite(n))?o.box.slice():d.box.slice();
-      return {...d,status:o.status||d.status,price:o.price??d.price,box};});
-  }catch(e){}
-  return DEFAULTS.map(d=>({...d,box:d.box.slice()}));
-}
-function save(){ try{ localStorage.setItem(STORE, JSON.stringify(lots.map(l=>({id:l.id,status:l.status,price:l.price||"",box:l.box})))); }catch(e){} }
+let lots = DEFAULTS.map(d=>({...d,box:d.box.slice()}));
 function clampSize(v){ return Math.max(2, Math.round(v*100)/100); }
 function round2(v){ return Math.round(v*100)/100; }
+const PROGRAMME_SLUG = "terra-mare";
+const SANITY_READ_URL = "https://x3jcttot.apicdn.sanity.io/v2024-01-01/data/query/production?query=" +
+  encodeURIComponent('*[_type=="lotPlan" && programmeSlug=="' + PROGRAMME_SLUG + '"][0]{lots}');
+async function fetchLiveLots(){
+  try{
+    const r = await fetch(SANITY_READ_URL);
+    const j = await r.json();
+    const remote = (j.result && j.result.lots) || [];
+    if(remote.length){
+      lots = DEFAULTS.map(d=>{
+        const o = remote.find(x=>x.lotId===d.id);
+        if(!o) return {...d, box:d.box.slice()};
+        const box = (Array.isArray(o.box)&&o.box.length===4) ? o.box.slice() : d.box.slice();
+        return {...d, status:o.status||d.status, price:o.price||d.price, box};
+      });
+      buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters();
+    }
+  }catch(e){ console.warn("lotPlan fetch failed", e); }
+}
 
 /* ---------- i18n ---------- */
 const I18N={
@@ -307,7 +317,7 @@ const I18N={
     pick:"Sélectionnez un lot sur le plan pour voir son détail.",lg_a:"Disponible à la vente",lg_r:"Réservé (pré-booking)",lg_s:"Vendu",
     inv:"Inventaire des lots",h_lot:"Lot",h_type:"Typologie",h_area:"Surface",h_status:"Statut",h_price:"Prix",
     contact:"Contact ventes",langs:"Français · English · ไทย",manage:"⚙︎ Mode gestion",
-    m_hint:"Mode gestion — cliquez un lot puis glissez-le sur le plan pour le déplacer (poignées aux coins = redimensionner, flèches du clavier = ajustement fin, Maj+flèches = taille). Modifiez aussi son statut / prix ci-dessous. Vos changements sont enregistrés dans ce navigateur. Exportez pour me renvoyer la configuration à intégrer définitivement.",
+    m_hint:"Mode gestion — cliquez un lot puis glissez-le sur le plan pour le déplacer (poignées aux coins = redimensionner, flèches du clavier = ajustement fin, Maj+flèches = taille). Modifiez aussi son statut / prix ci-dessous. Entrez le mot de passe une fois : « Appliquer » enregistre alors en direct (position, statut, prix), visible par tous les visiteurs du site.",
     m_lot:"Lot sélectionné :",m_apply:"Appliquer",m_export:"Exporter la config",m_reset:"Réinitialiser",m_resetpos:"↺ Position",
     bed1:"2 chambres",bed2:"3 chambres",bath:"salle de bain",onreq:"Prix sur demande",from:"À partir de",
     d_area:"Surface du lot",d_type:"Typologie",d_status:"Statut",d_price:"Prix",d_ref:"Référence",lease:"Bail 30 ans · sur plan"},
@@ -317,7 +327,7 @@ const I18N={
     pick:"Select a plot on the map to see its details.",lg_a:"Available for sale",lg_r:"Reserved (pre-booking)",lg_s:"Sold",
     inv:"Plot inventory",h_lot:"Plot",h_type:"Type",h_area:"Area",h_status:"Status",h_price:"Price",
     contact:"Sales contact",langs:"Français · English · ไทย",manage:"⚙︎ Manage mode",
-    m_hint:"Manage mode — click a plot then drag it on the map to move it (corner handles = resize, arrow keys = fine adjustment, Shift+arrows = size). Also edit its status / price below. Changes are saved in this browser. Export to send me the config to bake in permanently.",
+    m_hint:"Manage mode — click a plot then drag it on the map to move it (corner handles = resize, arrow keys = fine adjustment, Shift+arrows = size). Also edit its status / price below. Enter the password once: \u201cApply\u201d then saves live (position, status, price), visible to every visitor to the site.",
     m_lot:"Selected plot:",m_apply:"Apply",m_export:"Export config",m_reset:"Reset",m_resetpos:"↺ Position",
     bed1:"2 bedrooms",bed2:"3 bedrooms",bath:"bathroom",onreq:"Price on request",from:"From",
     d_area:"Plot area",d_type:"Type",d_status:"Status",d_price:"Price",d_ref:"Reference",lease:"30-year lease · off-plan"}
@@ -366,8 +376,8 @@ function attachDrag(b,l){
     function onUp(){
       document.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerup", onUp);
-      if(dragging){ save(); toast(lang==="fr"?"Position mise à jour":"Position updated"); }
-      else { select(l.id); }
+      select(l.id);
+      if(dragging){ toast(lang==="fr"?"Position déplacée — cliquez Appliquer pour enregistrer":"Position moved — click Apply to save"); }
     }
     document.addEventListener("pointermove", onMove);
     document.addEventListener("pointerup", onUp);
@@ -406,7 +416,7 @@ function startResize(pos,l,btn,e){
   function onUp(){
     document.removeEventListener("pointermove", onMove);
     document.removeEventListener("pointerup", onUp);
-    save(); toast(lang==="fr"?"Taille mise à jour":"Size updated");
+    toast(lang==="fr"?"Taille modifiée — cliquez Appliquer pour enregistrer":"Size changed — click Apply to save");
   }
   document.addEventListener("pointermove", onMove);
   document.addEventListener("pointerup", onUp);
@@ -435,7 +445,7 @@ document.addEventListener("keydown",function(e){
     else if(e.key==="ArrowUp") l.box[1]=round2(l.box[1]-step);
     else if(e.key==="ArrowDown") l.box[1]=round2(l.box[1]+step);
   }
-  applyBoxToDom(l); updatePosReadout(); save();
+  applyBoxToDom(l); updatePosReadout();
 });
 function bedKey(l){return l.bed===2?"bed1":"bed2"}
 
@@ -548,11 +558,28 @@ function syncManage(){
   const mResetPos=document.getElementById("mResetPos"); if(mResetPos) mResetPos.disabled=!has;
   if(l){mStatus.value=l.status; mPrice.value=l.price||"";}
 }
-mApply.addEventListener("click",()=>{
+const mSecret=document.getElementById("mSecret");
+function getSecret(){
+  let s=mSecret.value.trim();
+  if(!s){ try{ s=sessionStorage.getItem("lots_secret")||""; }catch(e){} if(s) mSecret.value=s; }
+  return s;
+}
+mApply.addEventListener("click",async()=>{
   const l=lots.find(x=>x.id===selected); if(!l)return;
   l.status=mStatus.value; l.price=mPrice.value.trim();
-  save(); buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters();
-  select(l.id); toast(lang==="fr"?`Lot ${l.id} mis à jour`:`Plot ${l.id} updated`);
+  buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters(); select(l.id);
+  const secret=getSecret();
+  if(!secret){ toast(lang==="fr"?"Mot de passe requis pour sauvegarder":"Password required to save"); return; }
+  mApply.disabled=true;
+  try{
+    const res=await fetch("/api/lots",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({programmeSlug:PROGRAMME_SLUG,secret:secret,lots:lots.map(x=>({lotId:x.id,status:x.status,price:x.price||"",box:x.box}))})});
+    const j=await res.json().catch(()=>({}));
+    if(res.ok&&j.ok){ try{sessionStorage.setItem("lots_secret",secret);}catch(e){} toast(lang==="fr"?`Lot ${l.id} enregistré — visible par tous`:`Plot ${l.id} saved — visible to everyone`); }
+    else if(res.status===401){ toast(lang==="fr"?"Mot de passe incorrect":"Wrong password"); try{sessionStorage.removeItem("lots_secret");}catch(e){} }
+    else { toast(lang==="fr"?"Échec de l'enregistrement":"Save failed"); }
+  }catch(e){ toast(lang==="fr"?"Échec de l'enregistrement (réseau)":"Save failed (network)"); }
+  mApply.disabled=false; syncManage();
 });
 document.getElementById("mExport").addEventListener("click",async()=>{
   const data=JSON.stringify(lots.map(l=>({id:l.id,status:l.status,price:l.price||"",box:l.box.map(round2)})),null,2);
@@ -563,19 +590,21 @@ document.getElementById("mResetPos").addEventListener("click",()=>{
   const l=lots.find(x=>x.id===selected); if(!l) return;
   const d=DEFAULTS.find(x=>x.id===l.id); if(!d) return;
   l.box=d.box.slice();
-  applyBoxToDom(l); renderHandles(); updatePosReadout(); save();
-  toast(lang==="fr"?"Position réinitialisée":"Position reset");
+  applyBoxToDom(l); renderHandles(); updatePosReadout();
+  toast(lang==="fr"?"Position réinitialisée — cliquez Appliquer pour enregistrer":"Position reset — click Apply to save");
 });
-document.getElementById("mReset").addEventListener("click",()=>{
-  try{localStorage.removeItem(STORE);}catch(e){} lots=DEFAULTS.map(d=>({...d}));
+document.getElementById("mReset").addEventListener("click",async()=>{
+  lots=DEFAULTS.map(d=>({...d,box:d.box.slice()}));
   buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters();
-  toast(lang==="fr"?"Réinitialisé":"Reset");
+  await fetchLiveLots();
+  toast(lang==="fr"?"Rechargé depuis le serveur":"Reloaded from server");
 });
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
   clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1900);}
 
 /* ---------- Init ---------- */
 applyLang();
+fetchLiveLots();
 </script>
 
 </body></html>

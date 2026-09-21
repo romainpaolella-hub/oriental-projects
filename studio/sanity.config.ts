@@ -20,6 +20,7 @@ const contentStructure = (S: any) =>
       S.documentTypeListItem('programmePage').title('Pages programme (textes)'),
       S.documentTypeListItem('villaDispo').title('Villas à vendre'),
       S.documentTypeListItem('realisation').title('Réalisations'),
+      S.documentTypeListItem('lotPlan').title('Plans des lots (disponibilité)'),
     ])
 
 export default defineConfig([

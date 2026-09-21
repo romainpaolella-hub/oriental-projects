@@ -252,6 +252,7 @@
       <option value="sold">Vendu</option>
     </select>
     <input id="mPrice" type="text" placeholder="Prix (ex. 4 200 000 THB)" disabled style="width:190px">
+    <input id="mSecret" type="password" placeholder="Mot de passe / Password" style="width:170px">
     <button class="btn" id="mApply" disabled data-i="m_apply">Appliquer</button>
     <button class="btn alt" id="mExport" data-i="m_export">Exporter la config</button>
     <button class="btn alt" id="mReset" data-i="m_reset">Réinitialiser</button>
@@ -276,15 +277,21 @@ const DEFAULTS = [
   {id:"12", sqm:197, bed:2, status:"available", box:[16.7,52.5,15.6,25]},
   {id:"12+",sqm:111, bed:1, status:"available", box:[6.4,53.0,10.2,24]},
 ];
-const STORE="edentropical_lots_v1";
-let lots = load();
-function load(){
-  try{ const s=JSON.parse(localStorage.getItem(STORE));
-    if(Array.isArray(s)) return DEFAULTS.map(d=>{const o=s.find(x=>x.id===d.id)||{};return {...d,status:o.status||d.status,price:o.price??d.price}});
-  }catch(e){}
-  return DEFAULTS.map(d=>({...d}));
+let lots = DEFAULTS.map(d=>({...d}));
+const PROGRAMME_SLUG = "eden-tropical";
+const SANITY_READ_URL = "https://x3jcttot.apicdn.sanity.io/v2024-01-01/data/query/production?query=" +
+  encodeURIComponent('*[_type=="lotPlan" && programmeSlug=="' + PROGRAMME_SLUG + '"][0]{lots}');
+async function fetchLiveLots(){
+  try{
+    const r = await fetch(SANITY_READ_URL);
+    const j = await r.json();
+    const remote = (j.result && j.result.lots) || [];
+    if(remote.length){
+      lots = DEFAULTS.map(d=>{ const o = remote.find(x=>x.lotId===d.id); return o ? {...d, status:o.status||d.status, price:o.price||d.price} : {...d}; });
+      buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters();
+    }
+  }catch(e){ console.warn("lotPlan fetch failed", e); }
 }
-function save(){ try{ localStorage.setItem(STORE, JSON.stringify(lots.map(l=>({id:l.id,status:l.status,price:l.price||""})))); }catch(e){} }
 
 /* ---------- i18n ---------- */
 const I18N={
@@ -294,7 +301,7 @@ const I18N={
     pick:"Sélectionnez un lot sur le plan pour voir son détail.",lg_a:"Disponible à la vente",lg_r:"Réservé (pré-booking)",lg_s:"Vendu",
     inv:"Inventaire des lots",h_lot:"Lot",h_type:"Typologie",h_area:"Surface",h_status:"Statut",h_price:"Prix",
     contact:"Contact ventes",langs:"Français · English · ไทย",manage:"⚙︎ Mode gestion",
-    m_hint:"Mode gestion — cliquez un lot puis modifiez son statut / prix. Vos changements sont enregistrés dans ce navigateur. Exportez pour me renvoyer la configuration à intégrer définitivement.",
+    m_hint:"Mode gestion — cliquez un lot puis modifiez son statut / prix. Entrez le mot de passe une fois : « Appliquer » enregistre alors en direct, visible par tous les visiteurs du site.",
     m_lot:"Lot sélectionné :",m_apply:"Appliquer",m_export:"Exporter la config",m_reset:"Réinitialiser",
     bed1:"1 chambre",bed2:"2 chambres",bath:"salle de bain",onreq:"Prix sur demande",from:"À partir de",
     d_area:"Surface du lot",d_type:"Typologie",d_status:"Statut",d_price:"Prix",d_ref:"Référence",lease:"Bail 30 ans · meublé"},
@@ -304,7 +311,7 @@ const I18N={
     pick:"Select a plot on the map to see its details.",lg_a:"Available for sale",lg_r:"Reserved (pre-booking)",lg_s:"Sold",
     inv:"Plot inventory",h_lot:"Plot",h_type:"Type",h_area:"Area",h_status:"Status",h_price:"Price",
     contact:"Sales contact",langs:"Français · English · ไทย",manage:"⚙︎ Manage mode",
-    m_hint:"Manage mode — click a plot then change its status / price. Changes are saved in this browser. Export to send me the config to bake in permanently.",
+    m_hint:"Manage mode — click a plot then change its status / price. Enter the password once: \u201cApply\u201d then saves live, visible to every visitor to the site.",
     m_lot:"Selected plot:",m_apply:"Apply",m_export:"Export config",m_reset:"Reset",
     bed1:"1 bedroom",bed2:"2 bedrooms",bath:"bathroom",onreq:"Price on request",from:"From",
     d_area:"Plot area",d_type:"Type",d_status:"Status",d_price:"Price",d_ref:"Reference",lease:"30-year lease · furnished"}
@@ -439,27 +446,46 @@ function syncManage(){
   const has=!!l; mStatus.disabled=!has; mPrice.disabled=!has; mApply.disabled=!has;
   if(l){mStatus.value=l.status; mPrice.value=l.price||"";}
 }
-mApply.addEventListener("click",()=>{
+const mSecret=document.getElementById("mSecret");
+function getSecret(){
+  let s=mSecret.value.trim();
+  if(!s){ try{ s=sessionStorage.getItem("lots_secret")||""; }catch(e){} if(s) mSecret.value=s; }
+  return s;
+}
+mApply.addEventListener("click",async()=>{
   const l=lots.find(x=>x.id===selected); if(!l)return;
   l.status=mStatus.value; l.price=mPrice.value.trim();
-  save(); buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters();
-  select(l.id); toast(lang==="fr"?`Lot ${l.id} mis à jour`:`Plot ${l.id} updated`);
+  buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters(); select(l.id);
+  const secret=getSecret();
+  if(!secret){ toast(lang==="fr"?"Mot de passe requis pour sauvegarder":"Password required to save"); return; }
+  mApply.disabled=true;
+  try{
+    const res=await fetch("/api/lots",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({programmeSlug:PROGRAMME_SLUG,secret:secret,lots:lots.map(x=>({lotId:x.id,status:x.status,price:x.price||""}))})});
+    const j=await res.json().catch(()=>({}));
+    if(res.ok&&j.ok){ try{sessionStorage.setItem("lots_secret",secret);}catch(e){} toast(lang==="fr"?`Lot ${l.id} enregistré — visible par tous`:`Plot ${l.id} saved — visible to everyone`); }
+    else if(res.status===401){ toast(lang==="fr"?"Mot de passe incorrect":"Wrong password"); try{sessionStorage.removeItem("lots_secret");}catch(e){} }
+    else { toast(lang==="fr"?"Échec de l'enregistrement":"Save failed"); }
+  }catch(e){ toast(lang==="fr"?"Échec de l'enregistrement (réseau)":"Save failed (network)"); }
+  mApply.disabled=false; syncManage();
 });
 document.getElementById("mExport").addEventListener("click",async()=>{
   const data=JSON.stringify(lots.map(l=>({id:l.id,status:l.status,price:l.price||""})),null,2);
   try{await navigator.clipboard.writeText(data); toast(lang==="fr"?"Configuration copiée ✓":"Config copied ✓");}
   catch(e){ toast(data.slice(0,60)+"…"); console.log(data); }
 });
-document.getElementById("mReset").addEventListener("click",()=>{
-  try{localStorage.removeItem(STORE);}catch(e){} lots=DEFAULTS.map(d=>({...d}));
+document.getElementById("mReset").addEventListener("click",async()=>{
+  lots=DEFAULTS.map(d=>({...d}));
   buildPlan(); renderTable(); renderCounts(); renderDetail(); applyFilters();
-  toast(lang==="fr"?"Réinitialisé":"Reset");
+  await fetchLiveLots();
+  toast(lang==="fr"?"Rechargé depuis le serveur":"Reloaded from server");
 });
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
   clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1900);}
 
 /* ---------- Init ---------- */
 applyLang();
+fetchLiveLots();
 </script>
 
 </body></html>
