@@ -34,7 +34,12 @@ window.OD_CMS = {
     '"programmes":*[_type=="programme"]|order(order asc){name,zone,"slug":slug.current,status,statusLabel,pitch,facts,' +
       '"img":cardImage.asset->url,"w":cardImage.asset->metadata.dimensions.width,"h":cardImage.asset->metadata.dimensions.height},' +
     '"dispos":*[_type=="villaDispo"]|order(order asc){name,isPlaceholder,note,statusLabel,specs,price,rentMonthly,simCosts,linkHref,' +
-      '"img":images[0].asset->url,"w":images[0].asset->metadata.dimensions.width,"h":images[0].asset->metadata.dimensions.height},' +
+      '"img":images[0].asset->url,"w":images[0].asset->metadata.dimensions.width,"h":images[0].asset->metadata.dimensions.height,' +
+      'pageHeroEyebrow,pageHeroSub,pagePresEyebrow,pagePresHeading,pagePresBody,' +
+      'pageRevenueBig,pageRevenueNote,pageLegalNote,pageFacts,pageGalleryNote,' +
+      'pageSpecsHeading,pageSpecs,pageSpecsNote,' +
+      'pageLocHeading,pageLocBody,pageLocFacts,pageMapQuery,pageMapNote,' +
+      'pageSimIntro,pageCtaHeading,pageCtaBody},' +
     '"realisations":*[_type=="realisation"]|order(order asc){name,"slug":slug.current,zone,tag,blurb,linkHref,' +
       '"cover":cover.asset->url,"w":cover.asset->metadata.dimensions.width,"h":cover.asset->metadata.dimensions.height},' +
     '"pages":*[_type=="programmePage"]{programmeSlug,' +
@@ -112,6 +117,7 @@ window.OD_CMS = {
       }
 
       // ---- VILLAS À VENDRE ----
+      window.OD_DISPO_PAGES = d.dispos || [];
       if (d.dispos && d.dispos.length) {
         window.DISPOS = d.dispos.map(function (v) {
           if (v.isPlaceholder) return {placeholder: true, name: v.name, note: pick(v.note)};
@@ -414,5 +420,68 @@ window.OD_CMS = {
         horizons: (sm.horizons && sm.horizons.length) ? sm.horizons : (base.horizons || [1, 5, 10])
       };
     }
+  };
+
+  // Remplit une série de .f (fact strip) index par index depuis [{value,label}].
+  function fillFacts(nodeList, facts) {
+    if (!facts || !facts.length) return;
+    for (var i = 0; i < nodeList.length && i < facts.length; i++) {
+      var el = nodeList[i], f = facts[i];
+      if (!f) continue;
+      setText(el.querySelector('b'), pick(f.value));
+      setText(el.querySelector('span'), pick(f.label));
+    }
+  }
+
+  // ---- Rendu du contenu d'une fiche « Villa disponible » (data-cms="page.…") ----
+  // Détecte la villa depuis l'URL (linkHref stocké dans Sanity, ex. "villas-a-vendre/villa-lilouana.html").
+  window.OD_renderVillaDispoPage = function () {
+    if (!window.OD_DISPO_PAGES || !window.OD_DISPO_PAGES.length) return;
+    var pn = location.pathname.replace(/^\/(en\/)?/, '');
+    var doc = null;
+    for (var i = 0; i < window.OD_DISPO_PAGES.length; i++) {
+      var v = window.OD_DISPO_PAGES[i];
+      if (!v.isPlaceholder && v.linkHref === pn) { doc = v; break; }
+    }
+    if (!doc) return;
+
+    var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
+    var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
+
+    setText(q('page.heroEyebrow'), pick(doc.pageHeroEyebrow));
+    setText(q('page.heroSub'), pick(doc.pageHeroSub));
+
+    setText(q('page.presEyebrow'), pick(doc.pagePresEyebrow));
+    setText(q('page.presHeading'), pick(doc.pagePresHeading));
+    setText(q('page.presBody'), pick(doc.pagePresBody));
+
+    var big = pick(doc.pageRevenueBig);
+    if (!big && doc.price) big = '฿' + Number(doc.price).toLocaleString('fr-FR');
+    setText(q('page.revenueBig'), big);
+    setText(q('page.revenueNote'), pick(doc.pageRevenueNote));
+    setText(q('page.legalNote'), pick(doc.pageLegalNote));
+
+    fillFacts(all('page.factItem'), doc.pageFacts);
+
+    setText(q('page.galleryNote'), pick(doc.pageGalleryNote));
+
+    setText(q('page.specsHeading'), pick(doc.pageSpecsHeading));
+    fillSpecTable(q('page.specs'), doc.pageSpecs);
+    setText(q('page.specsNote'), pick(doc.pageSpecsNote));
+
+    setText(q('page.locHeading'), pick(doc.pageLocHeading));
+    setText(q('page.locBody'), pick(doc.pageLocBody));
+    fillFacts(all('page.locFactItem'), doc.pageLocFacts);
+    setText(q('page.mapNote'), pick(doc.pageMapNote));
+    var mapEl = q('page.map');
+    if (mapEl && doc.pageMapQuery) {
+      var lang2 = (document.documentElement.lang || 'fr').slice(0, 2).toLowerCase() === 'en' ? 'en' : 'fr';
+      mapEl.src = 'https://www.google.com/maps?q=' + encodeURIComponent(doc.pageMapQuery) + '&hl=' + lang2 + '&z=15&output=embed';
+    }
+
+    setText(q('page.simIntro'), pick(doc.pageSimIntro));
+
+    setText(q('page.ctaHeading'), pick(doc.pageCtaHeading));
+    setText(q('page.ctaBody'), pick(doc.pageCtaBody));
   };
 })();
