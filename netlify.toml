@@ -72,3 +72,49 @@
   from = "/en/terra-mare/*"
   to = "/en/terra-mare/_template.html"
   status = 200
+
+# Nouveau programme (4e et suivants) créé depuis Studio, sans aucun dossier ni fichier
+# créé par un développeur : modèle générique unique par type de page, piloté entièrement
+# par Sanity (data-cms="idx.…"/"res.…"/"vil.…"/"inv.…"/"loc.…"/"chrome.…"). Un fichier réel
+# existant (les 3 programmes actuels) reste toujours prioritaire sur ces règles.
+[[redirects]]
+  from = "/:programme/index.html"
+  to = "/_nouveau-programme/index.html"
+  status = 200
+[[redirects]]
+  from = "/:programme/residence.html"
+  to = "/_nouveau-programme/residence.html"
+  status = 200
+[[redirects]]
+  from = "/:programme/villas.html"
+  to = "/_nouveau-programme/villas.html"
+  status = 200
+[[redirects]]
+  from = "/:programme/investissement.html"
+  to = "/_nouveau-programme/investissement.html"
+  status = 200
+[[redirects]]
+  from = "/:programme/localisation.html"
+  to = "/_nouveau-programme/localisation.html"
+  status = 200
+
+[[redirects]]
+  from = "/en/:programme/index.html"
+  to = "/en/_nouveau-programme/index.html"
+  status = 200
+[[redirects]]
+  from = "/en/:programme/residence.html"
+  to = "/en/_nouveau-programme/residence.html"
+  status = 200
+[[redirects]]
+  from = "/en/:programme/villas.html"
+  to = "/en/_nouveau-programme/villas.html"
+  status = 200
+[[redirects]]
+  from = "/en/:programme/investissement.html"
+  to = "/en/_nouveau-programme/investissement.html"
+  status = 200
+[[redirects]]
+  from = "/en/:programme/localisation.html"
+  to = "/en/_nouveau-programme/localisation.html"
+  status = 200

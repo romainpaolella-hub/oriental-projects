@@ -311,6 +311,13 @@ export const programmePage = defineType({
     defineField({name: 'loc_islandEyebrow', title: 'Bloc « Pourquoi… » — surtitre', type: 'localeString', group: 'localisation'}),
     defineField({name: 'loc_islandHeading', title: 'Bloc « Pourquoi… » — titre', type: 'localeText', group: 'localisation'}),
     defineField({name: 'loc_island', title: 'Bloc « Pourquoi… » — éléments', type: 'array', of: [numItem], group: 'localisation'}),
+    defineField({
+      name: 'loc_mapQuery',
+      title: 'Carte — adresse ou lieu (Google Maps)',
+      type: 'string',
+      description: 'Ex. « Bophut, Koh Samui, Thailand ». Laisser vide pour garder la carte déjà en place sur la page.',
+      group: 'localisation',
+    }),
     defineField({name: 'loc_cta', title: 'Titre de l’appel à l’action (bas de page)', type: 'localeText', group: 'localisation'}),
 
     // ---------------- INVESTIR ----------------

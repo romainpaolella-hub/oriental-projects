@@ -355,6 +355,7 @@
     if(typeof window.OD_renderProgrammePage==='function') try{window.OD_renderProgrammePage()}catch(e){}
     if(typeof window.OD_renderVillaDispoPage==='function') try{window.OD_renderVillaDispoPage()}catch(e){}
     if(typeof window.OD_renderVillaTypePage==='function') try{window.OD_renderVillaTypePage()}catch(e){}
+    if(typeof window.OD_renderProgrammeChrome==='function') try{window.OD_renderProgrammeChrome()}catch(e){}
     if(typeof window.OD_renderFooter==='function') try{window.OD_renderFooter()}catch(e){}
     if(typeof window.OD_renderContactPage==='function') try{window.OD_renderContactPage()}catch(e){}
     // (re)construit les simulateurs après application du paramétrage CMS ;

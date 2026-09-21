@@ -62,13 +62,9 @@ export const villaType = defineType({
   fields: [
     defineField({
       name: 'programmeSlug',
-      title: 'Programme',
+      title: 'Identifiant du programme',
       type: 'string',
-      options: {list: [
-        {title: 'Villa Sea View', value: 'sea-view'},
-        {title: 'Eden Tropical', value: 'eden-tropical'},
-        {title: 'Terra Mare', value: 'terra-mare'},
-      ]},
+      description: 'Doit correspondre au dossier du site : « sea-view », « eden-tropical », « terra-mare », ou l’identifiant d’un nouveau programme.',
       validation: (r) => r.required(),
       group: 'card',
     }),

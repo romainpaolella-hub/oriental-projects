@@ -60,7 +60,7 @@ window.OD_CMS = {
       'vil_galEyebrow,vil_galHeading,vil_galNote,vil_galNote2,vil_cta,' +
       '"loc_hero":loc_hero.asset->url,' +
       'loc_heroEyebrow,loc_heroTitle,loc_eyebrow,loc_heading,loc_body,loc_distances,loc_distancesNote,' +
-      'loc_poiEyebrow,loc_poiHeading,loc_poiNote,loc_islandEyebrow,loc_islandHeading,loc_island,loc_cta,' +
+      'loc_poiEyebrow,loc_poiHeading,loc_poiNote,loc_islandEyebrow,loc_islandHeading,loc_island,loc_mapQuery,loc_cta,' +
       '"inv_hero":inv_hero.asset->url,' +
       'inv_heroTitle,inv_simEyebrow,inv_simHeading,inv_simBody,inv_simNote,' +
       'inv_stepsEyebrow,inv_stepsHeading,inv_steps,inv_stepsProse,inv_stepsNote,' +
@@ -121,6 +121,7 @@ window.OD_CMS = {
         window.PROJECTS = d.programmes.map(function (p) {
           return {
             name: p.name,
+            slug: p.slug,
             zone: p.zone,
             img: OD_img(p.img, 1400),
             w: p.w, h: p.h,
@@ -195,11 +196,12 @@ window.OD_CMS = {
 
   // ---- Rendu des textes de sous-pages programme (data-cms="…") ----
   // Détecte le programme depuis l'URL (/sea-view/residence.html, /en/eden-tropical/…).
-  var SLUGS = ['sea-view', 'eden-tropical', 'terra-mare'];
+  // Premier segment du chemin (après un éventuel /en/) — pas de liste fermée : un slug qui ne
+  // correspond à aucun document programmePage/villaType ne fait simplement rien plus bas (no-op).
   function currentSlug() {
     var parts = location.pathname.split('/').filter(Boolean);
-    for (var i = 0; i < parts.length; i++) if (SLUGS.indexOf(parts[i]) !== -1) return parts[i];
-    return null;
+    if (parts[0] === 'en') parts.shift();
+    return parts[0] || null;
   }
   function setText(node, val) { if (node && val != null && val !== '') node.textContent = val; }
   function setImg(node, url) { if (node && url) node.src = window.OD_img(url, 1920); }
@@ -406,6 +408,11 @@ window.OD_CMS = {
     setText(q('loc.islandHeading'), pick(doc.loc_islandHeading));
     setText(q('loc.cta'), pick(doc.loc_cta));
     fillNumItems('loc.islandItem', doc.loc_island);
+    var locMapEl = q('loc.map');
+    if (locMapEl && doc.loc_mapQuery) {
+      var lang4 = (document.documentElement.lang || 'fr').slice(0, 2).toLowerCase() === 'en' ? 'en' : 'fr';
+      locMapEl.src = 'https://www.google.com/maps?q=' + encodeURIComponent(doc.loc_mapQuery) + '&hl=' + lang4 + '&z=14&output=embed';
+    }
     rebuildRepeat('loc.distRow', doc.loc_distances, function (el, r) {
       setText(el.querySelector('span'), pick(r.label));
       setText(el.querySelector('b'), pick(r.value));
@@ -674,6 +681,25 @@ window.OD_CMS = {
 
     setText(q('type.ctaHeading'), pick(doc.pageCtaHeading));
     setText(q('type.ctaBody'), pick(doc.pageCtaBody));
+  };
+
+  // ---- Habillage générique d'un nouveau programme (data-cms="chrome.…") ----
+  // Utilisé uniquement par les 5 modèles génériques public/_nouveau-programme/*.html, qui
+  // servent un nombre indéterminé de programmes futurs et ne peuvent donc pas coder en dur
+  // le nom du programme ni la liste de ses voisins dans la sous-nav / le pied de page.
+  window.OD_renderProgrammeChrome = function () {
+    var slug = currentSlug();
+    if (!slug || !window.PROJECTS || !window.PROJECTS.length) return;
+    var doc = null;
+    for (var i = 0; i < window.PROJECTS.length; i++) if (window.PROJECTS[i].slug === slug) { doc = window.PROJECTS[i]; break; }
+    if (doc) {
+      var nameNodes = document.querySelectorAll('[data-cms="chrome.name"]');
+      for (var ni = 0; ni < nameNodes.length; ni++) setText(nameNodes[ni], doc.name);
+    }
+    rebuildRepeat('chrome.progLink', window.PROJECTS, function (el, p) {
+      setText(el, p.name);
+      el.setAttribute('href', p.slug === slug ? 'index.html' : ('../' + p.slug + '/index.html'));
+    });
   };
 
   // Remplit une série de blocs "personne" (b + a + span) depuis [{label,number,whatsapp,whatsappNote}].
