@@ -36,6 +36,7 @@ window.OD_CMS = {
       '"img":cardImage.asset->url,"w":cardImage.asset->metadata.dimensions.width,"h":cardImage.asset->metadata.dimensions.height},' +
     '"dispos":*[_type=="villaDispo"]|order(order asc){name,isPlaceholder,note,statusLabel,specs,price,rentMonthly,simCosts,linkHref,' +
       '"img":images[0].asset->url,"w":images[0].asset->metadata.dimensions.width,"h":images[0].asset->metadata.dimensions.height,' +
+      '"images":images[]{"url":asset->url,"w":asset->metadata.dimensions.width,"h":asset->metadata.dimensions.height},' +
       'pageHeroEyebrow,pageHeroSub,pagePresEyebrow,pagePresHeading,pagePresBody,' +
       'pageRevenueBig,pageRevenueNote,pageLegalNote,pageFacts,pageGalleryNote,' +
       'pageSpecsHeading,pageSpecs,pageSpecsNote,' +
@@ -454,6 +455,30 @@ window.OD_CMS = {
 
     setText(q('page.heroEyebrow'), pick(doc.pageHeroEyebrow));
     setText(q('page.heroSub'), pick(doc.pageHeroSub));
+
+    // photos de la fiche (data-cms="page.heroImg/presImg/gallery") — depuis le champ "images" de la carte
+    if (doc.images && doc.images.length) {
+      var heroImg = q('page.heroImg');
+      if (heroImg) {
+        heroImg.src = window.OD_img(doc.images[0].url, 1920);
+        if (doc.images[0].w) { heroImg.width = doc.images[0].w; heroImg.height = doc.images[0].h; }
+      }
+      var presImg = q('page.presImg');
+      if (presImg) {
+        var pImg = doc.images[1] || doc.images[0];
+        presImg.src = window.OD_img(pImg.url, 1600);
+        if (pImg.w) { presImg.width = pImg.w; presImg.height = pImg.h; }
+      }
+      var galBox = q('page.gallery');
+      if (galBox) {
+        galBox.innerHTML = doc.images.map(function (im, gi) {
+          var cls = gi === 0 ? 'big lead' : ((gi % 7) === 3 ? 'wide' : '');
+          var dim = im.w ? ' width="' + im.w + '" height="' + im.h + '"' : '';
+          return '<button class="' + cls + '" onclick="openLb(' + gi + ')"><img src="' + window.OD_img(im.url, 1600) + '"' + dim + ' alt="' + doc.name + '"></button>';
+        }).join('');
+      }
+      window.OD_GALLERY = doc.images.map(function (im) { return window.OD_img(im.url, 1920); });
+    }
 
     setText(q('page.presEyebrow'), pick(doc.pagePresEyebrow));
     setText(q('page.presHeading'), pick(doc.pagePresHeading));
