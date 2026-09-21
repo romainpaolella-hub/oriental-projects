@@ -25,3 +25,16 @@
   from = "/en"
   to = "/en/"
   status = 301
+
+# Fiches "villa à vendre" créées depuis Studio sans page dédiée : modèle générique
+# piloté entièrement par Sanity (data-cms="page.…"). Un fichier réel existant à ce
+# chemin est toujours servi en priorité — cette règle ne s'applique qu'en repli.
+[[redirects]]
+  from = "/villas-a-vendre/*"
+  to = "/villas-a-vendre/_template.html"
+  status = 200
+
+[[redirects]]
+  from = "/en/villas-a-vendre/*"
+  to = "/en/villas-a-vendre/_template.html"
+  status = 200

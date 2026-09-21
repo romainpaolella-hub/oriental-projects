@@ -453,6 +453,25 @@ window.OD_CMS = {
     var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
     var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
 
+    // nom de la villa (utile pour le modèle générique — les fiches figées l'ont déjà en dur)
+    setText(q('page.name'), doc.name);
+
+    // méta de la page : titre d'onglet, description, canonical, Open Graph
+    if (doc.name) {
+      document.title = doc.name + ' — Koh Samui Estate';
+      var metaDesc = pick(doc.pageHeroSub) || pick(doc.pagePresBody);
+      var descEl = document.querySelector('meta[name="description"]');
+      if (descEl && metaDesc) descEl.setAttribute('content', metaDesc);
+      var ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', doc.name + ' — Koh Samui Estate');
+      var ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc && metaDesc) ogDesc.setAttribute('content', metaDesc);
+      var ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute('content', location.origin + location.pathname);
+      var canon = document.querySelector('link[rel="canonical"]');
+      if (canon) canon.setAttribute('href', location.origin + location.pathname);
+    }
+
     setText(q('page.heroEyebrow'), pick(doc.pageHeroEyebrow));
     setText(q('page.heroSub'), pick(doc.pageHeroSub));
 
