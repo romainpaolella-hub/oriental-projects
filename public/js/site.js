@@ -114,6 +114,7 @@
   /* ---------- Villas en vente ---------- */
   function renderDispos(){
     var box=$('#dispos'); if(!box||!window.DISPOS)return;
+    var langPrefix=location.pathname.indexOf('/en/')===0?'/en/':'/';
     box.innerHTML=window.DISPOS.map(function(v){
       if(v.placeholder) return '<div class="vcard soon"><div><div class="tag">'+(v.name||T.soonName)+'</div><div class="sub">'+(v.note||T.soonNote)+'</div></div></div>';
       var rentLine='';
@@ -122,7 +123,7 @@
         +'<div class="im"><img src="'+v.img+'"'+(v.w?' width="'+v.w+'" height="'+v.h+'"':'')+' alt="'+v.name+'" loading="lazy" decoding="async"><span class="badge dispo">'+v.statusLabel+'</span></div>'
         +'<div class="bd"><h3>'+v.name+'</h3>'
         + v.specs.map(function(s){return '<div class="li">'+s+'</div>'}).join('')
-        +'<div class="ft"><div class="pr">'+baht(v.price)+rentLine+'</div><a class="link-under" href="'+(v.href||'contact.html')+'">'+T.info+'</a></div>'
+        +'<div class="ft"><div class="pr">'+baht(v.price)+rentLine+'</div><a class="link-under" href="'+langPrefix+(v.href||'contact.html')+'">'+T.info+'</a></div>'
         +'</div></div>';
     }).join('');
   }
