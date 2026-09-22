@@ -206,6 +206,16 @@ window.OD_CMS = {
   function setText(node, val) { if (node && val != null && val !== '') node.textContent = val; }
   function setImg(node, url) { if (node && url) node.src = window.OD_img(url, 1920); }
 
+  // Les modèles génériques (nouveau programme, nouvelle typologie, nouvelle villa à vendre)
+  // portent un <meta name="robots" content="noindex, follow"> par défaut (repli sûr tant
+  // qu'aucun contenu réel ne leur correspond). Dès qu'un document Sanity correspond bien à
+  // l'URL et que du vrai contenu s'affiche, on autorise l'indexation. Sans effet sur les
+  // pages réelles du site, qui ne portent pas cette balise.
+  function allowIndexing() {
+    var m = document.querySelector('meta[name="robots"]');
+    if (m) m.setAttribute('content', 'index, follow');
+  }
+
   // Reconstruit un tableau .amen (colonnes h4 + lignes .row span/b) depuis un tableau de {title,rows:[{label,value}]}.
   function fillSpecTable(box, groups) {
     if (!box || !groups || !groups.length) return;
@@ -268,6 +278,7 @@ window.OD_CMS = {
     for (var i = 0; i < window.OD_PAGES.length; i++)
       if (window.OD_PAGES[i].programmeSlug === slug) { doc = window.OD_PAGES[i]; break; }
     if (!doc) return;
+    allowIndexing();
 
     var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
     var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
@@ -509,6 +520,7 @@ window.OD_CMS = {
       if (!v.isPlaceholder && v.linkHref === pn) { doc = v; break; }
     }
     if (!doc) return;
+    allowIndexing();
 
     var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
     var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
@@ -606,6 +618,7 @@ window.OD_CMS = {
       if (v.programmeSlug === slug && v.linkHref && (slug + '/' + v.linkHref) === pn) { doc = v; break; }
     }
     if (!doc) return;
+    allowIndexing();
 
     var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
     var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
