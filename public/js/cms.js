@@ -204,7 +204,16 @@ window.OD_CMS = {
     return parts[0] || null;
   }
   function setText(node, val) { if (node && val != null && val !== '') node.textContent = val; }
-  function setImg(node, url) { if (node && url) node.src = window.OD_img(url, 1920); }
+
+  // Un alt "placeholder" (vide, ou le texte de repli des modèles génériques) peut être
+  // remplacé automatiquement par un texte dérivé du contenu Sanity ; un alt déjà écrit à la
+  // main sur une page réelle (ex. "Piscine et salon extérieur, villa Terra Mare") ne l'est pas.
+  function isPlaceholderAlt(a) { return !a || /ajouter dans Studio|to add in Studio/i.test(a); }
+  function setImg(node, url, alt) {
+    if (!node || !url) return;
+    node.src = window.OD_img(url, 1920);
+    if (alt && isPlaceholderAlt(node.alt)) node.alt = alt;
+  }
 
   // Les modèles génériques (nouveau programme, nouvelle typologie, nouvelle villa à vendre)
   // portent un <meta name="robots" content="noindex, follow"> par défaut (repli sûr tant
@@ -215,6 +224,30 @@ window.OD_CMS = {
     var m = document.querySelector('meta[name="robots"]');
     if (m) m.setAttribute('content', 'index, follow');
   }
+
+  // ---- Données structurées (schema.org), injectées depuis le contenu Sanity déjà chargé ----
+  // Un seul <script> par id : un rendu ultérieur remplace le précédent plutôt que d'empiler.
+  function injectJsonLd(id, obj) {
+    if (!obj) return;
+    var el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('script');
+      el.type = 'application/ld+json';
+      el.id = id;
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(obj);
+  }
+  function breadcrumbList(items) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: items.map(function (it, i) {
+        return {'@type': 'ListItem', position: i + 1, name: it.name, item: location.origin + it.path};
+      }),
+    };
+  }
+  function langPrefix() { return LANG === 'en' ? '/en' : ''; }
 
   // Reconstruit un tableau .amen (colonnes h4 + lignes .row span/b) depuis un tableau de {title,rows:[{label,value}]}.
   function fillSpecTable(box, groups) {
@@ -282,6 +315,34 @@ window.OD_CMS = {
 
     var q = function (sel) { return document.querySelector('[data-cms="' + sel + '"]'); };
     var all = function (sel) { return document.querySelectorAll('[data-cms="' + sel + '"]'); };
+    // Texte alternatif de repli pour les photos uniques (bandeau/histoire/hero de section) —
+    // seulement utilisé si l'alt en place est vide ou le placeholder générique (voir setImg).
+    var altFor = function (fr, en) { return doc.title ? doc.title + ' — ' + (LANG === 'en' ? en : fr) : null; };
+
+    // ---- Données structurées : fil d'Ariane (toutes les pages du programme) + fiche
+    // RealEstateListing (accueil du programme uniquement, détecté via ses champs idx.*) ----
+    var crumbs = [
+      {name: LANG === 'en' ? 'Home' : 'Accueil', path: langPrefix() + '/index.html'},
+      {name: doc.title, path: langPrefix() + '/' + slug + '/index.html'},
+    ];
+    var subPage = null;
+    if (q('res.heading')) subPage = {fr: 'Résidence', en: 'The Residence', path: 'residence.html'};
+    else if (q('vil.heading')) subPage = {fr: 'Villas', en: 'The Villas', path: 'villas.html'};
+    else if (q('loc.heading')) subPage = {fr: 'Localisation', en: 'Location', path: 'localisation.html'};
+    else if (q('inv.heroTitle')) subPage = {fr: 'Investir', en: 'Invest', path: 'investissement.html'};
+    if (subPage) crumbs.push({name: LANG === 'en' ? subPage.en : subPage.fr, path: langPrefix() + '/' + slug + '/' + subPage.path});
+    injectJsonLd('od-schema-breadcrumb', breadcrumbList(crumbs));
+
+    if (q('idx.heroEyebrow') || q('idx.progHeading')) {
+      injectJsonLd('od-schema-listing', {
+        '@context': 'https://schema.org',
+        '@type': 'RealEstateListing',
+        name: doc.title,
+        description: pick(doc.idx_heroSub) || pick(doc.idx_progBody),
+        url: location.origin + location.pathname,
+        image: doc.idx_bandeauImg ? window.OD_img(doc.idx_bandeauImg, 1600) : undefined,
+      });
+    }
 
     // ---- Accueil du programme ----
     setText(q('idx.heroEyebrow'), pick(doc.idx_heroEyebrow));
@@ -290,7 +351,7 @@ window.OD_CMS = {
     setText(q('idx.progHeading'), pick(doc.idx_progHeading));
     setText(q('idx.progBody'), pick(doc.idx_progBody));
     fillFacts(all('idx.factItem'), doc.idx_facts);
-    setImg(q('idx.bandeauImg'), doc.idx_bandeauImg);
+    setImg(q('idx.bandeauImg'), doc.idx_bandeauImg, altFor('vue du programme', 'programme view'));
     setText(q('idx.bandeauCaption'), pick(doc.idx_bandeauCaption));
     setText(q('idx.storyEyebrow'), pick(doc.idx_storyEyebrow));
     setText(q('idx.storyHeading'), pick(doc.idx_storyHeading));
@@ -299,11 +360,11 @@ window.OD_CMS = {
       for (var sj = 0; sj < sps.length && sj < doc.idx_storyParagraphs.length; sj++)
         setText(sps[sj], pick(doc.idx_storyParagraphs[sj]));
     }
-    setImg(q('idx.storyImg'), doc.idx_storyImg);
+    setImg(q('idx.storyImg'), doc.idx_storyImg, altFor('le quartier', 'the neighbourhood'));
     setText(q('idx.cta'), pick(doc.idx_cta));
 
     // ---- La Résidence ----
-    setImg(q('res.hero'), doc.res_hero);
+    setImg(q('res.hero'), doc.res_hero, altFor('la résidence', 'the residence'));
     setText(q('res.eyebrow'), pick(doc.res_eyebrow));
     setText(q('res.heading'), pick(doc.res_heading));
     setText(q('res.caption'), pick(doc.res_caption));
@@ -325,7 +386,7 @@ window.OD_CMS = {
     fillSpecTable(q('res.specs'), doc.res_specs);
 
     // ---- Les Villas ----
-    setImg(q('vil.hero'), doc.vil_hero);
+    setImg(q('vil.hero'), doc.vil_hero, altFor('les villas', 'the villas'));
     setText(q('vil.eyebrow'), pick(doc.vil_eyebrow));
     setText(q('vil.heading'), pick(doc.vil_heading));
     setText(q('vil.body'), pick(doc.vil_body));
@@ -405,7 +466,7 @@ window.OD_CMS = {
     }
 
     // ---- Localisation ----
-    setImg(q('loc.hero'), doc.loc_hero);
+    setImg(q('loc.hero'), doc.loc_hero, altFor('localisation', 'location'));
     setText(q('loc.heroEyebrow'), pick(doc.loc_heroEyebrow));
     setText(q('loc.heroTitle'), pick(doc.loc_heroTitle));
     setText(q('loc.eyebrow'), pick(doc.loc_eyebrow));
@@ -430,7 +491,7 @@ window.OD_CMS = {
     });
 
     // ---- Investir ----
-    setImg(q('inv.hero'), doc.inv_hero);
+    setImg(q('inv.hero'), doc.inv_hero, altFor('investir', 'invest'));
     setText(q('inv.heroTitle'), pick(doc.inv_heroTitle));
     setText(q('inv.simEyebrow'), pick(doc.inv_simEyebrow));
     setText(q('inv.simHeading'), pick(doc.inv_simHeading));
@@ -542,6 +603,21 @@ window.OD_CMS = {
       if (ogUrl) ogUrl.setAttribute('content', location.origin + location.pathname);
       var canon = document.querySelector('link[rel="canonical"]');
       if (canon) canon.setAttribute('href', location.origin + location.pathname);
+
+      injectJsonLd('od-schema-listing', {
+        '@context': 'https://schema.org',
+        '@type': 'RealEstateListing',
+        name: doc.name,
+        description: metaDesc,
+        url: location.origin + location.pathname,
+        image: (doc.images && doc.images[0]) ? window.OD_img(doc.images[0].url, 1600) : undefined,
+        offers: doc.price ? {'@type': 'Offer', price: doc.price, priceCurrency: 'THB', availability: 'https://schema.org/InStock'} : undefined,
+      });
+      injectJsonLd('od-schema-breadcrumb', breadcrumbList([
+        {name: LANG === 'en' ? 'Home' : 'Accueil', path: langPrefix() + '/index.html'},
+        {name: LANG === 'en' ? 'Available villas' : 'Villas disponibles', path: langPrefix() + '/villas-a-vendre/index.html'},
+        {name: doc.name, path: langPrefix() + '/' + doc.linkHref},
+      ]));
     }
 
     setText(q('page.heroEyebrow'), pick(doc.pageHeroEyebrow));
@@ -553,12 +629,14 @@ window.OD_CMS = {
       if (heroImg) {
         heroImg.src = window.OD_img(doc.images[0].url, 1920);
         if (doc.images[0].w) { heroImg.width = doc.images[0].w; heroImg.height = doc.images[0].h; }
+        if (doc.name && isPlaceholderAlt(heroImg.alt)) heroImg.alt = doc.name;
       }
       var presImg = q('page.presImg');
       if (presImg) {
         var pImg = doc.images[1] || doc.images[0];
         presImg.src = window.OD_img(pImg.url, 1600);
         if (pImg.w) { presImg.width = pImg.w; presImg.height = pImg.h; }
+        if (doc.name && isPlaceholderAlt(presImg.alt)) presImg.alt = doc.name;
       }
       var galBox = q('page.gallery');
       if (galBox) {
@@ -638,6 +716,27 @@ window.OD_CMS = {
       if (ogUrl) ogUrl.setAttribute('content', location.origin + location.pathname);
       var canon = document.querySelector('link[rel="canonical"]');
       if (canon) canon.setAttribute('href', location.origin + location.pathname);
+
+      var proj = null;
+      for (var pj = 0; pj < (window.PROJECTS || []).length; pj++)
+        if (window.PROJECTS[pj].slug === slug) { proj = window.PROJECTS[pj]; break; }
+      var progName = proj ? proj.name : slug;
+
+      injectJsonLd('od-schema-listing', {
+        '@context': 'https://schema.org',
+        '@type': 'RealEstateListing',
+        name: doc.name,
+        description: metaDesc,
+        url: location.origin + location.pathname,
+        image: (doc.images && doc.images[0]) ? window.OD_img(doc.images[0].url, 1600) : undefined,
+        offers: pick(doc.price) ? {'@type': 'Offer', price: pick(doc.price), priceCurrency: 'THB', availability: 'https://schema.org/InStock'} : undefined,
+      });
+      injectJsonLd('od-schema-breadcrumb', breadcrumbList([
+        {name: LANG === 'en' ? 'Home' : 'Accueil', path: langPrefix() + '/index.html'},
+        {name: progName, path: langPrefix() + '/' + slug + '/index.html'},
+        {name: LANG === 'en' ? 'The Villas' : 'Villas', path: langPrefix() + '/' + slug + '/villas.html'},
+        {name: doc.name, path: langPrefix() + '/' + slug + '/' + doc.linkHref},
+      ]));
     }
 
     setText(q('type.heroEyebrow'), pick(doc.pageHeroEyebrow));
@@ -648,12 +747,14 @@ window.OD_CMS = {
       if (heroImg) {
         heroImg.src = window.OD_img(doc.images[0].url, 1920);
         if (doc.images[0].w) { heroImg.width = doc.images[0].w; heroImg.height = doc.images[0].h; }
+        if (doc.name && isPlaceholderAlt(heroImg.alt)) heroImg.alt = doc.name;
       }
       var presImg = q('type.presImg');
       if (presImg) {
         var pImg = doc.images[1] || doc.images[0];
         presImg.src = window.OD_img(pImg.url, 1600);
         if (pImg.w) { presImg.width = pImg.w; presImg.height = pImg.h; }
+        if (doc.name && isPlaceholderAlt(presImg.alt)) presImg.alt = doc.name;
       }
       var galBox = q('type.gallery');
       if (galBox) {
