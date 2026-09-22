@@ -193,21 +193,29 @@
     load(0);calc();
   }
 
-  /* ---------- Simulateur complet (parcelle + scénario + durée) ---------- */
+  /* ---------- Simulateur complet (parcelle + scénario + durée) ----------
+     Chaque villa peut porter ses propres scenarios[]/costs (ex. la page
+     calculateur autonome, qui combine des villas de programmes différents
+     avec des hypothèses de loyer très différentes) ; à défaut, on retombe
+     sur les scenarios/costs globaux — comportement inchangé pour les pages
+     programme existantes, qui ne définissent jamais ces champs par villa. */
   function initFullCalc(){
     var box=$('#calc'); if(!box||!window.OD_SIM_FULL)return;
-    var C=window.OD_SIM_FULL, cost=(C.costs||35)/100;
+    var C=window.OD_SIM_FULL;
+    function scenariosFor(pi){ return C.plots[pi].scenarios||C.scenarios; }
+    function costFor(pi){ return ((C.plots[pi].costs!=null?C.plots[pi].costs:C.costs)||35)/100; }
     var st={plot:0, scen:(C.defaultScenario!=null?C.defaultScenario:1), nights:0, adr:0, years:(C.horizons&&C.horizons[1])||5};
-    st.nights=C.scenarios[st.scen].nights; st.adr=C.scenarios[st.scen].adr;
+    var scen0=scenariosFor(st.plot);
+    st.nights=scen0[st.scen].nights; st.adr=scen0[st.scen].adr;
     var plotBtns=C.plots.map(function(p,i){return '<button data-i="'+i+'"><span class="t">'+p.name+'</span><span class="p">'+baht(p.price)+'</span></button>'}).join('');
-    var scenBtns=C.scenarios.map(function(s,i){return '<button data-i="'+i+'"><span class="t">'+s.name+'</span><span class="d">'+s.nights+' '+T.c.nights+' · '+baht(s.adr)+' / '+T.c.night+'</span></button>'}).join('');
+    function scenBtnsHtml(){ return scenariosFor(st.plot).map(function(s,i){return '<button data-i="'+i+'"><span class="t">'+s.name+'</span><span class="d">'+s.nights+' '+T.c.nights+' · '+baht(s.adr)+' / '+T.c.night+'</span></button>'}).join(''); }
     var hzBtns=(C.horizons||[1,5,10]).map(function(h){return '<button data-h="'+h+'">'+h+yrs(h)+'</button>'}).join('');
     box.innerHTML='<div class="fcalc"><div class="fgrid">'
       +'<div class="fcol fcol-controls">'
         +'<div class="frow"><span class="flabel">'+(C.plotLabel||T.c.chooseVilla)+'</span><div class="fseg" id="f-plots">'+plotBtns+'</div></div>'
-        +'<div class="frow"><span class="flabel">'+T.c.scenario+'</span><div class="fseg" id="f-scen">'+scenBtns+'</div></div>'
+        +'<div class="frow"><span class="flabel">'+T.c.scenario+'</span><div class="fseg" id="f-scen">'+scenBtnsHtml()+'</div></div>'
         +'<label><span>'+T.c.nightsYr+' <b id="f-nights-v"></b></span><input type="range" id="f-nights" min="60" max="300" step="1"></label>'
-        +'<label><span>'+T.c.adr+' <b id="f-adr-v"></b></span><input type="range" id="f-adr" min="1000" max="15000" step="100"></label>'
+        +'<label><span>'+T.c.adr+' <b id="f-adr-v"></b></span><input type="range" id="f-adr" min="500" max="15000" step="100"></label>'
         +'<span class="flabel">'+T.c.holding+'</span><div class="fseg hz" id="f-hz">'+hzBtns+'</div>'
       +'</div><div class="fcol fcol-result">'
         +'<span class="fkick">'+T.c.grossEst+'</span><div class="fbig" id="f-gross">—</div>'
@@ -222,7 +230,7 @@
     var rN=$('#f-nights'),rA=$('#f-adr');
     function setActive(sel,i,attr){box.querySelectorAll(sel+' button').forEach(function(b){b.classList.toggle('on',(b.getAttribute(attr))==String(i))})}
     function draw(){
-      var price=C.plots[st.plot].price, annual=st.nights*st.adr, gross=annual/price*100;
+      var price=C.plots[st.plot].price, cost=costFor(st.plot), annual=st.nights*st.adr, gross=annual/price*100;
       var netAnnual=annual*(1-cost), netY=netAnnual/price*100, cumul=netAnnual*st.years, share=cumul/price*100, payback=price/annual, monthly=annual/12;
       rN.value=st.nights; rA.value=st.adr;
       $('#f-nights-v').textContent=st.nights+' '+T.c.nightsPerYr;
@@ -238,8 +246,18 @@
       $('#f-payback').textContent=num1(payback)+yrs(payback<=1?1:2);
       setActive('#f-plots',st.plot,'data-i'); setActive('#f-scen',st.scen,'data-i'); setActive('#f-hz',st.years,'data-h');
     }
-    box.querySelector('#f-plots').addEventListener('click',function(e){var b=e.target.closest('button');if(b){st.plot=+b.dataset.i;draw()}});
-    box.querySelector('#f-scen').addEventListener('click',function(e){var b=e.target.closest('button');if(b){st.scen=+b.dataset.i;st.nights=C.scenarios[st.scen].nights;st.adr=C.scenarios[st.scen].adr;draw()}});
+    box.querySelector('#f-plots').addEventListener('click',function(e){
+      var b=e.target.closest('button');
+      if(b){
+        st.plot=+b.dataset.i;
+        var sc=scenariosFor(st.plot);
+        if(st.scen<0||st.scen>=sc.length) st.scen=0;
+        st.nights=sc[st.scen].nights; st.adr=sc[st.scen].adr;
+        box.querySelector('#f-scen').innerHTML=scenBtnsHtml();
+        draw();
+      }
+    });
+    box.querySelector('#f-scen').addEventListener('click',function(e){var b=e.target.closest('button');if(b){st.scen=+b.dataset.i;var sc=scenariosFor(st.plot);st.nights=sc[st.scen].nights;st.adr=sc[st.scen].adr;draw()}});
     box.querySelector('#f-hz').addEventListener('click',function(e){var b=e.target.closest('button');if(b){st.years=+b.dataset.h;draw()}});
     rN.addEventListener('input',function(){st.nights=+rN.value;st.scen=-1;draw()});
     rA.addEventListener('input',function(){st.adr=+rA.value;st.scen=-1;draw()});
