@@ -44,7 +44,7 @@ window.OD_CMS = {
       'pageSimIntro,pageCtaHeading,pageCtaBody},' +
     '"realisations":*[_type=="realisation"]|order(order asc){name,"slug":slug.current,zone,tag,blurb,linkHref,' +
       '"cover":cover.asset->url,"w":cover.asset->metadata.dimensions.width,"h":cover.asset->metadata.dimensions.height},' +
-    '"pages":*[_type=="programmePage"]{programmeSlug,' +
+    '"pages":*[_type=="programmePage"]{programmeSlug,title,' +
       'idx_heroEyebrow,idx_heroSub,idx_progEyebrow,idx_progHeading,idx_progBody,idx_facts,' +
       '"idx_bandeauImg":idx_bandeauImg.asset->url,idx_bandeauCaption,' +
       'idx_storyEyebrow,idx_storyHeading,idx_storyParagraphs,' +
