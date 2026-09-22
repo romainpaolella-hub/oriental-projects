@@ -82,7 +82,7 @@ window.PROJECTS = [
     status: 'plan',
     statusLabel: 'Sur plan',
     pitch: "12 villas contemporaines de 2 et 3 chambres, chacune dotée de sa piscine privée, au cœur de Bophut, l'un des quartiers les plus emblématiques de Koh Samui.",
-    facts: ['12 villas', '2 typologies', 'dès ฿7,29 M', 'Leasehold'],
+    facts: ['12 villas', '2 typologies', 'dès ฿7,7 M', 'Leasehold'],
     href: 'terra-mare/index.html'
   }
 ];

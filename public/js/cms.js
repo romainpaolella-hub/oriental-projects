@@ -437,13 +437,16 @@ window.OD_CMS = {
     };
 
     // rebuildRepeat clone la 1ère carte du fichier comme modèle pour toutes les cartes Sanity :
-    // si linkHref n'est pas renseigné pour une carte, on retombe sur le href d'origine à la même
-    // position plutôt que de laisser toutes les cartes hériter du lien de la toute première
-    // (sinon plusieurs cartes distinctes pointent silencieusement vers la même page).
+    // si linkHref/image n'est pas renseigné pour une carte, on retombe sur le href/photo d'origine
+    // à la même position plutôt que de laisser toutes les cartes hériter de ceux de la toute
+    // première (sinon plusieurs cartes distinctes pointent/affichent silencieusement la même chose).
     var vilCardOrigHrefs = Array.prototype.map.call(all('vil.card'), function (el) { return el.getAttribute('href'); });
+    var vilCardOrigImgs = Array.prototype.map.call(all('vil.card'), function (el) { return el.querySelector('img'); });
     rebuildRepeat('vil.card', doc.vil_cards, function (el, cd, i) {
       el.setAttribute('href', cd.linkHref || vilCardOrigHrefs[i] || 'villas.html');
-      var f = fillVilCard(el, cd, cd.image, pick(cd.title));
+      var origImg = vilCardOrigImgs[i];
+      var imgUrl = cd.image || (origImg && origImg.getAttribute('src'));
+      var f = fillVilCard(el, cd, imgUrl, pick(cd.title));
       setText(f('title'), pick(cd.title));
     });
 
