@@ -336,13 +336,28 @@
     if(langSel.value==='fr'&&!avail.fr&&avail.en) langSel.value='en';
     else if(langSel.value==='en'&&!avail.en&&avail.fr) langSel.value='fr';
   }
+  // Les brochures locales (/brochures/*.pdf) sont même origine : l'attribut "download" force
+  // un vrai téléchargement sans quitter la page. Les brochures téléversées dans Sanity sont sur
+  // cdn.sanity.io (autre origine) : les navigateurs ignorent alors "download" et naviguent vers
+  // le PDF dans l'onglet en cours, ce qui donne l'impression que le site "disparaît". Dans ce
+  // cas on ouvre plutôt un nouvel onglet, pour que le site reste ouvert derrière.
+  function isSameOrigin(url){
+    return url.indexOf('http')!==0 || url.indexOf(location.origin)===0;
+  }
   function triggerDownload(url){
     try{
       var a=document.createElement('a');
-      a.href=url; a.setAttribute('download',''); a.rel='noopener'; a.style.display='none';
+      a.href=url; a.rel='noopener'; a.style.display='none';
+      if(isSameOrigin(url)) a.setAttribute('download',''); else a.target='_blank';
       document.body.appendChild(a); a.click();
       setTimeout(function(){ a.remove(); }, 0);
     }catch(e){ try{ window.open(url,'_blank','noopener'); }catch(e2){} }
+  }
+  function setBrochureLink(a,url){
+    if(!a) return;
+    a.href=url;
+    if(isSameOrigin(url)){ a.setAttribute('download',''); a.removeAttribute('target'); }
+    else { a.removeAttribute('download'); a.target='_blank'; }
   }
 
   function initContactForm(){
@@ -382,7 +397,7 @@
         var url=brochureUrl(data.programme, data.brochure_langue);
         if(url){
           if(tText) tText.textContent=T.thanksDl;
-          if(dl){ dl.href=url; dl.hidden=false; }
+          if(dl){ setBrochureLink(dl,url); dl.hidden=false; }
           triggerDownload(url);
         } else {
           if(tText) tText.textContent=T.thanksNoDl;
@@ -407,7 +422,7 @@
           var url=brochureUrl(data.programme, data.brochure_langue);
           if(err){ err.textContent=T.errSend(!!url); err.hidden=false; }
           if(btn){ btn.disabled=false; btn.style.opacity=1; }
-          if(url){ if(dl){ dl.href=url; dl.hidden=false; } triggerDownload(url); }
+          if(url){ if(dl){ setBrochureLink(dl,url); dl.hidden=false; } triggerDownload(url); }
         });
     });
   }
