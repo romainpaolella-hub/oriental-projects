@@ -450,12 +450,15 @@ window.OD_CMS = {
       setText(f('title'), pick(cd.title));
     });
 
-    // typologies / parcelles ajoutées via Studio (type villaType) — s'ajoutent aux cartes ci-dessus
+    // typologies / parcelles ajoutées via Studio (type villaType) — s'ajoutent aux cartes ci-dessus.
+    // Contrairement aux vil_cards ci-dessus, ces cartes n'ont pas de position d'origine à retomber
+    // dessus (nouvelles typologies en libre-service) : à défaut de linkHref/photo, on retombe sur
+    // villas.html et une photo neutre plutôt que d'hériter silencieusement de ceux du modèle cloné.
     var typeCards = (window.OD_VILLATYPES || []).filter(function (t) { return t.programmeSlug === slug; });
     rebuildRepeat('vil.card', typeCards, function (el, cd) {
-      if (cd.linkHref) el.setAttribute('href', cd.linkHref);
+      el.setAttribute('href', cd.linkHref || 'villas.html');
       var img0 = cd.images && cd.images[0];
-      var f = fillVilCard(el, cd, img0 && img0.url, cd.name);
+      var f = fillVilCard(el, cd, (img0 && img0.url) || '/images/villa-template/placeholder.jpg', cd.name);
       setText(f('title'), cd.name);
     }, true);
 
