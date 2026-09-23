@@ -290,8 +290,18 @@
     'villa-lilouana':'brochures/villa-lilouana-en.pdf'
   };
   function brochureUrl(programme,langue){
+    var L=langue==='en'?'en':'fr';
+    // Brochure téléversée dans Sanity (programme ou villa clé en main) prioritaire sur le PDF statique.
+    var proj=(window.PROJECTS||[]).filter(function(p){return p.slug===programme})[0];
+    var custom=proj&&(L==='en'?proj.brochureEn:proj.brochureFr);
+    if(!custom&&(programme==='tropical-golf'||programme==='villa-lilouana')){
+      var needle=programme==='tropical-golf'?'tropical-golf-villa-2':'villa-lilouana';
+      var v=(window.DISPOS||[]).filter(function(d){return d.href&&d.href.indexOf(needle)!==-1})[0];
+      custom=v&&(L==='en'?v.brochureEn:v.brochureFr);
+    }
+    if(custom) return custom;
     var tpl=BROCHURES[programme]; if(!tpl) return '';
-    return '/'+tpl.replace('%L%', langue==='en'?'en':'fr');
+    return '/'+tpl.replace('%L%', L);
   }
   function triggerDownload(url){
     try{

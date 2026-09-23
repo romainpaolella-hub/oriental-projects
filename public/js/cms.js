@@ -33,8 +33,10 @@ window.OD_CMS = {
       '"video":video.asset->url,"poster":poster.asset->url,"image":image.asset->url,' +
       '"iw":image.asset->metadata.dimensions.width,"ih":image.asset->metadata.dimensions.height},' +
     '"programmes":*[_type=="programme"]|order(order asc){name,zone,"slug":slug.current,status,statusLabel,pitch,facts,' +
-      '"img":cardImage.asset->url,"w":cardImage.asset->metadata.dimensions.width,"h":cardImage.asset->metadata.dimensions.height},' +
+      '"img":cardImage.asset->url,"w":cardImage.asset->metadata.dimensions.width,"h":cardImage.asset->metadata.dimensions.height,' +
+      '"brochureFr":brochureFr.asset->url,"brochureEn":brochureEn.asset->url},' +
     '"dispos":*[_type=="villaDispo"]|order(order asc){name,isPlaceholder,note,statusLabel,specs,price,rentMonthly,simCosts,linkHref,' +
+      '"brochureFr":brochureFr.asset->url,"brochureEn":brochureEn.asset->url,' +
       '"img":images[0].asset->url,"w":images[0].asset->metadata.dimensions.width,"h":images[0].asset->metadata.dimensions.height,' +
       '"images":images[]{"url":asset->url,"w":asset->metadata.dimensions.width,"h":asset->metadata.dimensions.height},' +
       'pageHeroEyebrow,pageHeroSub,pagePresEyebrow,pagePresHeading,pagePresBody,' +
@@ -130,6 +132,7 @@ window.OD_CMS = {
             pitch: pick(p.pitch),
             facts: locArr(p.facts),
             href: (p.slug || '') + '/index.html',
+            brochureFr: p.brochureFr, brochureEn: p.brochureEn,
           };
         });
       }
@@ -148,6 +151,7 @@ window.OD_CMS = {
             price: v.price,
             rentMonthly: v.rentMonthly,
             href: v.linkHref || 'contact.html',
+            brochureFr: v.brochureFr, brochureEn: v.brochureEn,
           };
         });
 
