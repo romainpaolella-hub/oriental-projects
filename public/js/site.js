@@ -289,19 +289,54 @@
     'tropical-golf':'brochures/tropical-golf-villa-2-%L%.pdf',
     'villa-lilouana':'brochures/villa-lilouana-en.pdf'
   };
+  // Document Sanity (programme ou villa clé en main) qui porte les champs brochureFr/brochureEn
+  // pour la valeur "programme" du formulaire de contact — même correspondance pour l'URL et
+  // pour savoir quelles langues griser dans le sélecteur.
+  function brochureSource(programme){
+    var proj=(window.PROJECTS||[]).filter(function(p){return p.slug===programme})[0];
+    if(proj) return proj;
+    if(programme==='tropical-golf'||programme==='villa-lilouana'){
+      var needle=programme==='tropical-golf'?'tropical-golf-villa-2':'villa-lilouana';
+      return (window.DISPOS||[]).filter(function(d){return d.href&&d.href.indexOf(needle)!==-1})[0]||null;
+    }
+    return null;
+  }
   function brochureUrl(programme,langue){
     var L=langue==='en'?'en':'fr';
-    // Brochure téléversée dans Sanity (programme ou villa clé en main) prioritaire sur le PDF statique.
-    var proj=(window.PROJECTS||[]).filter(function(p){return p.slug===programme})[0];
-    var custom=proj&&(L==='en'?proj.brochureEn:proj.brochureFr);
-    if(!custom&&(programme==='tropical-golf'||programme==='villa-lilouana')){
-      var needle=programme==='tropical-golf'?'tropical-golf-villa-2':'villa-lilouana';
-      var v=(window.DISPOS||[]).filter(function(d){return d.href&&d.href.indexOf(needle)!==-1})[0];
-      custom=v&&(L==='en'?v.brochureEn:v.brochureFr);
-    }
+    var src=brochureSource(programme);
+    var custom=src&&(L==='en'?src.brochureEn:src.brochureFr);
     if(custom) return custom;
     var tpl=BROCHURES[programme]; if(!tpl) return '';
     return '/'+tpl.replace('%L%', L);
+  }
+  // Langues disponibles pour la valeur "programme" sélectionnée — brochure Sanity en priorité,
+  // repli sur le gabarit de fichier statique. Si rien n'est su (ex. "autre"), ne rien restreindre.
+  function brochureAvailability(programme){
+    var src=brochureSource(programme);
+    var tpl=BROCHURES[programme];
+    var fr=!!((src&&src.brochureFr)||(tpl&&tpl.indexOf('%L%')!==-1));
+    var en=!!((src&&src.brochureEn)||tpl);
+    if(!fr&&!en) return {fr:true,en:true};
+    return {fr:fr,en:en};
+  }
+  // Grise l'option de langue sans brochure dispo pour le programme actuellement choisi,
+  // et bascule automatiquement sur l'autre langue si celle sélectionnée devient indisponible.
+  function updateBrochureLangOptions(){
+    var form=$('#contact-form'); if(!form) return;
+    var progSel=form.querySelector('select[name=programme]');
+    var langSel=form.querySelector('select[name=brochure_langue]');
+    if(!progSel||!langSel) return;
+    var avail=brochureAvailability(progSel.value);
+    var notAvail=LANG==='en'?'not available':'non disponible';
+    [{opt:langSel.querySelector('option[value=fr]'),ok:avail.fr},
+     {opt:langSel.querySelector('option[value=en]'),ok:avail.en}].forEach(function(o){
+      if(!o.opt) return;
+      if(!o.opt.dataset.label) o.opt.dataset.label=o.opt.textContent;
+      o.opt.disabled=!o.ok;
+      o.opt.textContent=o.ok?o.opt.dataset.label:(o.opt.dataset.label+' ('+notAvail+')');
+    });
+    if(langSel.value==='fr'&&!avail.fr&&avail.en) langSel.value='en';
+    else if(langSel.value==='en'&&!avail.en&&avail.fr) langSel.value='fr';
   }
   function triggerDownload(url){
     try{
@@ -319,6 +354,12 @@
     var lang=(document.documentElement.lang||'fr').slice(0,2).toLowerCase();
     var lf=form.querySelector('input[name=lang]'); if(lf) lf.value=lang;
     var bl=form.querySelector('select[name=brochure_langue]'); if(bl) bl.value=(lang==='en'?'en':'fr');
+
+    // Grise la langue de brochure indisponible pour le programme choisi, dès le départ et à
+    // chaque changement de programme (affiné une seconde fois après le chargement du CMS).
+    var progSel=form.querySelector('select[name=programme]');
+    if(progSel) progSel.addEventListener('change', updateBrochureLangOptions);
+    updateBrochureLangOptions();
 
     // Chips "intention" -> input caché (valeurs multiples, séparées par des virgules)
     var chips=form.querySelectorAll('#intention-chips button');
@@ -386,6 +427,7 @@
     if(typeof window.OD_renderProgrammeChrome==='function') try{window.OD_renderProgrammeChrome()}catch(e){}
     if(typeof window.OD_renderFooter==='function') try{window.OD_renderFooter()}catch(e){}
     if(typeof window.OD_renderContactPage==='function') try{window.OD_renderContactPage()}catch(e){}
+    updateBrochureLangOptions();
     // (re)construit les simulateurs après application du paramétrage CMS ;
     // no-op si la page n'a pas de #calc. Les fonctions relisent window.OD_SIM(_FULL).
     initCalc();initFullCalc();
