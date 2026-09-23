@@ -37,6 +37,7 @@ const PROGRAMME_LABELS = {
   'eden-tropical': 'Eden Tropical — Lipa Noi',
   'terra-mare': 'Terra Mare — Bophut',
   'tropical-golf': 'Villa clé en main (Tropical Golf)',
+  'villa-lilouana': 'Villa Lilouana — Maenam',
   'autre': 'Je ne sais pas encore'
 };
 
