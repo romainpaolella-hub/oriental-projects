@@ -286,20 +286,18 @@
     'sea-view':'brochures/villa-sea-view-%L%.pdf',
     'eden-tropical':'brochures/eden-tropical-%L%.pdf',
     'terra-mare':'brochures/terra-mare-%L%.pdf',
-    'tropical-golf':'brochures/tropical-golf-villa-2-%L%.pdf',
+    'tropical-golf-villa-2':'brochures/tropical-golf-villa-2-%L%.pdf',
     'villa-lilouana':'brochures/villa-lilouana-en.pdf'
   };
   // Document Sanity (programme ou villa clé en main) qui porte les champs brochureFr/brochureEn
   // pour la valeur "programme" du formulaire de contact — même correspondance pour l'URL et
-  // pour savoir quelles langues griser dans le sélecteur.
+  // pour savoir quelles langues griser dans le sélecteur. Les valeurs "villa" (tropical-golf-villa-1,
+  // tropical-golf-villa-2, villa-lilouana) correspondent chacune à un segment du linkHref de la
+  // villa concernée — pas de correspondance à coder en dur pour une future villa ajoutée pareil.
   function brochureSource(programme){
     var proj=(window.PROJECTS||[]).filter(function(p){return p.slug===programme})[0];
     if(proj) return proj;
-    if(programme==='tropical-golf'||programme==='villa-lilouana'){
-      var needle=programme==='tropical-golf'?'tropical-golf-villa-2':'villa-lilouana';
-      return (window.DISPOS||[]).filter(function(d){return d.href&&d.href.indexOf(needle)!==-1})[0]||null;
-    }
-    return null;
+    return (window.DISPOS||[]).filter(function(d){return d.href&&d.href.indexOf(programme)!==-1})[0]||null;
   }
   function brochureUrl(programme,langue){
     var L=langue==='en'?'en':'fr';
