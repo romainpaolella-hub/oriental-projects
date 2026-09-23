@@ -61,7 +61,7 @@ window.PROJECTS = [
     status: 'plan',
     statusLabel: 'Sur plan',
     pitch: "Une collection confidentielle de quatre résidences privées avec piscine, au cœur d'une palmeraie face à la mer.",
-    facts: ['04 villas', '332 m² bâtis', 'dès ฿8,9 M', 'Leasehold'],
+    facts: ['04 villas', '494 à 667 m² de terrain', 'dès ฿8,9 M', 'Leasehold'],
     href: 'sea-view/index.html'
   },
   {
