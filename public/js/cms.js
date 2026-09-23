@@ -28,7 +28,7 @@ window.OD_CMS = {
   var GROQ =
     '{' +
     '"settings":*[_type=="siteSettings"][0]{stats[]{value,label},tagline,' +
-      'phones[]{label,number,whatsapp,whatsappNote},email,contactIntro,mapQuery,footCopyright},' +
+      'phones[]{label,number,whatsapp,whatsappNote},email,contactIntro,mapQuery,footCopyright,instagramUrl,facebookUrl},' +
     '"hero":*[_type=="heroSlide"]|order(order asc){brand,kind,linkHref,kicker,title,sub,cta,' +
       '"video":video.asset->url,"poster":poster.asset->url,"image":image.asset->url,' +
       '"iw":image.asset->metadata.dimensions.width,"ih":image.asset->metadata.dimensions.height},' +
@@ -864,6 +864,10 @@ window.OD_CMS = {
         }
       }
     }
+    var igEl = document.querySelector('[data-cms="foot.instagram"]');
+    if (igEl && s.instagramUrl) igEl.href = s.instagramUrl;
+    var fbEl = document.querySelector('[data-cms="foot.facebook"]');
+    if (fbEl && s.facebookUrl) fbEl.href = s.facebookUrl;
   };
 
   // ---- Rendu de la page Contact (data-cms="contact.…") ----

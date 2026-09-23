@@ -62,8 +62,20 @@ export const siteSettings = defineType({
     defineField({
       name: 'footCopyright',
       title: 'Mention de copyright (pied de page)',
-      description: 'Ex. « © 2026 Koh Samui Estate — Prototype v3 ». Identique en FR et EN.',
+      description: 'Ex. « © 2026 Koh Samui Estate — Tous droits réservés ». Identique en FR et EN.',
       type: 'string',
+    }),
+    defineField({
+      name: 'instagramUrl',
+      title: 'Lien Instagram (pied de page)',
+      description: 'URL complète du profil Instagram, ex. https://www.instagram.com/koh_samui_estate/',
+      type: 'url',
+    }),
+    defineField({
+      name: 'facebookUrl',
+      title: 'Lien Facebook (pied de page)',
+      description: 'URL complète de la page Facebook, ex. https://www.facebook.com/share/1BPGKxGDEF/',
+      type: 'url',
     }),
   ],
   preview: {prepare: () => ({title: 'Réglages du site'})},
