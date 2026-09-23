@@ -334,11 +334,16 @@ window.OD_CMS = {
     injectJsonLd('od-schema-breadcrumb', breadcrumbList(crumbs));
 
     if (q('idx.heroEyebrow') || q('idx.progHeading')) {
+      // Repli sur le texte déjà affiché à l'écran (copie statique du modèle) si les champs
+      // Sanity idx_heroSub/idx_progBody n'ont jamais été renseignés — sinon la fiche
+      // RealEstateListing se retrouve avec une description vide alors que la page en a une.
+      var descEl = q('idx.heroSub') || q('idx.progBody');
+      var listingDesc = pick(doc.idx_heroSub) || pick(doc.idx_progBody) || (descEl && descEl.textContent.trim()) || '';
       injectJsonLd('od-schema-listing', {
         '@context': 'https://schema.org',
         '@type': 'RealEstateListing',
         name: doc.title,
-        description: pick(doc.idx_heroSub) || pick(doc.idx_progBody),
+        description: listingDesc,
         url: location.origin + location.pathname,
         image: doc.idx_bandeauImg ? window.OD_img(doc.idx_bandeauImg, 1600) : undefined,
       });
