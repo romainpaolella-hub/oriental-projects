@@ -609,6 +609,24 @@ window.OD_CMS = {
     // nom de la villa (utile pour le modèle générique — les fiches figées l'ont déjà en dur)
     setText(q('page.name'), doc.name);
 
+    // Lien de téléchargement direct de la brochure sur la fiche elle-même (ex. Villa Lilouana) :
+    // priorité à la brochure Sanity de la bonne langue, repli sur le fichier statique déjà en
+    // dur dans la page si rien n'est téléversé. "download" ne force un vrai téléchargement que
+    // pour un fichier même origine ; un PDF Sanity (cdn.sanity.io) s'ouvre dans un nouvel onglet
+    // pour ne pas remplacer le site dans l'onglet en cours.
+    var brochureEl = q('page.brochure');
+    if (brochureEl) {
+      var brochureCustom = LANG === 'en' ? doc.brochureEn : doc.brochureFr;
+      if (brochureCustom) {
+        brochureEl.href = brochureCustom;
+        if (brochureCustom.indexOf('http') === 0 && brochureCustom.indexOf(location.origin) !== 0) {
+          brochureEl.removeAttribute('download'); brochureEl.target = '_blank';
+        } else {
+          brochureEl.setAttribute('download', ''); brochureEl.removeAttribute('target');
+        }
+      }
+    }
+
     // méta de la page : titre d'onglet, description, canonical, Open Graph
     if (doc.name) {
       document.title = doc.name + ' — Koh Samui Estate';
