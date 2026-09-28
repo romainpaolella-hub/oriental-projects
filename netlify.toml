@@ -26,6 +26,19 @@
   to = "/en/"
   status = 301
 
+# Luxury Dream House Sea View : d'abord publiée comme fiche "villa à vendre", puis
+# transformée en programme complet (5 pages) à la demande du client. Redirige
+# l'ancienne URL pour ne pas casser un lien déjà partagé ou indexé.
+[[redirects]]
+  from = "/villas-a-vendre/luxury-dream-house-sea-view.html"
+  to = "/luxury-dream-house-sea-view/index.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/villas-a-vendre/luxury-dream-house-sea-view.html"
+  to = "/en/luxury-dream-house-sea-view/index.html"
+  status = 301
+
 # Fiches "villa à vendre" créées depuis Studio sans page dédiée : modèle générique
 # piloté entièrement par Sanity (data-cms="page.…"). Un fichier réel existant à ce
 # chemin est toujours servi en priorité — cette règle ne s'applique qu'en repli.
