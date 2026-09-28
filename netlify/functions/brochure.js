@@ -36,6 +36,7 @@ const PROGRAMME_LABELS = {
   'sea-view': 'Villa Sea View — Ban Tai',
   'eden-tropical': 'Eden Tropical — Lipa Noi',
   'terra-mare': 'Terra Mare — Bophut',
+  'palm-sea-view': 'Palm Sea View — Bo Phut',
   'tropical-golf-villa-1': 'Tropical Golf — Villa 1',
   'tropical-golf-villa-2': 'Tropical Golf — Villa 2 (louée)',
   'villa-lilouana': 'Villa Lilouana — Maenam',

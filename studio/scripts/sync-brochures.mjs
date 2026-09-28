@@ -43,6 +43,7 @@ const MAP = {
   'programme-eden-tropical': 'eden-tropical',
   'programme-terra-mare': 'terra-mare',
   'villa-0': 'tropical-golf-villa-2', // Tropical Golf — Villa 2 (villaDispo)
+  '097e1018-a280-40f0-b707-24429dc4db55': 'palm-sea-view', // programme-palm-sea-view
 }
 
 async function uploadPdf(rel) {
