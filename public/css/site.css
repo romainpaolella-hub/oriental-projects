@@ -386,8 +386,8 @@ section[id]{scroll-margin-top:110px}
 /* Équipements (deux colonnes) */
 .amen{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,80px)}
 .amen h4{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-family:'Jost';font-weight:500;color:var(--celadon);margin-bottom:6px}
-.amen .row{display:flex;justify-content:space-between;padding:13px 0;border-top:1px solid var(--line);font-size:15px}
-.amen .row b{font-weight:500}
+.amen .row{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-top:1px solid var(--line);font-size:15px}
+.amen .row b{font-weight:500;text-align:right}
 /* Matières (cartes texte) */
 .mats{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,2vw,24px)}
 .mat{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px}
