@@ -363,7 +363,7 @@ section[id]{scroll-margin-top:110px}
   .wall{grid-template-columns:1fr 1fr}
   .hslide h2{font-size:clamp(40px,12vw,72px)}
   /* Accueil — "Clé en main" : carrousel horizontal pour raccourcir la page */
-  #dispos{display:flex;grid-template-columns:none;gap:16px;overflow-x:auto;
+  #dispos{display:flex;grid-template-columns:none;justify-content:flex-start;gap:16px;overflow-x:auto;
     scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
     padding-bottom:14px;scrollbar-width:none}
   #dispos::-webkit-scrollbar{display:none}
@@ -371,7 +371,7 @@ section[id]{scroll-margin-top:110px}
   #dispos>.vcard.soon{min-height:0}
   #dispos .vcard .ft{flex-direction:column;align-items:flex-start;gap:8px}
   /* Accueil — "Nos réalisations" : même carrousel horizontal */
-  #realisations-grid{display:flex;grid-template-columns:none;gap:16px;overflow-x:auto;
+  #realisations-grid{display:flex;grid-template-columns:none;justify-content:flex-start;gap:16px;overflow-x:auto;
     scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
     padding-bottom:14px;scrollbar-width:none}
   #realisations-grid::-webkit-scrollbar{display:none}
