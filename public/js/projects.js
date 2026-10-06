@@ -118,7 +118,7 @@ window.DISPOS = [
     img: '/images/ocean-180/sea-view-pool.jpg',
     w: 1553, h: 794,
     statusLabel: 'Disponible',
-    specs: ['221 m² habitables · 335 m² bâtis', 'Piscine à débordement 4 × 8 m', '3 ch. · 2 sdb', 'Vue mer panoramique · Bo Phut'],
+    specs: ['221 m² habitables · 335 m² bâtis', 'Piscine à débordement 4 × 8 m', '3 ch. · 2 sdb · vue mer panoramique', 'Vendue meublée, avec société thaïlandaise'],
     price: 18900000,
     href: 'villas-a-vendre/ocean-180.html'
   },
