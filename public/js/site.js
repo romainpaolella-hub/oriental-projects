@@ -2,6 +2,13 @@
 (function(){
   var $=function(s,c){return (c||document).querySelector(s)};
   var LANG=(document.documentElement.lang||'fr').slice(0,2).toLowerCase()==='en'?'en':'fr';
+  // Langue d'ouverture : la page d'accueil FR renvoie vers l'anglais sauf choix explicite du français
+  // (voir le script en tête de index.html). Naviguer sur une page FR (hors accueil) mémorise le français,
+  // naviguer sur une page EN mémorise l'anglais : la dernière langue visitée l'emporte.
+  try{
+    if(LANG==='en') localStorage.setItem('od_lang','en');
+    else if(!/^\/(index\.html)?$/.test(location.pathname)) localStorage.setItem('od_lang','fr');
+  }catch(e){}
   var baht=function(n){return '฿'+Math.round(n).toLocaleString(LANG==='en'?'en-US':'fr-FR').replace(/[  ]/g,' ')};
   var num1=function(n){var s=n.toFixed(1);return LANG==='en'?s:s.replace('.',',')};
   var pct=function(n){return num1(n)+' %'};

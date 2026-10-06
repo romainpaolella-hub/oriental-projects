@@ -3,6 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+/* Ouverture en anglais : le visiteur arrive sur la version EN, sauf s'il a choisi le français
+   (?lang=fr ou page FR déjà visitée). Les robots d'indexation gardent la version FR. */
+(function(){try{
+  var q=location.search.match(/[?&]lang=(fr|en)/);
+  if(q) localStorage.setItem('od_lang',q[1]);
+  if(localStorage.getItem('od_lang')==='fr') return;
+  if(/bot|crawl|spider|slurp|mediapartners|facebookexternalhit|preview|lighthouse/i.test(navigator.userAgent)) return;
+  location.replace('/en/index.html'+location.hash);
+}catch(e){}})();
+</script>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -15,7 +26,7 @@
 <link rel="canonical" href="https://kohsamuiestate.com/">
 <link rel="alternate" hreflang="fr-FR" href="https://kohsamuiestate.com/index.html">
 <link rel="alternate" hreflang="en" href="https://kohsamuiestate.com/en/index.html">
-<link rel="alternate" hreflang="x-default" href="https://kohsamuiestate.com/index.html">
+<link rel="alternate" hreflang="x-default" href="https://kohsamuiestate.com/en/index.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Koh Samui Estate">
 <meta property="og:locale" content="fr_FR">
