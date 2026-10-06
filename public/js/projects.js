@@ -90,8 +90,9 @@ window.PROJECTS = [
 /* ===== Villas clé en main disponibles (accueil, section #a-vendre) =====
    Chiffres confirmés dans "À fournir — Koh Samui Estate v3" (Tropical Golf, Villa 2).
    Photos réelles reçues le 27/08 (dossier "Villa en vente"). Fiche complète : voir
-   villas-a-vendre/index.html. Villa 4 (même résidence) et Villa Aurora annoncées
-   par le client comme arrivant bientôt à la vente — pas encore de photos/prix. */
+   villas-a-vendre/index.html. Villa 4 (même résidence) annoncée
+   par le client comme arrivant bientôt à la vente — pas encore de photos/prix.
+   Ocean 180 et Villa Aurora Signature ajoutées le 06/10/2026. */
 window.DISPOS = [
   {
     name: 'Tropical Golf — Villa 2',
@@ -111,6 +112,24 @@ window.DISPOS = [
     specs: ['150 m² habitables', 'Piscine à débordement 8 × 3 m', '3 ch. · 3 sdb', 'Vendue avec société thaïlandaise'],
     price: 11900000,
     href: 'villas-a-vendre/villa-lilouana.html'
+  },
+  {
+    name: 'Ocean 180',
+    img: '/images/ocean-180/sea-view-pool.jpg',
+    w: 1553, h: 794,
+    statusLabel: 'Disponible',
+    specs: ['221 m² habitables · 335 m² bâtis', 'Piscine à débordement 4 × 8 m', '3 ch. · 2 sdb', 'Vue mer panoramique · Bo Phut'],
+    price: 18900000,
+    href: 'villas-a-vendre/ocean-180.html'
+  },
+  {
+    name: 'Villa Aurora Signature',
+    img: '/images/realisations/villa-aurora/06.jpg',
+    w: 2000, h: 1332,
+    statusLabel: 'Disponible',
+    specs: ['1 000 m² habitables', '6 suites · piscine à débordement 16 m', 'Home cinéma, cave à vin, hammam, salle de sport', 'Exploitée en location saisonnière'],
+    price: 129000000,
+    href: 'villas-a-vendre/villa-aurora.html'
   }
 ];
 

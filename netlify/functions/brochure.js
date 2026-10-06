@@ -40,6 +40,8 @@ const PROGRAMME_LABELS = {
   'tropical-golf-villa-1': 'Tropical Golf — Villa 1',
   'tropical-golf-villa-2': 'Tropical Golf — Villa 2 (louée)',
   'villa-lilouana': 'Villa Lilouana — Maenam',
+  'ocean-180': 'Ocean 180 — Bo Phut',
+  'villa-aurora': 'Villa Aurora Signature — Plai Laem',
   'luxury-dream-house-sea-view': 'Luxury Dream House Sea View — Bo Phut',
   'autre': 'Je ne sais pas encore'
 };

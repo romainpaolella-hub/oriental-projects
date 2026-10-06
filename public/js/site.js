@@ -287,7 +287,8 @@
     'eden-tropical':'brochures/eden-tropical-%L%.pdf',
     'terra-mare':'brochures/terra-mare-%L%.pdf',
     'tropical-golf-villa-2':'brochures/tropical-golf-villa-2-%L%.pdf',
-    'villa-lilouana':'brochures/villa-lilouana-en.pdf'
+    'villa-lilouana':'brochures/villa-lilouana-en.pdf',
+    'ocean-180':'brochures/ocean-180-en.pdf'
   };
   // Document Sanity (programme ou villa clé en main) qui porte les champs brochureFr/brochureEn
   // pour la valeur "programme" du formulaire de contact — même correspondance pour l'URL et
