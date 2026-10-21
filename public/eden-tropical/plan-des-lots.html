@@ -347,8 +347,25 @@ function select(id){
   if(row){row.classList.add("sel"); row.scrollIntoView({block:"nearest"});}
 }
 function cssid(id){return id.replace('+','\\2B ')}
+/* Prix saisi à la main (mode gestion) : même rendu dans les deux langues.
+   « From 4,100,000 THB », « Dès 4 100 000 », « 4.1M » → « À partir de 4 100 000 THB » (FR) / « From 4,100,000 THB » (EN).
+   Un texte libre (ex. « Sur demande ») est affiché tel quel. */
+function localizePrice(raw){
+  var s=String(raw==null?'':raw).trim(); if(!s) return s;
+  if(/^(price on request|prix sur demande|sur demande|on request)$/i.test(s)) return t('onreq');
+  var m=s.match(/^(from|dès|des|à partir de|a partir de|starting at|starting from)?\s*(?:฿)?\s*(\d[\d\s.,\u00a0\u202f']*?)\s*(m|million|millions|k)?\s*(?:thb|baht|bath|฿)?\s*$/i);
+  if(!m) return s;
+  var num=m[2].replace(/[\s\u00a0\u202f']/g,''), mult=(m[3]||'').toLowerCase(), v;
+  if(mult==='k') v=parseFloat(num.replace(',','.'))*1e3;
+  else if(mult) v=parseFloat(num.replace(',','.'))*1e6;
+  else if(/^\d{1,3}([.,]\d{3})+$/.test(num)) v=parseFloat(num.replace(/[.,]/g,''));
+  else { v=parseFloat(num.replace(',','.')); if(v<1000) v*=1e6; }
+  if(!isFinite(v)) return s;
+  var n=Math.round(v).toLocaleString(lang==='fr'?'fr-FR':'en-US').replace(/[\u202f\u00a0]/g,' ');
+  return (m[1]?(lang==='fr'?'À partir de ':'From '):'')+n+' THB';
+}
 function priceFor(l){
-  if(l.price) return l.price;
+  if(l.price) return localizePrice(l.price);
   const n = lang==="fr" ? "3 600 000" : "3,600,000";
   const n2 = lang==="fr" ? "5 100 000" : "5,100,000";
   if(l.bed===1) return `${t("from")} ${n} THB`;
