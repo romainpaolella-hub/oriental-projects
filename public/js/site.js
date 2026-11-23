@@ -20,6 +20,8 @@
         rentLine:function(r,g){return 'Loué '+r+'/mois · ≈ '+g+' brut'},
         thanksDl:'Merci ! Votre brochure se télécharge. Notre équipe locale francophone vous recontacte sous 24 h. ',
         thanksNoDl:'Merci ! Votre demande a bien été envoyée. Notre équipe vous envoie la brochure adaptée sous 24 h.',
+        thanksSoon:'Merci ! Votre demande est bien enregistrée. Nous vous enverrons la brochure Hidden Jungle dès sa publication et nous vous rappellerons au lancement du programme.',
+        rappelMsg:'Je souhaite recevoir la brochure Hidden Jungle et être rappelé(e) au lancement du programme.',
         errInput:'Vérifiez votre nom et votre adresse e-mail, puis réessayez.',
         errSend:function(hasDl){return "L'envoi n'a peut-être pas abouti"+(hasDl?', mais votre brochure se télécharge ci-dessous':'')+". En cas de doute, écrivez-nous sur WhatsApp au +66 655 767 871."},
         c:{price:'Prix de la villa', rent:'Loyer mensuel estimé', rentHint:'Location longue durée ou saisonnière lissée',
@@ -36,6 +38,8 @@
         rentLine:function(r,g){return 'Let at '+r+'/month · ≈ '+g+' gross'},
         thanksDl:'Thank you! Your brochure is downloading. Our local English-speaking team will get back to you within 24 h. ',
         thanksNoDl:'Thank you! Your request has been sent. Our team will email you the relevant brochure within 24 h.',
+        thanksSoon:'Thank you! Your request has been recorded. We will send you the Hidden Jungle brochure as soon as it is published and call you back when the programme launches.',
+        rappelMsg:'I would like to receive the Hidden Jungle brochure and be called back when the programme launches.',
         errInput:'Please check your name and email address, then try again.',
         errSend:function(hasDl){return "Your request may not have gone through"+(hasDl?', but your brochure is downloading below':'')+'. If in doubt, message us on WhatsApp at +66 655 767 871.'},
         c:{price:'Villa price', rent:'Estimated monthly rent', rentHint:'Long-term or averaged seasonal rental',
@@ -382,6 +386,17 @@
     if(progSel) progSel.addEventListener('change', updateBrochureLangOptions);
     updateBrochureLangOptions();
 
+    // Arrivée depuis une page programme : ?programme=<slug>[&rappel=1] présélectionne le programme
+    // et, pour « rappel », pré-remplit le message et marque la demande « à rappeler au lancement ».
+    try{
+      var qs=new URLSearchParams(location.search), qp=qs.get('programme');
+      if(progSel&&qp&&progSel.querySelector('option[value="'+qp.replace(/[^a-z0-9-]/gi,'')+'"]')){ progSel.value=qp.replace(/[^a-z0-9-]/gi,''); updateBrochureLangOptions(); }
+      if(qs.get('rappel')==='1'){
+        var rf=form.querySelector('input[name=rappel]'); if(rf) rf.value='1';
+        var ta=form.querySelector('textarea[name=message]'); if(ta&&!ta.value) ta.value=T.rappelMsg;
+      }
+    }catch(e){}
+
     // Chips "intention" -> input caché (valeurs multiples, séparées par des virgules)
     var chips=form.querySelectorAll('#intention-chips button');
     var hid=form.querySelector('input[name=intention]');
@@ -408,7 +423,7 @@
           if(dl){ setBrochureLink(dl,url); dl.hidden=false; }
           triggerDownload(url);
         } else {
-          if(tText) tText.textContent=T.thanksNoDl;
+          if(tText) tText.textContent=(data.programme==='hidden-jungle')?T.thanksSoon:T.thanksNoDl;
           if(dl) dl.hidden=true;
         }
         if(ok) ok.hidden=false;

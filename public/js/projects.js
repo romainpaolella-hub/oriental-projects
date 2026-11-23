@@ -8,6 +8,16 @@
    oriental 4,1 Mo · sea-view 7,4 Mo · eden 9,3 Mo · terra 6,8 Mo — total ~27 Mo. */
 window.HERO = [
   {
+    type: 'image',
+    img: '/images/hidden-jungle/hero.jpg',
+    w: 1503, h: 848,
+    kicker: 'Nouveau projet · Mae Nam',
+    title: 'Hidden Jungle',
+    sub: '17 villas privées au cœur de la jungle. Bientôt à découvrir.',
+    href: 'hidden-jungle/index.html',
+    cta: 'Être informé du lancement'
+  },
+  {
     brand: true,
     type: 'video',
     src: '/videos/oriental-hero-background.mp4',
@@ -53,6 +63,17 @@ window.HERO = [
 
 /* ===== Encarts programmes (accueil, section #programmes) ===== */
 window.PROJECTS = [
+  {
+    name: 'Hidden Jungle',
+    zone: 'Mae Nam, Koh Samui',
+    img: '/images/hidden-jungle/hero.jpg',
+    w: 1503, h: 848,
+    status: 'plan',
+    statusLabel: 'Bientôt',
+    pitch: "17 villas privées avec piscine, nichées dans la jungle de Mae Nam, près de la cascade Tan Rua et d'une zipline. Quatre modèles de 2 et 3 chambres, bientôt à découvrir.",
+    facts: ['17 villas', '85 à 129 m²', 'Piscine privée', 'Prix de lancement à venir'],
+    href: 'hidden-jungle/index.html'
+  },
   {
     name: 'Villa Sea View',
     zone: 'Ban Tai, Koh Samui',

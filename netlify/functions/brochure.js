@@ -27,6 +27,7 @@ const FIELD_LABELS = {
   programme: 'Programme',
   brochure_langue: 'Langue de la brochure',
   intention: 'Intention',
+  rappel: 'Rappel',
   message: 'Message',
   lang: 'Langue du site',
   consentement: 'Consentement'
@@ -43,6 +44,7 @@ const PROGRAMME_LABELS = {
   'ocean-180': 'Ocean 180 — Bo Phut',
   'villa-aurora': 'Villa Aurora Signature — Plai Laem',
   'luxury-dream-house-sea-view': 'Luxury Dream House Sea View — Bo Phut',
+  'hidden-jungle': 'Hidden Jungle — Mae Nam (à venir)',
   'autre': 'Je ne sais pas encore'
 };
 
@@ -68,11 +70,12 @@ function isEmail(s) {
 }
 
 function buildRows(data) {
-  const keys = ['nom', 'email', 'telephone', 'pays', 'programme', 'brochure_langue', 'intention', 'message', 'lang'];
+  const keys = ['nom', 'email', 'telephone', 'pays', 'programme', 'brochure_langue', 'intention', 'rappel', 'message', 'lang'];
   return keys.map(function (k) {
     let val = data[k];
     if (!val) return '';
     if (k === 'programme') val = PROGRAMME_LABELS[val] || val;
+    if (k === 'rappel') val = 'OUI — à rappeler au lancement du programme';
     val = esc(val).replace(/\n/g, '<br>');
     return '<tr>' +
       '<td style="padding:8px 14px;background:#f4f0e7;font:600 13px/1.4 Arial,sans-serif;color:#252824;white-space:nowrap;vertical-align:top">' + esc(FIELD_LABELS[k] || k) + '</td>' +
@@ -124,7 +127,7 @@ async function saveLeadToSanity(data, pageUrl) {
     country: data.pays || '',
     programme: data.programme || '',
     brochureLang: data.brochure_langue || '',
-    intention: data.intention || '',
+    intention: data.intention || (data.rappel ? 'Rappel au lancement' : ''),
     message: data.message || '',
     pageUrl: pageUrl || '',
     createdAt: new Date().toISOString()
@@ -253,9 +256,9 @@ exports.handler = async function (event) {
   const notifText =
     'Nouvelle demande de brochure\n' +
     'Programme : ' + programmeLabel + '\n\n' +
-    ['nom', 'email', 'telephone', 'pays', 'brochure_langue', 'intention', 'message', 'lang']
+    ['nom', 'email', 'telephone', 'pays', 'brochure_langue', 'intention', 'rappel', 'message', 'lang']
       .filter(function (k) { return data[k]; })
-      .map(function (k) { return (FIELD_LABELS[k] || k) + ' : ' + data[k]; })
+      .map(function (k) { return (FIELD_LABELS[k] || k) + ' : ' + (k === 'rappel' ? 'OUI — à rappeler au lancement du programme' : data[k]); })
       .join('\n');
 
   if (!apiKey || !from || !to) {
@@ -269,7 +272,7 @@ exports.handler = async function (event) {
         to: [to],
         cc: cc.length ? cc : undefined,
         reply_to: data.email,
-        subject: 'Brochure — ' + (data.nom || 'Nouveau contact') + ' · ' + programmeLabel,
+        subject: (data.rappel ? 'Brochure + RAPPEL AU LANCEMENT — ' : 'Brochure — ') + (data.nom || 'Nouveau contact') + ' · ' + programmeLabel,
         html: notifHtml,
         text: notifText
       });
@@ -288,7 +291,9 @@ exports.handler = async function (event) {
         '<h2 style="font:600 20px/1.3 Georgia,serif;color:#33544c;margin:0 0 12px">Merci pour votre demande</h2>' +
         '<p style="font:400 15px/1.6 Arial,sans-serif">Bonjour ' + esc(data.nom) + ',</p>' +
         '<p style="font:400 15px/1.6 Arial,sans-serif">Nous avons bien reçu votre demande concernant <strong>' + esc(programmeLabel) + '</strong>. ' +
-        'Notre équipe locale francophone vous répond sous 24 h avec la brochure, les disponibilités et les conditions.</p>' +
+        (data.rappel
+          ? 'Nous vous enverrons la brochure dès sa publication et nous vous rappellerons au lancement du programme.</p>'
+          : 'Notre équipe locale francophone vous répond sous 24 h avec la brochure, les disponibilités et les conditions.</p>') +
         '<p style="font:400 15px/1.6 Arial,sans-serif">Pour toute question immédiate : WhatsApp +66 655 767 871.</p>' +
         '<p style="font:400 15px/1.6 Arial,sans-serif;margin-top:20px">— Koh Samui Estate, Koh Samui</p>' +
       '</div>';
