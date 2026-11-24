@@ -13,7 +13,7 @@ window.HERO = [
     w: 1503, h: 848,
     kicker: 'Nouveau projet · Mae Nam',
     title: 'Hidden Jungle',
-    sub: '17 villas privées au cœur de la jungle. Bientôt à découvrir.',
+    sub: '17 villas privées au cœur de la jungle. Dès ฿4,89 M.',
     href: 'hidden-jungle/index.html',
     cta: 'Être informé du lancement'
   },
@@ -71,7 +71,7 @@ window.PROJECTS = [
     status: 'plan',
     statusLabel: 'Bientôt',
     pitch: "17 villas privées avec piscine, nichées dans la jungle de Mae Nam, près de la cascade Tan Rua et d'une zipline. Quatre modèles de 2 et 3 chambres, bientôt à découvrir.",
-    facts: ['17 villas', '85 à 129 m²', 'Piscine privée', 'Prix de lancement à venir'],
+    facts: ['17 villas', '85 à 129 m²', 'Piscine privée', 'dès ฿4,89 M'],
     href: 'hidden-jungle/index.html'
   },
   {
