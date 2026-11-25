@@ -27,7 +27,7 @@ export const programme = defineType({
       name: 'status',
       title: 'Statut',
       type: 'string',
-      options: {list: [{title: 'Sur plan', value: 'plan'}, {title: 'Livré', value: 'livre'}], layout: 'radio'},
+      options: {list: [{title: 'Sur plan', value: 'plan'}, {title: 'En construction', value: 'chantier'}, {title: 'Livré', value: 'livre'}], layout: 'radio'},
       initialValue: 'plan',
       group: 'card',
     }),

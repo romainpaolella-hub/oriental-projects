@@ -90,7 +90,8 @@ window.PROJECTS = [
     zone: 'Lipa Noi, Koh Samui',
     img: '/hailuo_image_transform-this-architectura-mtfi13qu-ray0.jpg',
     w: 1280, h: 720,
-    statusLabel: 'Sur plan',
+    status: 'build',
+    statusLabel: 'Construction en cours',
     pitch: "Des studios-villas avec piscine privée, entièrement aménagés et prêts à vivre, à seulement 250 mètres de la plage de Lipa Noi. Une adresse pensée pour conjuguer art de vivre tropical et potentiel locatif.",
     facts: ['2 typologies', '120 à 203 m²', 'dès ฿3,6 M', 'Leasehold'],
     href: 'eden-tropical/index.html'

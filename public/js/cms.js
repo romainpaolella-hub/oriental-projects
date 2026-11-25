@@ -127,7 +127,7 @@ window.OD_CMS = {
             zone: p.zone,
             img: OD_img(p.img, 1400),
             w: p.w, h: p.h,
-            status: p.status === 'livre' ? 'livre' : 'plan',
+            status: p.status === 'livre' ? 'livre' : (p.status === 'chantier' ? 'build' : 'plan'),
             statusLabel: pick(p.statusLabel),
             pitch: pick(p.pitch),
             facts: locArr(p.facts),
