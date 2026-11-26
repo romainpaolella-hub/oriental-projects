@@ -49,6 +49,7 @@ export const heroSlide = defineType({
       hidden: ({parent}) => parent?.kind !== 'image',
     }),
     defineField({name: 'kicker', title: 'Surétiquette', type: 'localeString', description: 'Ex. « Programme neuf · Ban Tai »', hidden: ({parent}) => parent?.brand}),
+    defineField({name: 'badge', title: 'Macaron (optionnel)', type: 'localeString', description: 'Ex. « Construction en cours » — affiché en pastille dorée au-dessus de la surétiquette', hidden: ({parent}) => parent?.brand}),
     defineField({name: 'title', title: 'Titre', type: 'string', hidden: ({parent}) => parent?.brand}),
     defineField({name: 'sub', title: 'Sous-titre', type: 'localeString', hidden: ({parent}) => parent?.brand}),
     defineField({name: 'cta', title: 'Texte du bouton', type: 'localeString', validation: (r) => r.required()}),

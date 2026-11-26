@@ -74,7 +74,7 @@
         : '';
       var inner = s.brand
         ? '<a class="btn" style="margin-top:auto;background:var(--brass-bright);border-color:var(--brass-bright);color:#2a2015" href="'+s.href+'">'+s.cta+'</a>'
-        : '<div class="k">'+s.kicker+'</div><h2>'+s.title+'</h2><div class="s">'+s.sub+'</div><a class="btn" href="'+s.href+'">'+s.cta+' →</a>';
+        : (s.badge?'<span class="macaron"><i></i>'+s.badge+'</span>':'')+'<div class="k">'+s.kicker+'</div><h2>'+s.title+'</h2><div class="s">'+s.sub+'</div><a class="btn" href="'+s.href+'">'+s.cta+' →</a>';
       return '<div class="hslide'+(i===0?' on':'')+(s.brand?' hslide-v-brand':'')+'" data-i="'+i+'">'+media+overlay+'<div class="hslide-in'+(s.brand?' hslide-brand':'')+'">'+inner+'</div></div>';
     }).join('')
     + '<button class="hero-arrow hero-prev" aria-label="Précédent">‹</button><button class="hero-arrow hero-next" aria-label="Suivant">›</button>'

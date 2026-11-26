@@ -29,7 +29,7 @@ window.OD_CMS = {
     '{' +
     '"settings":*[_type=="siteSettings"][0]{stats[]{value,label},tagline,' +
       'phones[]{label,number,whatsapp,whatsappNote},email,contactIntro,mapQuery,footCopyright,instagramUrl,facebookUrl},' +
-    '"hero":*[_type=="heroSlide"]|order(order asc){brand,kind,linkHref,kicker,title,sub,cta,' +
+    '"hero":*[_type=="heroSlide"]|order(order asc){brand,kind,linkHref,kicker,badge,title,sub,cta,' +
       '"video":video.asset->url,"poster":poster.asset->url,"image":image.asset->url,' +
       '"iw":image.asset->metadata.dimensions.width,"ih":image.asset->metadata.dimensions.height},' +
     '"programmes":*[_type=="programme"]|order(order asc){name,zone,"slug":slug.current,status,statusLabel,pitch,facts,' +
@@ -110,6 +110,7 @@ window.OD_CMS = {
             w: !isVideo ? s.iw : undefined,
             h: !isVideo ? s.ih : undefined,
             kicker: pick(s.kicker),
+            badge: pick(s.badge),
             title: s.title || '',
             sub: pick(s.sub),
             href: s.linkHref,

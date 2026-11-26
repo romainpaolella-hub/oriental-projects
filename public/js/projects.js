@@ -43,6 +43,7 @@ window.HERO = [
     poster: '/videos/poster-eden.jpg',
     w: 1344, h: 768,
     kicker: 'Programme neuf · Lipa Noi',
+    badge: 'Construction en cours',
     title: 'Eden Tropical',
     sub: "Villas balinaises avec piscine privée, à 250 m de la plage.",
     href: 'eden-tropical/index.html',
