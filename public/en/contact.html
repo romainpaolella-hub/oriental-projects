@@ -11,7 +11,7 @@
 <meta name="description" content="Contact Koh Samui Estate to receive a brochure, plans and availability for our programmes in Koh Samui.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/site.css?v=20260964">
+<link rel="stylesheet" href="/css/site.css?v=20261003">
 <link rel="canonical" href="https://kohsamuiestate.com/en/contact.html">
 <link rel="alternate" hreflang="fr-FR" href="https://kohsamuiestate.com/contact.html">
 <link rel="alternate" hreflang="en" href="https://kohsamuiestate.com/en/contact.html">
@@ -74,7 +74,7 @@
 
     <div data-reveal>
       <h2 style="margin-bottom:14px">Receive the private brochure</h2>
-      <p style="color:var(--ink-soft);margin-bottom:40px;max-width:52ch">Plans, prices and availability for the programme you're interested in&nbsp;: the brochure downloads immediately, and our local English- and French-speaking team gets back to you within 24&nbsp;h.</p>
+      <p style="color:var(--ink-soft);margin-bottom:40px;max-width:52ch">Plans, prices and availability for the programme you're interested in&nbsp;: the brochure downloads as soon as you send the form and is also emailed to you; our local English- and French-speaking team gets back to you within 24&nbsp;h.</p>
       <form id="contact-form" class="cform" name="brochure" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="brochure">
         <input type="hidden" name="lang" value="en">
@@ -123,8 +123,14 @@
           <span>I agree that my data may be used to receive the brochure and be contacted by Koh Samui Estate. See the <a href="confidentialite.html">privacy policy</a>.</span>
         </label>
         <div class="full">
+          <p id="brochure-prenote" class="prenote">When you send the form, the brochure downloads straight away (check your downloads) and is also emailed to the address you give. Please check your spam folder too.</p>
           <button type="submit" class="btn" style="margin-top:6px">Send my request</button>
-          <p id="contact-thanks" hidden style="margin-top:18px;color:var(--celadon)"><span id="thanks-text">Thank you! Your brochure is downloading.</span> <a id="brochure-dl" href="#" hidden download rel="noopener" style="text-decoration:underline">Download the brochure</a></p>
+          <div id="contact-thanks" class="thanks" hidden role="status" aria-live="polite">
+            <p class="thanks-t" id="thanks-title">Request received</p>
+            <p id="thanks-text">Your brochure is downloading to your device.</p>
+            <a id="brochure-dl" class="btn" href="#" hidden download rel="noopener">Download the brochure (PDF)</a>
+            <p class="thanks-n" id="thanks-mail" hidden></p>
+          </div>
           <p id="contact-error" hidden style="margin-top:18px;color:var(--terra)">Something went wrong. Please try again, or message us on WhatsApp at +66 655 767 871.</p>
         </div>
         <p class="full" style="font-size:11.5px;color:var(--ink-soft);margin-top:6px">Your details are used only to process your request. More in the <a href="confidentialite.html" style="text-decoration:underline">privacy policy</a>.</p>
@@ -147,6 +153,6 @@
 </footer>
 
 <script src="/js/cms.js?v=20260971"></script>
-<script src="/js/site.js?v=20260970"></script>
+<script src="/js/site.js?v=20261003"></script>
 </body>
 </html>

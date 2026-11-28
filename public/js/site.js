@@ -18,8 +18,15 @@
         soonName:'Villa à venir', soonNote:'Photos & détails bientôt', delivered:'Livrée',
         realisation:'Réalisation', photo:'photo',
         rentLine:function(r,g){return 'Loué '+r+'/mois · ≈ '+g+' brut'},
-        thanksDl:'Merci ! Votre brochure se télécharge. Notre équipe locale francophone vous recontacte sous 24 h. ',
-        thanksNoDl:'Merci ! Votre demande a bien été envoyée. Notre équipe vous envoie la brochure adaptée sous 24 h.',
+        thanksTitle:'Demande bien reçue',
+        thanksDl:'Votre brochure se télécharge sur votre appareil. Notre équipe locale francophone vous recontacte sous 24 h.',
+        thanksDlMail:'Votre brochure se télécharge sur votre appareil, et nous vous l’envoyons aussi par e-mail. Notre équipe locale francophone vous recontacte sous 24 h.',
+        thanksNoDl:'Votre demande a bien été envoyée. Notre équipe vous envoie la brochure adaptée sous 24 h.',
+        thanksNoDlMail:'Votre demande a bien été envoyée. Nous vous envoyons la brochure adaptée par e-mail sous 24 h.',
+        mailNote:'Rien dans votre boîte de réception ? Regardez vos courriers indésirables (spam).',
+        mailNoteBtn:'Rien dans votre boîte de réception ? Regardez vos courriers indésirables (spam), ou utilisez le bouton ci-dessus.',
+        preDl:'À l’envoi, la brochure se télécharge directement (vérifiez vos téléchargements) et vous est aussi envoyée par e-mail à l’adresse indiquée. Pensez à regarder vos courriers indésirables.',
+        preNoDl:'Notre équipe vous envoie la brochure par e-mail à l’adresse indiquée. Pensez à regarder vos courriers indésirables.',
         thanksSoon:'Merci ! Votre demande est bien enregistrée. Nous vous enverrons la brochure Hidden Jungle dès sa publication et nous vous rappellerons au lancement du programme.',
         rappelMsg:'Je souhaite recevoir la brochure Hidden Jungle et être rappelé(e) au lancement du programme.',
         errInput:'Vérifiez votre nom et votre adresse e-mail, puis réessayez.',
@@ -36,8 +43,15 @@
         soonName:'Villa coming soon', soonNote:'Photos & details soon', delivered:'Delivered',
         realisation:'Project', photo:'photo',
         rentLine:function(r,g){return 'Let at '+r+'/month · ≈ '+g+' gross'},
-        thanksDl:'Thank you! Your brochure is downloading. Our local English-speaking team will get back to you within 24 h. ',
-        thanksNoDl:'Thank you! Your request has been sent. Our team will email you the relevant brochure within 24 h.',
+        thanksTitle:'Request received',
+        thanksDl:'Your brochure is downloading to your device. Our local English-speaking team will get back to you within 24 h.',
+        thanksDlMail:'Your brochure is downloading to your device, and we are also emailing it to you. Our local English-speaking team will get back to you within 24 h.',
+        thanksNoDl:'Your request has been sent. Our team will email you the relevant brochure within 24 h.',
+        thanksNoDlMail:'Your request has been sent. We are emailing you the relevant brochure within 24 h.',
+        mailNote:'Nothing in your inbox? Check your spam or junk folder.',
+        mailNoteBtn:'Nothing in your inbox? Check your spam or junk folder, or use the button above.',
+        preDl:'When you send the form, the brochure downloads straight away (check your downloads) and is also emailed to the address you give. Please check your spam folder too.',
+        preNoDl:'Our team emails you the brochure at the address you give. Please check your spam folder too.',
         thanksSoon:'Thank you! Your request has been recorded. We will send you the Hidden Jungle brochure as soon as it is published and call you back when the programme launches.',
         rappelMsg:'I would like to receive the Hidden Jungle brochure and be called back when the programme launches.',
         errInput:'Please check your name and email address, then try again.',
@@ -383,8 +397,15 @@
     // Grise la langue de brochure indisponible pour le programme choisi, dès le départ et à
     // chaque changement de programme (affiné une seconde fois après le chargement du CMS).
     var progSel=form.querySelector('select[name=programme]');
-    if(progSel) progSel.addEventListener('change', updateBrochureLangOptions);
-    updateBrochureLangOptions();
+    function updatePreNote(){
+      var pre=$('#brochure-prenote'); if(!pre||!progSel) return;
+      var bl2=form.querySelector('select[name=brochure_langue]');
+      pre.textContent = (progSel.value!=='hidden-jungle' && brochureUrl(progSel.value, bl2?bl2.value:'fr')) ? T.preDl : T.preNoDl;
+    }
+    if(progSel) progSel.addEventListener('change', function(){ updateBrochureLangOptions(); updatePreNote(); });
+    var bl3=form.querySelector('select[name=brochure_langue]'); if(bl3) bl3.addEventListener('change', updatePreNote);
+    window.OD_updatePreNote=updatePreNote;
+    updateBrochureLangOptions(); updatePreNote();
 
     // Arrivée depuis une page programme : ?programme=<slug>[&rappel=1] présélectionne le programme
     // et, pour « rappel », pré-remplit le message et marque la demande « à rappeler au lancement ».
@@ -414,25 +435,32 @@
       if(btn){ btn.disabled=true; btn.style.opacity=.5; }
       syncChips();
       var data={}; new FormData(form).forEach(function(v,k){ data[k]=v; });
+      (function(){ var u=brochureUrl(data.programme, data.brochure_langue); if(u) data.brochure_url = u.indexOf('http')===0 ? u : location.origin+u; })();
       var tText=$('#thanks-text'), dl=$('#brochure-dl');
-      function succeed(){
+      function succeed(acked){
         form.querySelectorAll('input,select,textarea').forEach(function(el){ if(el.type!=='hidden') el.disabled=true; });
         var url=brochureUrl(data.programme, data.brochure_langue);
+        var tTitle=$('#thanks-title'), tMail=$('#thanks-mail'), pre=$('#brochure-prenote');
+        if(tTitle) tTitle.textContent=T.thanksTitle;
+        if(pre) pre.hidden=true;
+        if(btn) btn.hidden=true;
         if(url){
-          if(tText) tText.textContent=T.thanksDl;
+          if(tText) tText.textContent=acked?T.thanksDlMail:T.thanksDl;
           if(dl){ setBrochureLink(dl,url); dl.hidden=false; }
+          if(tMail){ tMail.textContent=T.mailNoteBtn; tMail.hidden=!acked; }
           triggerDownload(url);
         } else {
-          if(tText) tText.textContent=(data.programme==='hidden-jungle')?T.thanksSoon:T.thanksNoDl;
+          if(tText) tText.textContent=(data.programme==='hidden-jungle')?T.thanksSoon:(acked?T.thanksNoDlMail:T.thanksNoDl);
           if(dl) dl.hidden=true;
+          if(tMail){ tMail.textContent=T.mailNote; tMail.hidden=!acked; }
         }
-        if(ok) ok.hidden=false;
+        if(ok){ ok.hidden=false; try{ ok.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
       }
       fetch('/api/brochure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
         .then(function(r){ return r.json().catch(function(){return {ok:r.ok}}); })
         .then(function(res){
           if(res && res.error==='invalid_input') throw new Error('invalid_input');
-          succeed();
+          succeed(!!(res && res.ack));
         })
         .catch(function(e){
           if(e && e.message==='invalid_input'){
@@ -463,7 +491,7 @@
     if(typeof window.OD_renderProgrammeChrome==='function') try{window.OD_renderProgrammeChrome()}catch(e){}
     if(typeof window.OD_renderFooter==='function') try{window.OD_renderFooter()}catch(e){}
     if(typeof window.OD_renderContactPage==='function') try{window.OD_renderContactPage()}catch(e){}
-    updateBrochureLangOptions();
+    updateBrochureLangOptions(); if(window.OD_updatePreNote) window.OD_updatePreNote();
     // (re)construit les simulateurs après application du paramétrage CMS ;
     // no-op si la page n'a pas de #calc. Les fonctions relisent window.OD_SIM(_FULL).
     initCalc();initFullCalc();

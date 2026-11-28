@@ -442,6 +442,13 @@ section[id]{scroll-margin-top:110px}
 .cform label.consent input{width:16px;height:16px;flex:0 0 auto;margin-top:3px;accent-color:var(--celadon)}
 .cform label.consent span{font-size:12.5px;letter-spacing:0;text-transform:none;color:var(--ink-soft);font-weight:400;line-height:1.55}
 .cform label.consent a{text-decoration:underline}
+.cform .btn[hidden],.cform .thanks [hidden]{display:none!important}
+.cform .prenote{font-size:13px;line-height:1.55;color:var(--ink-soft);margin:0 0 6px;max-width:60ch}
+.cform .thanks{margin-top:22px;padding:22px 24px;border:1px solid var(--celadon);border-radius:6px;background:rgba(51,84,76,.07);color:var(--ink)}
+.cform .thanks .thanks-t{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--celadon);margin:0 0 8px}
+.cform .thanks p{margin:0 0 14px;line-height:1.55}
+.cform .thanks .btn{display:inline-flex;margin:2px 0 14px}
+.cform .thanks .thanks-n{font-size:13px;color:var(--ink-soft);margin:0}
 @media(max-width:860px){.cwrap{grid-template-columns:1fr}.cform{grid-template-columns:1fr}}
 
 /* ===== Slide de marque du carrousel =====

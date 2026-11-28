@@ -11,9 +11,9 @@
  *                                   Avec l'expéditeur bac à sable, doit être
  *                                   l'e-mail du compte Resend.
  *   MAIL_TO_CC       (optionnel)    adresses en copie, séparées par des virgules
- *   ACK_TO_CUSTOMER  (optionnel)    "true" => envoie aussi un accusé au client.
- *                                   Ignoré tant que MAIL_FROM reste l'adresse
- *                                   bac à sable onboarding@resend.dev.
+ *   ACK_TO_CUSTOMER  (optionnel)    "false" => n'envoie PAS l'e-mail de confirmation (avec lien
+ *                                   de la brochure) au visiteur. Actif par défaut ; ignoré tant que
+ *                                   MAIL_FROM reste l'adresse bac à sable onboarding@resend.dev.
  */
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails';
@@ -47,6 +47,31 @@ const PROGRAMME_LABELS = {
   'hidden-jungle': 'Hidden Jungle — Mae Nam (à venir)',
   'autre': 'Je ne sais pas encore'
 };
+
+// Brochures statiques (mêmes fichiers que public/js/site.js). Les brochures téléversées dans
+// Sanity sont transmises par le navigateur (brochure_url) et validées ci-dessous.
+const BROCHURE_FILES = {
+  'sea-view': 'villa-sea-view-%L%.pdf',
+  'eden-tropical': 'eden-tropical-%L%.pdf',
+  'terra-mare': 'terra-mare-%L%.pdf',
+  'tropical-golf-villa-2': 'tropical-golf-villa-2-%L%.pdf',
+  'villa-lilouana': 'villa-lilouana-en.pdf',
+  'ocean-180': 'ocean-180-en.pdf'
+};
+
+// URL de brochure à mettre dans l'e-mail : celle envoyée par le navigateur si elle pointe bien
+// vers notre site ou notre CDN Sanity (jamais un lien arbitraire), sinon le fichier statique.
+function resolveBrochureUrl(data) {
+  const origin = (process.env.URL || 'https://kohsamuiestate.com').replace(/\/+$/, '');
+  const pid = process.env.SANITY_PROJECT_ID || 'x3jcttot';
+  const u = String(data.brochure_url || '');
+  if (u.indexOf(origin + '/brochures/') === 0 || u.indexOf('https://cdn.sanity.io/files/' + pid + '/') === 0) {
+    if (!/[\s"'<>]/.test(u)) return u;
+  }
+  const tpl = BROCHURE_FILES[data.programme];
+  if (!tpl) return '';
+  return origin + '/brochures/' + tpl.replace('%L%', data.brochure_langue === 'en' ? 'en' : 'fr');
+}
 
 function parseBody(event) {
   const ct = (event.headers['content-type'] || event.headers['Content-Type'] || '').toLowerCase();
@@ -282,34 +307,74 @@ exports.handler = async function (event) {
     }
   }
 
-  // Accusé de réception au client — seulement hors bac à sable Resend.
+  // E-mail de confirmation au visiteur, avec le lien de la brochure (bilingue).
+  // Envoyé par défaut ; ACK_TO_CUSTOMER=false le désactive. Ignoré avec l'expéditeur bac à sable Resend.
+  let acked = false;
   const fromAddr = ((from || '').match(/<([^>]+)>/) || [null, from])[1];
-  const ackEnabled = String(process.env.ACK_TO_CUSTOMER || '').toLowerCase() === 'true';
-  if (apiKey && ackEnabled && fromAddr && fromAddr !== SANDBOX_FROM) {
+  const ackOff = String(process.env.ACK_TO_CUSTOMER || '').toLowerCase() === 'false';
+  if (apiKey && !ackOff && fromAddr && fromAddr !== SANDBOX_FROM) {
+    const en = String(data.lang || '').toLowerCase() === 'en';
+    const url = data.rappel ? '' : resolveBrochureUrl(data);
+    const prog = programmeLabel;
+    const progShort = programmeLabel.split(' — ')[0];
+    const P = 'font:400 15px/1.6 Arial,sans-serif;margin:0 0 14px';
+    const txt = en ? {
+      subject: url ? 'Your ' + progShort + ' brochure — Koh Samui Estate' : 'Your request — Koh Samui Estate',
+      title: 'Thank you for your request',
+      hi: 'Hello ' + data.nom + ',',
+      got: 'We have received your request about <strong>' + esc(prog) + '</strong>.',
+      soon: 'We will send you the brochure as soon as it is published and call you back when the programme launches.',
+      noFile: 'Our local team will email you the brochure, availability and terms within 24 hours.',
+      withFile: 'Your brochure is ready:',
+      btn: 'Download the brochure (PDF)',
+      fallback: 'If the button does not work, copy this link into your browser:',
+      team: 'Our local English- and French-speaking team will also get back to you within 24 hours. You can reply directly to this email.',
+      wa: 'For anything urgent: WhatsApp +66 655 767 871.',
+      sign: '— Koh Samui Estate, Koh Samui'
+    } : {
+      subject: url ? 'Votre brochure ' + progShort + ' — Koh Samui Estate' : 'Votre demande — Koh Samui Estate',
+      title: 'Merci pour votre demande',
+      hi: 'Bonjour ' + data.nom + ',',
+      got: 'Nous avons bien reçu votre demande concernant <strong>' + esc(prog) + '</strong>.',
+      soon: 'Nous vous enverrons la brochure dès sa publication et nous vous rappellerons au lancement du programme.',
+      noFile: 'Notre équipe locale vous envoie la brochure, les disponibilités et les conditions sous 24 h.',
+      withFile: 'Votre brochure est prête :',
+      btn: 'Télécharger la brochure (PDF)',
+      fallback: 'Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :',
+      team: 'Notre équipe locale francophone vous recontacte aussi sous 24 h. Vous pouvez répondre directement à cet e-mail.',
+      wa: 'Pour toute question urgente : WhatsApp +66 655 767 871.',
+      sign: '— Koh Samui Estate, Koh Samui'
+    };
     const ackHtml =
       '<div style="max-width:620px;margin:0 auto;font-family:Arial,sans-serif;color:#252824">' +
-        '<h2 style="font:600 20px/1.3 Georgia,serif;color:#33544c;margin:0 0 12px">Merci pour votre demande</h2>' +
-        '<p style="font:400 15px/1.6 Arial,sans-serif">Bonjour ' + esc(data.nom) + ',</p>' +
-        '<p style="font:400 15px/1.6 Arial,sans-serif">Nous avons bien reçu votre demande concernant <strong>' + esc(programmeLabel) + '</strong>. ' +
-        (data.rappel
-          ? 'Nous vous enverrons la brochure dès sa publication et nous vous rappellerons au lancement du programme.</p>'
-          : 'Notre équipe locale francophone vous répond sous 24 h avec la brochure, les disponibilités et les conditions.</p>') +
-        '<p style="font:400 15px/1.6 Arial,sans-serif">Pour toute question immédiate : WhatsApp +66 655 767 871.</p>' +
-        '<p style="font:400 15px/1.6 Arial,sans-serif;margin-top:20px">— Koh Samui Estate, Koh Samui</p>' +
+        '<h2 style="font:600 20px/1.3 Georgia,serif;color:#33544c;margin:0 0 14px">' + txt.title + '</h2>' +
+        '<p style="' + P + '">' + esc(txt.hi) + '</p>' +
+        '<p style="' + P + '">' + txt.got + ' ' + (data.rappel ? txt.soon : (url ? '' : txt.noFile)) + '</p>' +
+        (url
+          ? '<p style="' + P + '">' + txt.withFile + '</p>' +
+            '<p style="margin:0 0 14px"><a href="' + esc(url) + '" style="display:inline-block;background:#33544c;color:#ffffff;text-decoration:none;font:500 14px/1 Arial,sans-serif;letter-spacing:.06em;padding:15px 26px;border-radius:2px">' + txt.btn + '</a></p>' +
+            '<p style="font:400 12px/1.5 Arial,sans-serif;color:#8a8577;margin:0 0 18px">' + txt.fallback + '<br>' + esc(url) + '</p>'
+          : '') +
+        '<p style="' + P + '">' + txt.team + '</p>' +
+        '<p style="' + P + '">' + txt.wa + '</p>' +
+        '<p style="font:400 15px/1.6 Arial,sans-serif;margin-top:20px">' + txt.sign + '</p>' +
       '</div>';
+    const ackText = [txt.hi, '', txt.got.replace(/<[^>]+>/g, '') + ' ' + (data.rappel ? txt.soon : (url ? '' : txt.noFile)),
+      url ? '\n' + txt.withFile + '\n' + url : '', '', txt.team, txt.wa, '', txt.sign].join('\n');
     try {
       await sendEmail(apiKey, {
         from: fromHeader,
         to: [data.email],
-        subject: 'Votre demande de brochure — Koh Samui Estate',
+        reply_to: to || undefined,
+        subject: txt.subject,
         html: ackHtml,
-        text: 'Bonjour ' + data.nom + ',\n\nNous avons bien reçu votre demande concernant ' + programmeLabel +
-              '. Notre équipe vous répond sous 24 h.\n\nWhatsApp : +66 655 767 871\n\n— Koh Samui Estate'
+        text: ackText
       });
+      acked = true;
     } catch (err) {
       console.error('Accusé client non envoyé (non bloquant):', err.message);
     }
   }
 
-  return { statusCode: 200, headers: JSON_HEADERS, body: JSON.stringify({ ok: true }) };
+  return { statusCode: 200, headers: JSON_HEADERS, body: JSON.stringify({ ok: true, ack: acked }) };
 };
